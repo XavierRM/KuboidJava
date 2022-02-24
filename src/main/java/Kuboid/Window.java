@@ -17,9 +17,9 @@ public class Window {
     private static Window window = null;
 
     private Window() {
-        this.width = 1920;
-        this.height = 1080;
-        this.title = "Mario";
+        this.width = 1280;
+        this.height = 720;
+        this.title = "Kuboid";
     }
 
     public static Window get() {
@@ -59,7 +59,7 @@ public class Window {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
 
         // Create the window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
