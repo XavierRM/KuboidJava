@@ -1,8 +1,14 @@
-import Kuboid.Window;
+import Kuboid.manager.WindowManager;
 
 public class Main {
     public static void main(String[] args) {
-        Window window = Window.get();
-        window.run();
+        WindowManager window = new WindowManager("Kuboid", 1280, 720, true);
+        window.init();
+
+        while(!window.windowShouldClose()) {
+            window.update();
+        }
+
+        window.cleanup();
     }
 }
