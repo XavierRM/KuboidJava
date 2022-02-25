@@ -99,6 +99,10 @@ public class WindowManager {
         return glfwGetKey(window, keycode) == GLFW_PRESS;
     }
 
+    public void setClearColour(float r, float g, float b, float a) {
+        glClearColor(r, g, b, a);
+    }
+
     public boolean windowShouldClose() {
         return glfwWindowShouldClose(window);
     }
@@ -107,7 +111,7 @@ public class WindowManager {
         return title;
     }
 
-    public void setTitle() {
+    public void setTitle(String title) {
         glfwSetWindowTitle(window, title);
     }
 
