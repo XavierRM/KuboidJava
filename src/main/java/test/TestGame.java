@@ -4,8 +4,10 @@ import Kuboid.manager.ILogic;
 import Kuboid.manager.ObjectLoader;
 import Kuboid.manager.RenderManager;
 import Kuboid.manager.WindowManager;
+import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
 import Kuboid.manager.entity.Texture;
+import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_DOWN;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_UP;
@@ -20,7 +22,7 @@ public class TestGame implements ILogic {
     private final ObjectLoader loader;
     private final WindowManager window;
 
-    private Model model;
+    private Entity entity;
 
     public TestGame() {
         renderer = new RenderManager();
@@ -51,8 +53,10 @@ public class TestGame implements ILogic {
                 1, 0
         };
 
-        model = loader.loadModel(vertices, textureCoords, indices);
+        Model model = loader.loadModel(vertices, textureCoords, indices);
         model.setTexture(new Texture(loader.loadTexture("textures/dirt_grass.png")));
+
+        entity = new Entity(model, new Vector3f(1, 0, 0), new Vector3f(0, 0, 0), 1);
     }
 
     @Override
@@ -76,6 +80,11 @@ public class TestGame implements ILogic {
             if (colour <= 0)
                 colour = 0.0f;
         }
+
+        if(entity.getPos().x < -1.5f)
+            entity.getPos().x = 1.5f;
+
+        entity.getPos().x -= 0.01f;
     }
 
     @Override
@@ -84,7 +93,7 @@ public class TestGame implements ILogic {
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
         window.setClearColour(colour, colour, colour, 0.0f);
-        renderer.render(model);
+        renderer.render(entity);
     }
 
     @Override

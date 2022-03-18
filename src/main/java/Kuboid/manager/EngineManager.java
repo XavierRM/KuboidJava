@@ -56,6 +56,7 @@ public class EngineManager {
             unprocessedTime += passedTime / (double) NANOSECOND;
             frameCounter += passedTime;
 
+            //User input
             input();
 
             while(unprocessedTime > frametime) {

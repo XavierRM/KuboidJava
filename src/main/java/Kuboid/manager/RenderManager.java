@@ -1,6 +1,8 @@
 package Kuboid.manager;
 
+import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
+import Kuboid.manager.utils.Transformation;
 import Kuboid.manager.utils.Utils;
 import org.lwjgl.opengl.GL13;
 import test.Launcher;
@@ -27,13 +29,16 @@ public class RenderManager {
         shader.link();
 
         shader.createUniform("textureSampler");
+        shader.createUniform("transformationMatrix");
     }
 
-    public void render(Model model) {
+    public void render(Entity entity) {
+        Model model = entity.getModel();
 
         clear();
         shader.bind();
         shader.setUniform("textureSampler", 0);
+        shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         glBindVertexArray(model.getId());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
