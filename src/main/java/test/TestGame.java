@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 public class TestGame implements ILogic {
 
-    private static final float CAMERA_MOVE_SPEED = 0.01f;
+    private static final float CAMERA_MOVE_SPEED = 0.05f;
 
     private int direction = 0;
     private float colour = 0.0f;
@@ -91,7 +91,7 @@ public class TestGame implements ILogic {
         };
 
         Model model = loader.loadModel(vertices, textCoords, indices);
-        model.setTexture(new Texture(loader.loadTexture("textures/dirt_grass.png")));
+        model.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
 
         entity = new Entity(model, new Vector3f(0, 0, -5), new Vector3f(0, 0, 0), 1);
     }
@@ -118,11 +118,11 @@ public class TestGame implements ILogic {
 
         //Go left
         if(window.isKeyPressed(GLFW_KEY_A))
-            cameraInc.x = 1;
+            cameraInc.x = -1;
 
         //Go right
         if(window.isKeyPressed(GLFW_KEY_D))
-            cameraInc.x = -1;
+            cameraInc.x = 1;
 
         //Go up
         if(window.isKeyPressed(GLFW_KEY_SPACE))
