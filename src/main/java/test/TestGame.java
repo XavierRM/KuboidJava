@@ -4,14 +4,15 @@ import Kuboid.manager.*;
 import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
 import Kuboid.manager.entity.Texture;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import static Kuboid.manager.utils.Constants.CAMERA_MOVE_SPEED;
+import static Kuboid.manager.utils.Constants.MOUSE_SENSITIVITY;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glViewport;
 
 public class TestGame implements ILogic {
-
-    private static final float CAMERA_MOVE_SPEED = 0.05f;
 
     private int direction = 0;
     private float colour = 0.0f;
@@ -135,7 +136,7 @@ public class TestGame implements ILogic {
     }
 
     @Override
-    public void update() {
+    public void update(float interval, MouseInput mouseInput) {
         /*colour += direction * 0.01f;
         if(colour > 1)
             colour = 1.0f;
@@ -151,6 +152,12 @@ public class TestGame implements ILogic {
 
         window.updateProjectionMatrix();
         camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED, cameraInc.y * CAMERA_MOVE_SPEED, cameraInc.z * CAMERA_MOVE_SPEED);
+
+        if(mouseInput.isLefButtonPress()) {
+            Vector2f rotVec = mouseInput.getDisplayVec();
+            camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
+        }
+
         entity.incRotation(0.0f, 0.5f, 0.0f);
     }
 

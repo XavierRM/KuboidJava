@@ -5,15 +5,12 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
+import static Kuboid.manager.utils.Constants.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class WindowManager {
-
-    public static final float FOV = (float) Math.toRadians(60);
-    public static final float Z_NEAR = 0.01f;
-    public static final float Z_FAR = 1000f;
 
     private String title;
 
@@ -124,7 +121,7 @@ public class WindowManager {
         return height;
     }
 
-    public long getWindow() {
+    public long getWindowId() {
         return window;
     }
 

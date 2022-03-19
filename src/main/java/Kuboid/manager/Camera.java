@@ -17,21 +17,20 @@ public class Camera {
     }
 
     public void movePosition(float x, float y, float z) {
-        position.x += x;
-        position.y += y;
-        position.z += z;
 
-        /*if(z != 0) {
-            position.x += (float) Math.sin(Math.toRadians(rotation.y)) + -1.0f + z;
+        //forward and backwards
+        if(z != 0) {
+            position.x -= (float) Math.sin(Math.toRadians(rotation.y)) * z;
             position.z += (float) Math.cos(Math.toRadians(rotation.y)) * z;
         }
 
+        //left and right
         if(x != 0) {
-            position.x += (float) Math.sin(Math.toRadians(rotation.y - 90)) + -1.0f + z;
-            position.z += (float) Math.cos(Math.toRadians(rotation.y - 90)) * x;
+            position.x += (float) Math.sin(Math.toRadians(rotation.y + 90)) * x;
+            position.z -= (float) Math.cos(Math.toRadians(rotation.y + 90)) * x;
         }
 
-        position.y = y;*/
+        position.y -= y;
     }
 
     public void setPosition(float x, float y, float z) {
