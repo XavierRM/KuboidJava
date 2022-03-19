@@ -30,6 +30,7 @@ public class WindowManager {
         this.height = height;
         this.vSync = vSync;
         projectionMatrix = new Matrix4f();
+        projectionMatrix.identity();
     }
 
     public void init() {
@@ -82,8 +83,8 @@ public class WindowManager {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_STENCIL_TEST);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
+        /*glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);*/
     }
 
     public void update() {
@@ -132,13 +133,13 @@ public class WindowManager {
     }
 
     public Matrix4f updateProjectionMatrix() {
-        float aspectRatio = (float) width / height;
+        float aspectRatio = (float) width / (float) height;
         return projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
 
     }
 
     public Matrix4f updateProjectionMatrix(Matrix4f matrix, int width, int height) {
-        float aspectRatio = (float) width / height;
+        float aspectRatio = (float) width / (float) height;
         return matrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
 
     }

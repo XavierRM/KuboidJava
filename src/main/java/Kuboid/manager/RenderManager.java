@@ -30,15 +30,21 @@ public class RenderManager {
 
         shader.createUniform("textureSampler");
         shader.createUniform("transformationMatrix");
+        shader.createUniform("projectionMatrix");
+        shader.createUniform("viewMatrix");
     }
 
-    public void render(Entity entity) {
+    public void render(Entity entity, Camera camera) {
         Model model = entity.getModel();
 
         clear();
         shader.bind();
+
         shader.setUniform("textureSampler", 0);
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
+        shader.setUniform("projectionMatrix", window.getProjectionMatrix());
+        shader.setUniform("viewMatrix", Transformation.getViewMatrix(camera));
+
         glBindVertexArray(model.getId());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
