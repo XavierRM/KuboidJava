@@ -3,19 +3,23 @@ package Kuboid.manager;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import test.Launcher;
+import org.lwjgl.glfw.*;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import static Kuboid.manager.utils.Constants.TITLE;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
 public class EngineManager {
 
-    public static final long NANOSECOND = 1000000000L;
-    public static final float FRAMERATE = 1000;
+    public static final float MAX_FPS = 60;
+    public static final double TICKS = 30;
+    public static final double NANOSECOND = 1000000000L;
 
     private static int fps;
-    private static float frametime = 1.0f/ FRAMERATE;
 
-    private boolean isRunning;
+    private boolean isRunning = false;
 
     private static WindowManager window;
     private MouseInput mouseInput;
@@ -43,44 +47,39 @@ public class EngineManager {
 
     public void run() {
         this.isRunning = true;
-        int frames = 0;
-        long frameCounter = 0;
+        long initialTime = System.nanoTime();
+        final double timeU = NANOSECOND / TICKS;
+        final double timeF = NANOSECOND / MAX_FPS;
+        double deltaU = 0, deltaF = 0;
+        int frames = 0;//, ticks = 0;
+        long timer = System.currentTimeMillis();
 
-        long lastTime = System.nanoTime();
-        double unprocessedTime = 0;
+        while (isRunning) {
 
-        while(isRunning) {
-            boolean render = false;
+            long currentTime = System.nanoTime();
+            deltaU += (currentTime - initialTime) / timeU;
+            deltaF += (currentTime - initialTime) / timeF;
+            initialTime = currentTime;
 
-            long startTime = System.nanoTime();
-            long passedTime = startTime - lastTime;
-            lastTime = startTime;
-
-            unprocessedTime += passedTime / (double) NANOSECOND;
-            frameCounter += passedTime;
-
-            //User input
-            input();
-
-            while(unprocessedTime > frametime) {
-                render = true;
-                unprocessedTime -= frametime;
-
-                if(window.windowShouldClose())
-                    stop();
-
-                if(frameCounter >= NANOSECOND) {
-                    setFps(frames);
-                    window.setTitle(TITLE + " FPS: " + getFps());
-                    frames = 0;
-                    frameCounter = 0;
-                }
+            if (deltaU >= 1) {
+                input();
+                update((float) deltaU);
+                //ticks++;
+                deltaU--;
             }
 
-            if(render) {
-                update(frametime);
+            if (deltaF >= 1) {
                 render();
                 frames++;
+                deltaF--;
+            }
+
+            if (System.currentTimeMillis() - timer > 1000) {
+                setFps(frames);
+                window.setTitle(TITLE + " FPS: " + getFps());
+                frames = 0;
+                //ticks = 0;
+                timer += 1000;
             }
         }
         cleanup();
@@ -93,6 +92,9 @@ public class EngineManager {
     }
 
     private void input() {
+        if(window.windowShouldClose())
+            stop();
+
         mouseInput.input();
         gameLogic.input();
     }
@@ -104,6 +106,7 @@ public class EngineManager {
 
     private void update(float interval) {
         gameLogic.update(interval, mouseInput);
+        //window.update();
     }
 
     private void cleanup() {
