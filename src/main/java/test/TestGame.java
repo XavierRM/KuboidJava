@@ -4,11 +4,11 @@ import Kuboid.manager.*;
 import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
 import Kuboid.manager.entity.Texture;
+import Kuboid.manager.utils.Constants;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
-import static Kuboid.manager.utils.Constants.CAMERA_MOVE_SPEED;
-import static Kuboid.manager.utils.Constants.MOUSE_SENSITIVITY;
+import static Kuboid.manager.utils.Constants.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glViewport;
 
@@ -16,6 +16,7 @@ public class TestGame implements ILogic {
 
     private int direction = 0;
     private float colour = 0.0f;
+    private int previousKey;
 
     private final RenderManager renderer;
     private final ObjectLoader loader;
@@ -108,30 +109,52 @@ public class TestGame implements ILogic {
                 direction = 0;
         }*/
         cameraInc.set(0, 0, 0);
+        System.out.println("previousKey: " + previousKey);
 
         //Go forward
-        if(window.isKeyPressed(GLFW_KEY_W))
-            cameraInc.z = -1;
+        if(window.isKeyPressed(GLFW_KEY_W)) {
+            if(previousKey == GLFW_KEY_W && window.isKeyPressed(GLFW_KEY_LEFT_ALT)) {
+                cameraInc.z = -2;
+                System.out.println("Current movement speed is: " + CAMERA_MOVE_SPEED_FAST);
+
+            } else {
+                cameraInc.z = -1;
+                System.out.println("Current movement speed is: " + CAMERA_MOVE_SPEED);
+            }
+
+            previousKey = GLFW_KEY_W;
+        }
 
         //Go backwards
-        if(window.isKeyPressed(GLFW_KEY_S))
+        if(window.isKeyPressed(GLFW_KEY_S)) {
+            previousKey = GLFW_KEY_S;
             cameraInc.z = 1;
+        }
+
 
         //Go left
-        if(window.isKeyPressed(GLFW_KEY_A))
+        if(window.isKeyPressed(GLFW_KEY_A)) {
+            previousKey = GLFW_KEY_A;
             cameraInc.x = -1;
+        }
 
         //Go right
-        if(window.isKeyPressed(GLFW_KEY_D))
+        if(window.isKeyPressed(GLFW_KEY_D)) {
+            previousKey = GLFW_KEY_D;
             cameraInc.x = 1;
+        }
 
         //Go up
-        if(window.isKeyPressed(GLFW_KEY_SPACE))
+        if(window.isKeyPressed(GLFW_KEY_SPACE)) {
+            previousKey = GLFW_KEY_SPACE;
             cameraInc.y = -1;
+        }
 
         //Go down
-        if(window.isKeyPressed(GLFW_KEY_LEFT_SHIFT))
+        if(window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+            previousKey = GLFW_KEY_LEFT_SHIFT;
             cameraInc.y = 1;
+        }
 
     }
 
@@ -151,7 +174,12 @@ public class TestGame implements ILogic {
         entity.getPos().x -= 0.01f;*/
 
         window.updateProjectionMatrix();
-        camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED, cameraInc.y * CAMERA_MOVE_SPEED, cameraInc.z * CAMERA_MOVE_SPEED);
+        if (cameraInc.z == -2) {
+            cameraInc.z = -1;
+            camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED_FAST, cameraInc.y * CAMERA_MOVE_SPEED_FAST, cameraInc.z * CAMERA_MOVE_SPEED_FAST);
+        } else {
+            camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED, cameraInc.y * CAMERA_MOVE_SPEED, cameraInc.z * CAMERA_MOVE_SPEED);
+        }
 
         if(mouseInput.isLefButtonPress()) {
             Vector2f rotVec = mouseInput.getDisplayVec();
