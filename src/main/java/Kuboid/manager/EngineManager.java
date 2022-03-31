@@ -3,10 +3,6 @@ package Kuboid.manager;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import test.Launcher;
-import org.lwjgl.glfw.*;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 import static Kuboid.manager.utils.Constants.TITLE;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
@@ -106,7 +102,6 @@ public class EngineManager {
 
     private void update(float interval) {
         gameLogic.update(interval, mouseInput);
-        //window.update();
     }
 
     private void cleanup() {

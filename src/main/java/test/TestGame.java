@@ -4,7 +4,6 @@ import Kuboid.manager.*;
 import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
 import Kuboid.manager.entity.Texture;
-import Kuboid.manager.utils.Constants;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -100,27 +99,14 @@ public class TestGame implements ILogic {
 
     @Override
     public void input() {
-        /*if(window.isKeyPressed(GLFW_KEY_UP))
-            direction = 1;
-        else {
-            if (window.isKeyPressed(GLFW_KEY_DOWN))
-                direction = -1;
-            else
-                direction = 0;
-        }*/
         cameraInc.set(0, 0, 0);
-        System.out.println("previousKey: " + previousKey);
 
         //Go forward
         if(window.isKeyPressed(GLFW_KEY_W)) {
-            if(previousKey == GLFW_KEY_W && window.isKeyPressed(GLFW_KEY_LEFT_ALT)) {
+            if (previousKey == GLFW_KEY_W && window.isKeyPressed(GLFW_KEY_LEFT_ALT))
                 cameraInc.z = -2;
-                System.out.println("Current movement speed is: " + CAMERA_MOVE_SPEED_FAST);
-
-            } else {
+            else
                 cameraInc.z = -1;
-                System.out.println("Current movement speed is: " + CAMERA_MOVE_SPEED);
-            }
 
             previousKey = GLFW_KEY_W;
         }
@@ -160,20 +146,8 @@ public class TestGame implements ILogic {
 
     @Override
     public void update(float interval, MouseInput mouseInput) {
-        /*colour += direction * 0.01f;
-        if(colour > 1)
-            colour = 1.0f;
-        else {
-            if (colour <= 0)
-                colour = 0.0f;
-        }
-
-        if(entity.getPos().x < -1.5f)
-            entity.getPos().x = 1.5f;
-
-        entity.getPos().x -= 0.01f;*/
-
         window.updateProjectionMatrix();
+
         if (cameraInc.z == -2) {
             cameraInc.z = -1;
             camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED_FAST, cameraInc.y * CAMERA_MOVE_SPEED_FAST, cameraInc.z * CAMERA_MOVE_SPEED_FAST);
