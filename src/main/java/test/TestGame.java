@@ -4,6 +4,7 @@ import Kuboid.manager.*;
 import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
 import Kuboid.manager.entity.Texture;
+import Kuboid.manager.generation.Terrain;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -21,16 +22,18 @@ public class TestGame implements ILogic {
     private final ObjectLoader loader;
     private final WindowManager window;
 
-    private Entity entity;
+    private Terrain terrain;
+    private Entity entity1;
+    private Entity entity2;
     private Camera camera;
 
     private Vector3f cameraInc;
 
     public TestGame() {
-        renderer = new RenderManager();
         window = Launcher.getWindow();
         loader = new ObjectLoader();
         camera = new Camera();
+        renderer = new RenderManager(camera);
         cameraInc = new Vector3f(0, 0, 0);
     }
 
@@ -38,11 +41,11 @@ public class TestGame implements ILogic {
     public void init() throws Exception {
         renderer.init();
 
-        float[] vertices = new float[] {
+        float[] vertices = new float[]{
                 -0.5f, 0.5f, 0.5f,
                 -0.5f, -0.5f, 0.5f,
                 0.5f, -0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,// front
+                0.5f, 0.5f, 0.5f,//
                 -0.5f, 0.5f, -0.5f,
                 0.5f, 0.5f, -0.5f,
                 -0.5f, -0.5f, -0.5f,
@@ -54,33 +57,33 @@ public class TestGame implements ILogic {
                 0.5f, 0.5f, 0.5f,
                 0.5f, -0.5f, 0.5f,
                 -0.5f, 0.5f, 0.5f,
+                -0.5f, -0.5f, 0.5f,//
+                -0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
                 -0.5f, -0.5f, 0.5f,
-                -0.5f, -0.5f, -0.5f, //
-                0.5f, -0.5f, -0.5f, //
-                -0.5f, -0.5f, 0.5f, //
-                0.5f, -0.5f, 0.5f, //
+                0.5f, -0.5f, 0.5f,//
         };
         float[] textCoords = new float[]{
                 0.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 1.0f,
-                1.0f, 0.0f,// front
+                1.0f, 0.0f,//
                 0.0f, 0.0f,
                 1.0f, 0.0f,
                 0.0f, 1.0f,
-                1.0f, 1.0f,// back
-                0.0f, 0.0f,//originally was 0.5 | 9
-                1.0f, 0.0f,// 10 originally 1.0f, 1.0f
+                1.0f, 1.0f,//
+                0.0f, 0.0f,
+                1.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 1.0f,//
                 0.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
-                1.0f, 1.0f,
-                0.0f, 0.0f, // ok
-                1.0f, 0.0f, //
-                0.0f, 1.0f, //
-                1.0f, 1.0f //
+                1.0f, 1.0f,//
+                0.0f, 0.0f,
+                1.0f, 0.0f,
+                0.0f, 1.0f,
+                1.0f, 1.0f//
         };
         int[] indices = new int[]{
                 0, 1, 3, 3, 1, 2, //front
@@ -91,10 +94,19 @@ public class TestGame implements ILogic {
                 4, 6, 7, 5, 4, 7, //back
         };
 
+        //Here we would set the checks for the resizable window
+        glViewport(0, 0, window.getWidth(), window.getHeight());
+
+        window.setClearColour(1.0f, 1.0f, 1.0f, 0.0f);
+
+        terrain = new Terrain(20, true);
+
         Model model = loader.loadModel(vertices, textCoords, indices);
         model.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
 
-        entity = new Entity(model, new Vector3f(0, 0, -5), new Vector3f(0, 0, 0), 1);
+        entity1 = new Entity(model, new Vector3f(0, 0, -5), new Vector3f(0, 0, 0), 1);
+        entity2 = new Entity(model, new Vector3f(1, 0, -5), new Vector3f(0, 0, 0), 1);
+
     }
 
     @Override
@@ -165,11 +177,13 @@ public class TestGame implements ILogic {
 
     @Override
     public void render() {
-        //Here we would set the checks for the resizable window
-        glViewport(0, 0, window.getWidth(), window.getHeight());
+        renderer.clear();
+        //renderer.render(entity1);
+        //renderer.render(entity2);
 
-        window.setClearColour(1.0f, 1.0f, 1.0f, 0.0f);
-        renderer.render(entity, camera);
+        for (Entity entity : terrain.getTerrain()) {
+            renderer.render(entity);
+        }
     }
 
     @Override
