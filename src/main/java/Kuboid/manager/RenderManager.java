@@ -17,9 +17,11 @@ public class RenderManager {
 
     private final WindowManager window;
     private ShaderManager shader;
+    private final Camera camera;
 
-    public RenderManager() {
+    public RenderManager(Camera camera) {
         window = Launcher.getWindow();
+        this.camera = camera;
     }
 
     public void init() throws Exception {
@@ -32,18 +34,18 @@ public class RenderManager {
         shader.createUniform("transformationMatrix");
         shader.createUniform("projectionMatrix");
         shader.createUniform("viewMatrix");
+
     }
 
-    public void render(Entity entity, Camera camera) {
+    public void render(Entity entity) {
         Model model = entity.getModel();
 
-        clear();
         shader.bind();
 
         shader.setUniform("textureSampler", 0);
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         shader.setUniform("projectionMatrix", window.getProjectionMatrix());
-        shader.setUniform("viewMatrix", Transformation.getViewMatrix(camera));
+        shader.setUniform("viewMatrix", Transformation.getViewMatrix(this.camera));
 
         glBindVertexArray(model.getId());
         glEnableVertexAttribArray(0);
