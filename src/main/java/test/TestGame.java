@@ -42,53 +42,53 @@ public class TestGame implements ILogic {
                 -0.5f, 0.5f, 0.5f,
                 -0.5f, -0.5f, 0.5f,
                 0.5f, -0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,// front
                 -0.5f, 0.5f, -0.5f,
                 0.5f, 0.5f, -0.5f,
                 -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,//
                 -0.5f, 0.5f, -0.5f,
                 0.5f, 0.5f, -0.5f,
                 -0.5f, 0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,//
                 0.5f, 0.5f, 0.5f,
                 0.5f, -0.5f, 0.5f,
                 -0.5f, 0.5f, 0.5f,
                 -0.5f, -0.5f, 0.5f,
-                -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
-                -0.5f, -0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
+                -0.5f, -0.5f, -0.5f, //
+                0.5f, -0.5f, -0.5f, //
+                -0.5f, -0.5f, 0.5f, //
+                0.5f, -0.5f, 0.5f, //
         };
         float[] textCoords = new float[]{
                 0.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 1.0f,
-                1.0f, 0.0f,
+                1.0f, 0.0f,// front
                 0.0f, 0.0f,
                 1.0f, 0.0f,
                 0.0f, 1.0f,
-                1.0f, 1.0f,
-                0.0f, 0.5f,
-                1.0f, 1.0f,
+                1.0f, 1.0f,// back
+                0.0f, 0.0f,//originally was 0.5 | 9
+                1.0f, 0.0f,// 10 originally 1.0f, 1.0f
                 0.0f, 1.0f,
-                1.0f, 1.0f,
+                1.0f, 1.0f,//
                 0.0f, 0.0f,
                 0.0f, 1.0f,
                 1.0f, 0.0f,
                 1.0f, 1.0f,
-                1.0f, 0.0f,
-                1.0f, 0.0f,
-                1.0f, 1.0f,
-                1.0f, 1.0f,
+                0.0f, 0.0f, // ok
+                1.0f, 0.0f, //
+                0.0f, 1.0f, //
+                1.0f, 1.0f //
         };
         int[] indices = new int[]{
-                0, 1, 3, 3, 1, 2,
-                8, 10, 11, 9, 8, 11,
-                12, 13, 7, 5, 12, 7,
-                14, 15, 6, 4, 14, 6,
-                16, 18, 19, 17, 16, 19,
-                4, 6, 7, 5, 4, 7,
+                0, 1, 3, 3, 1, 2, //front
+                8, 10, 11, 9, 8, 11, //top
+                12, 13, 7, 5, 12, 7, //right
+                14, 15, 6, 4, 14, 6, //left
+                16, 18, 19, 17, 16, 19, //bottom
+                4, 6, 7, 5, 4, 7, //back
         };
 
         Model model = loader.loadModel(vertices, textCoords, indices);
@@ -160,7 +160,7 @@ public class TestGame implements ILogic {
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
 
-        entity.incRotation(0.0f, 0.5f, 0.0f);
+        //entity.incRotation(0.0f, 0.5f, 0.0f);
     }
 
     @Override

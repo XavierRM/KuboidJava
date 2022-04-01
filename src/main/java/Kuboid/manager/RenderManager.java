@@ -4,11 +4,11 @@ import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
 import Kuboid.manager.utils.Transformation;
 import Kuboid.manager.utils.Utils;
-import org.lwjgl.opengl.GL13;
 import test.Launcher;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;

@@ -1,6 +1,5 @@
 package Kuboid.manager;
 
-import com.sun.tools.javac.Main;
 import org.joml.Vector2d;
 import org.joml.Vector2f;
 import test.Launcher;
