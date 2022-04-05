@@ -92,7 +92,7 @@ public class Terrain {
 
         for (x = -(size / 2); x < (this.size / 2); x++) {
             for (z = (size / 2); z > -(this.size / 2); z--) {
-                entities.add(new Entity(model, new Vector3f(x, 0, z), new Vector3f(0, 0, 0), 1));
+                entities.add(new Entity(model, new Vector3f(x, 0, z), new Vector3f(0, 0, 0), 1f));
                 //y++;
             }
         }

@@ -13,6 +13,10 @@ public class Entity {
         this.pos = pos;
         this.rotation = rotation;
         this.scale = scale;
+
+        this.pos.x *= scale;
+        this.pos.y *= scale;
+        this.pos.z *= scale;
     }
 
     public void incPos(float x, float y, float z) {

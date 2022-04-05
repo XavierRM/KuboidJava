@@ -9,7 +9,7 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
 
 public class EngineManager {
 
-    public static final float MAX_FPS = 1000;
+    public static final float MAX_FPS = 10000;
     public static final double TICKS = 30;
     public static final double NANOSECOND = 1000000000L;
 
