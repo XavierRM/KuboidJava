@@ -41,65 +41,12 @@ public class TestGame implements ILogic {
         renderer.init();
         window.switchWireframe(isWireframe);
 
-        float[] vertices = new float[]{
-                -0.5f, 0.5f, 0.5f,
-                -0.5f, -0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,//
-                -0.5f, 0.5f, -0.5f,
-                0.5f, 0.5f, -0.5f,
-                -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,//
-                -0.5f, 0.5f, -0.5f,
-                0.5f, 0.5f, -0.5f,
-                -0.5f, 0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,//
-                0.5f, 0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
-                -0.5f, 0.5f, 0.5f,
-                -0.5f, -0.5f, 0.5f,//
-                -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
-                -0.5f, -0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,//
-        };
-        float[] textCoords = new float[]{
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,
-                1.0f, 0.0f,//
-                0.0f, 0.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,//
-                0.0f, 0.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f,//
-                0.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 0.0f,
-                1.0f, 1.0f,//
-                0.0f, 0.0f,
-                1.0f, 0.0f,
-                0.0f, 1.0f,
-                1.0f, 1.0f//
-        };
-        int[] indices = new int[]{
-                0, 1, 3, 3, 1, 2, //front
-                8, 10, 11, 9, 8, 11, //top
-                12, 13, 7, 5, 12, 7, //right
-                14, 15, 6, 4, 14, 6, //left
-                16, 18, 19, 17, 16, 19, //bottom
-                4, 6, 7, 5, 4, 7, //back
-        };
-
         //Here we would set the checks for the resizable window
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
         window.setClearColour(0.0f, 0.0f, 0.0f, 0.0f);
 
-        terrain = new Terrain(50, true, isWireframe);
+        terrain = new Terrain(1, true, isWireframe);
 
     }
 
