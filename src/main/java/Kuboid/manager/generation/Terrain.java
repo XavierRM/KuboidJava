@@ -3,6 +3,7 @@ package Kuboid.manager.generation;
 import Kuboid.manager.ObjectLoader;
 import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
+import Kuboid.manager.entity.Texture;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ public class Terrain {
 
     private final long size;
     private final boolean plain;
+    private final boolean isWireframe;
     private List<Entity> entities = new ArrayList<>();
 
     /*
@@ -85,9 +87,10 @@ public class Terrain {
             4, 6, 7, 5, 4, 7, //back
     };
 
-    public Terrain(long size, boolean plain) throws Exception {
+    public Terrain(long size, boolean plain, boolean isWireframe) throws Exception {
         this.size = size;
         this.plain = plain;
+        this.isWireframe = isWireframe;
 
         init();
         generateTerrain();
@@ -102,10 +105,14 @@ public class Terrain {
 
         long x, y = 0, z;
 
-        //Model model = loader.loadModel(vertices, textCoords, indices);
-        //model.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
+        Model model;
 
-        Model model = loader.loadModel(vertices, indices);
+        if (isWireframe)
+            model = loader.loadModel(vertices, indices);
+        else {
+            model = loader.loadModel(vertices, textCoords, indices);
+            model.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
+        }
 
         for (x = -(size / 2); x < (this.size / 2); x++) {
             for (z = (size / 2); z > -(this.size / 2); z--) {

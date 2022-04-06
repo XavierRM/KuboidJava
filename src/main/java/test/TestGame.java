@@ -97,9 +97,9 @@ public class TestGame implements ILogic {
         //Here we would set the checks for the resizable window
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
-        window.setClearColour(1.0f, 1.0f, 1.0f, 0.0f);
+        window.setClearColour(0.0f, 0.0f, 0.0f, 0.0f);
 
-        terrain = new Terrain(50, true);
+        terrain = new Terrain(50, true, isWireframe);
 
     }
 
@@ -154,6 +154,9 @@ public class TestGame implements ILogic {
             window.switchWireframe(isWireframe);
             renderer.setWireframe(isWireframe);
             renderer.switchRenderer();
+            //We need some time for the renderer to switch context before displaying everything again
+            Thread.sleep(200);
+            init();
         }
 
     }
