@@ -41,7 +41,7 @@ public class EngineManager {
         run();
     }
 
-    public void run() {
+    public void run() throws Exception {
         this.isRunning = true;
         long initialTime = System.nanoTime();
         final double timeU = NANOSECOND / TICKS;
@@ -87,8 +87,8 @@ public class EngineManager {
         isRunning = false;
     }
 
-    private void input() {
-        if(window.windowShouldClose())
+    private void input() throws Exception {
+        if (window.windowShouldClose())
             stop();
 
         mouseInput.input();

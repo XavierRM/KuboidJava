@@ -19,18 +19,28 @@ public class RenderManager {
     private ShaderManager shader;
     private final Camera camera;
 
-    public RenderManager(Camera camera) {
+    private boolean isWireframe;
+
+    public RenderManager(Camera camera, boolean isWireframe) {
         window = Launcher.getWindow();
         this.camera = camera;
+        this.isWireframe = isWireframe;
     }
 
     public void init() throws Exception {
         shader = new ShaderManager();
-        shader.createVertexShader(Utils.loadResource("/shaders/vertex.vs"));
-        shader.createFragmentShader(Utils.loadResource("/shaders/fragment.fs"));
+        if (isWireframe) {
+            shader.createVertexShader(Utils.loadResource("/shaders/vertexWireframe.vs"));
+            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentWireframe.fs"));
+        } else {
+            shader.createVertexShader(Utils.loadResource("/shaders/vertexTexture.vs"));
+            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentTexture.fs"));
+        }
         shader.link();
 
-        shader.createUniform("textureSampler");
+        if (!isWireframe)
+            shader.createUniform("textureSampler");
+
         shader.createUniform("transformationMatrix");
         shader.createUniform("projectionMatrix");
         shader.createUniform("viewMatrix");
@@ -42,21 +52,40 @@ public class RenderManager {
 
         shader.bind();
 
-        shader.setUniform("textureSampler", 0);
+        if (!isWireframe)
+            shader.setUniform("textureSampler", 0);
+
         shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         shader.setUniform("projectionMatrix", window.getProjectionMatrix());
         shader.setUniform("viewMatrix", Transformation.getViewMatrix(this.camera));
 
         glBindVertexArray(model.getId());
         glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, model.getTexture().getId());
+
+        if (!isWireframe) {
+            glEnableVertexAttribArray(1);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, model.getTexture().getId());
+        }
+
         glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
         glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
+
+        if (!isWireframe)
+            glDisableVertexAttribArray(1);
+
         glBindVertexArray(0);
         shader.unbind();
+    }
+
+    public void setWireframe(boolean wireframe) {
+        isWireframe = wireframe;
+    }
+
+    public void switchRenderer() throws Exception {
+        clear();
+        cleanup();
+        init();
     }
 
     public void clear() {

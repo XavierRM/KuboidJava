@@ -25,8 +25,16 @@ public class ObjectLoader {
     public Model loadModel(float[] vertices, float[] textureCoords, int[] indices) {
         int id = createVAO();
         storeIndicesBuffer(indices);
-        storeDatainArribList(0, 3, vertices);
-        storeDatainArribList(1, 2, textureCoords);
+        storeDatainAttribList(0, 3, vertices);
+        storeDatainAttribList(1, 2, textureCoords);
+        unbind();
+        return new Model(id, indices.length);
+    }
+
+    public Model loadModel(float[] vertices, int[] indices) {
+        int id = createVAO();
+        storeIndicesBuffer(indices);
+        storeDatainAttribList(0, 3, vertices);
         unbind();
         return new Model(id, indices.length);
     }
@@ -35,7 +43,7 @@ public class ObjectLoader {
         int width, height;
         ByteBuffer buffer;
 
-        try(MemoryStack stack = MemoryStack.stackPush()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer w = stack.mallocInt(1);
             IntBuffer h = stack.mallocInt(1);
             IntBuffer c = stack.mallocInt(1);
@@ -76,7 +84,7 @@ public class ObjectLoader {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, buffer, GL_STATIC_DRAW);
     }
 
-    private void storeDatainArribList(int attribNo, int vertexCount, float[] data) {
+    private void storeDatainAttribList(int attribNo, int vertexCount, float[] data) {
         int vbo = glGenBuffers();
         vbos.add(vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);

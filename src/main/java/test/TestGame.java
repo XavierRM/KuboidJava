@@ -2,8 +2,6 @@ package test;
 
 import Kuboid.manager.*;
 import Kuboid.manager.entity.Entity;
-import Kuboid.manager.entity.Model;
-import Kuboid.manager.entity.Texture;
 import Kuboid.manager.generation.Terrain;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -26,6 +24,7 @@ public class TestGame implements ILogic {
     private Entity entity1;
     private Entity entity2;
     private Camera camera;
+    private boolean isWireframe = true;
 
     private Vector3f cameraInc;
 
@@ -33,13 +32,14 @@ public class TestGame implements ILogic {
         window = Launcher.getWindow();
         loader = new ObjectLoader();
         camera = new Camera();
-        renderer = new RenderManager(camera);
+        renderer = new RenderManager(camera, isWireframe);
         cameraInc = new Vector3f(0, 0, 0);
     }
 
     @Override
     public void init() throws Exception {
         renderer.init();
+        window.switchWireframe(isWireframe);
 
         float[] vertices = new float[]{
                 -0.5f, 0.5f, 0.5f,
@@ -99,22 +99,16 @@ public class TestGame implements ILogic {
 
         window.setClearColour(1.0f, 1.0f, 1.0f, 0.0f);
 
-        terrain = new Terrain(20, true);
-
-        Model model = loader.loadModel(vertices, textCoords, indices);
-        model.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
-
-        entity1 = new Entity(model, new Vector3f(0, 0, -5), new Vector3f(0, 0, 0), 1);
-        entity2 = new Entity(model, new Vector3f(1, 0, -5), new Vector3f(0, 0, 0), 1);
+        terrain = new Terrain(50, true);
 
     }
 
     @Override
-    public void input() {
+    public void input() throws Exception {
         cameraInc.set(0, 0, 0);
 
         //Go forward
-        if(window.isKeyPressed(GLFW_KEY_W)) {
+        if (window.isKeyPressed(GLFW_KEY_W)) {
             if (previousKey == GLFW_KEY_W && window.isKeyPressed(GLFW_KEY_LEFT_ALT))
                 cameraInc.z = -2;
             else
@@ -143,15 +137,23 @@ public class TestGame implements ILogic {
         }
 
         //Go up
-        if(window.isKeyPressed(GLFW_KEY_SPACE)) {
+        if (window.isKeyPressed(GLFW_KEY_SPACE)) {
             previousKey = GLFW_KEY_SPACE;
             cameraInc.y = -1;
         }
 
         //Go down
-        if(window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
+        if (window.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
             previousKey = GLFW_KEY_LEFT_SHIFT;
             cameraInc.y = 1;
+        }
+
+        if (window.isKeyPressed(GLFW_KEY_P)) {
+            previousKey = GLFW_KEY_P;
+            isWireframe = !isWireframe;
+            window.switchWireframe(isWireframe);
+            renderer.setWireframe(isWireframe);
+            renderer.switchRenderer();
         }
 
     }
@@ -178,8 +180,6 @@ public class TestGame implements ILogic {
     @Override
     public void render() {
         renderer.clear();
-        //renderer.render(entity1);
-        //renderer.render(entity2);
 
         for (Entity entity : terrain.getTerrain()) {
             renderer.render(entity);

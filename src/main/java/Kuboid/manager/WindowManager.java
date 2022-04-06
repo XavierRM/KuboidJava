@@ -97,6 +97,14 @@ public class WindowManager {
         return glfwGetKey(window, keycode) == GLFW_PRESS;
     }
 
+    public void switchWireframe(boolean isWireframe) {
+        if (isWireframe) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        } else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+    }
+
     public void setClearColour(float r, float g, float b, float a) {
         glClearColor(r, g, b, a);
     }
