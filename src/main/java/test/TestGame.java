@@ -142,7 +142,7 @@ public class TestGame implements ILogic {
 
     @Override
     public void cleanup() {
-        //terrain.stopLoop();
+        terrain.stopLoop();
         renderer.cleanup();
         loader.cleanup();
     }

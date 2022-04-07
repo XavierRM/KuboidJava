@@ -25,7 +25,7 @@ public class Terrain implements Runnable {
     private List<Entity> entities = new ArrayList<>();
     private List<Vector3f> usedPos = new ArrayList<>();
 
-    private float[] verticesDirt = new float[]{
+    private final float[] verticesDirt = new float[]{
             -0.5f, 0.5f, 0.5f, //0
             -0.5f, -0.5f, 0.5f, //1
             0.5f, -0.5f, 0.5f, //2
@@ -44,7 +44,7 @@ public class Terrain implements Runnable {
 
     };
 
-    private float[] verticesGrassBlock = new float[]{
+    private final float[] verticesGrassBlock = new float[]{
             -0.5f, 0.5f, 0.5f, //0
             -0.5f, -0.5f, 0.5f, //1
             0.5f, -0.5f, 0.5f, //2
@@ -68,7 +68,7 @@ public class Terrain implements Runnable {
 
     };
 
-    private float[] textCoordsDirt = new float[]{
+    private final float[] textCoordsDirt = new float[]{
             0.0f, 0.0f,
             0.0f, 1.0f,
             1.0f, 1.0f,
@@ -85,7 +85,7 @@ public class Terrain implements Runnable {
             1.0f, 1.0f,
     };
 
-    private float[] textCoordsGrassBlock = new float[]{
+    private final float[] textCoordsGrassBlock = new float[]{
             0.0f, 0.25f,
             0.0f, 0.5f,
             0.25f, 0.5f,
@@ -108,7 +108,7 @@ public class Terrain implements Runnable {
             //Bottom
     };
 
-    private int[] indicesDirt = new int[]{
+    private final int[] indicesDirt = new int[]{
             0, 1, 2, 2, 3, 0, //front
             7, 6, 5, 5, 4, 7, //back
             8, 0, 3, 3, 11, 8, //top
@@ -117,7 +117,7 @@ public class Terrain implements Runnable {
             3, 2, 6, 6, 7, 3, //right
     };
 
-    private int[] indicesGrassBlock = new int[]{
+    private final int[] indicesGrassBlock = new int[]{
             0, 1, 2, 2, 3, 0, //front
             7, 6, 5, 5, 4, 7, //back
             8, 9, 10, 10, 11, 8, //top
@@ -188,7 +188,7 @@ public class Terrain implements Runnable {
 
     public void run() {
         try {
-            while (true) {
+            while (running) {
                 generateTerrain();
             }
         } catch (Exception e) {
