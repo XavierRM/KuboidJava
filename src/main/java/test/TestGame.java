@@ -1,7 +1,6 @@
 package test;
 
 import Kuboid.manager.*;
-import Kuboid.manager.entity.Entity;
 import Kuboid.manager.generation.Terrain;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -21,8 +20,6 @@ public class TestGame implements ILogic {
     private final WindowManager window;
 
     private Terrain terrain;
-    private Entity entity1;
-    private Entity entity2;
     private Camera camera;
     private boolean isWireframe = false;
 
@@ -46,12 +43,9 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.0f, 0.0f, 0.0f, 0.0f);
 
-        terrain = new Terrain(100, true, isWireframe, camera.getPosition(), window);
+        terrain = new Terrain(30, true, isWireframe, camera.getPosition());
         Thread thread = new Thread(terrain);
         thread.start();
-        //terrain.setParameters(30, true, isWireframe, camera.getPosition());
-        //terrain.init();
-
     }
 
     @Override
@@ -127,8 +121,7 @@ public class TestGame implements ILogic {
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
 
-        terrain.setCamPos(camera.getPosition());
-        //entity.incRotation(0.0f, 0.5f, 0.0f);
+        terrain.update(camera.getPosition());
     }
 
     @Override

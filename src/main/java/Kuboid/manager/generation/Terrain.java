@@ -1,20 +1,21 @@
 package Kuboid.manager.generation;
 
 import Kuboid.manager.ObjectLoader;
-import Kuboid.manager.WindowManager;
 import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
 import Kuboid.manager.entity.Texture;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Terrain implements Runnable {
 
     private ObjectLoader loader;
-    private WindowManager window;
     private Model model;
+
+    Thread cleanupThread;
 
     private long size;
     private boolean plain;
@@ -22,8 +23,8 @@ public class Terrain implements Runnable {
     private boolean running = true;
     private Vector3f camPos;
 
-    private List<Entity> entities = new ArrayList<>();
-    private List<Vector3f> usedPos = new ArrayList<>();
+    private List<Entity> entities = Collections.synchronizedList(new ArrayList<>());
+    private List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<>());
 
     private final float[] verticesDirt = new float[]{
             -0.5f, 0.5f, 0.5f, //0
@@ -126,12 +127,11 @@ public class Terrain implements Runnable {
             3, 2, 6, 6, 7, 3, //right
     };
 
-    public Terrain(long size, boolean plain, boolean isWireframe, Vector3f camPos, WindowManager window) {
+    public Terrain(long size, boolean plain, boolean isWireframe, Vector3f camPos) {
         this.size = size;
         this.plain = plain;
         this.isWireframe = isWireframe;
         this.camPos = camPos;
-        this.window = window;
         loader = new ObjectLoader();
 
         if (isWireframe)
@@ -147,6 +147,26 @@ public class Terrain implements Runnable {
                 e.printStackTrace();
             }
         }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (running) {
+                    for (int i = 0; i < entities.size(); i++) {
+
+                        Vector3f pos = entities.get(i).getPos();
+
+                        int distX = (int) (camPos.x - pos.x);
+                        int distZ = (int) (camPos.z - pos.z);
+
+                        if ((Math.abs(distX) > (size / 2)) || (Math.abs(distZ) > (size / 2))) {
+                            usedPos.remove(pos);
+                            entities.remove(i);
+                        }
+                    }
+                }
+            }
+        }).start();
     }
 
     private void generateTerrain() {
@@ -170,8 +190,8 @@ public class Terrain implements Runnable {
         }
     }
 
-    public void update() {
-        this.running = true;
+    public void update(Vector3f camPos) {
+        this.camPos = camPos;
     }
 
     public List<Entity> getTerrain() {

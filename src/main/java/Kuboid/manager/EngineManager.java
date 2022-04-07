@@ -78,6 +78,7 @@ public class EngineManager {
                 timer += 1000;
             }
         }
+
         cleanup();
     }
 
