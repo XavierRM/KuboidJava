@@ -1,6 +1,7 @@
 package Kuboid.manager.generation;
 
 import Kuboid.manager.ObjectLoader;
+import Kuboid.manager.WindowManager;
 import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
 import Kuboid.manager.entity.Texture;
@@ -9,16 +10,22 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Terrain {
+public class Terrain implements Runnable {
 
     private ObjectLoader loader;
+    private WindowManager window;
+    private Model model;
 
-    private final long size;
-    private final boolean plain;
-    private final boolean isWireframe;
+    private long size;
+    private boolean plain;
+    private boolean isWireframe;
+    private boolean running = true;
+    private Vector3f camPos;
+
     private List<Entity> entities = new ArrayList<>();
+    private List<Vector3f> usedPos = new ArrayList<>();
 
-    float[] verticesDirt = new float[]{
+    private float[] verticesDirt = new float[]{
             -0.5f, 0.5f, 0.5f, //0
             -0.5f, -0.5f, 0.5f, //1
             0.5f, -0.5f, 0.5f, //2
@@ -37,7 +44,7 @@ public class Terrain {
 
     };
 
-    float[] verticesGrassBlock = new float[]{
+    private float[] verticesGrassBlock = new float[]{
             -0.5f, 0.5f, 0.5f, //0
             -0.5f, -0.5f, 0.5f, //1
             0.5f, -0.5f, 0.5f, //2
@@ -61,7 +68,7 @@ public class Terrain {
 
     };
 
-    float[] textCoordsDirt = new float[]{
+    private float[] textCoordsDirt = new float[]{
             0.0f, 0.0f,
             0.0f, 1.0f,
             1.0f, 1.0f,
@@ -78,7 +85,7 @@ public class Terrain {
             1.0f, 1.0f,
     };
 
-    float[] textCoordsGrassBlock = new float[]{
+    private float[] textCoordsGrassBlock = new float[]{
             0.0f, 0.25f,
             0.0f, 0.5f,
             0.25f, 0.5f,
@@ -101,7 +108,7 @@ public class Terrain {
             //Bottom
     };
 
-    int[] indicesDirt = new int[]{
+    private int[] indicesDirt = new int[]{
             0, 1, 2, 2, 3, 0, //front
             7, 6, 5, 5, 4, 7, //back
             8, 0, 3, 3, 11, 8, //top
@@ -110,7 +117,7 @@ public class Terrain {
             3, 2, 6, 6, 7, 3, //right
     };
 
-    int[] indicesGrassBlock = new int[]{
+    private int[] indicesGrassBlock = new int[]{
             0, 1, 2, 2, 3, 0, //front
             7, 6, 5, 5, 4, 7, //back
             8, 9, 10, 10, 11, 8, //top
@@ -119,25 +126,13 @@ public class Terrain {
             3, 2, 6, 6, 7, 3, //right
     };
 
-    public Terrain(long size, boolean plain, boolean isWireframe) throws Exception {
+    public Terrain(long size, boolean plain, boolean isWireframe, Vector3f camPos, WindowManager window) {
         this.size = size;
         this.plain = plain;
         this.isWireframe = isWireframe;
-
-        init();
-        generateTerrain();
-    }
-
-    public void init() {
+        this.camPos = camPos;
+        this.window = window;
         loader = new ObjectLoader();
-
-    }
-
-    public void generateTerrain() throws Exception {
-
-        long x, y = 0, z;
-
-        Model model;
 
         if (isWireframe)
             model = loader.loadModel(verticesDirt, indicesDirt);
@@ -146,13 +141,28 @@ public class Terrain {
             //model.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
 
             model = loader.loadModel(verticesGrassBlock, textCoordsGrassBlock, indicesGrassBlock);
-            model.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")));
+            try {
+                model.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+    }
 
-        if (this.size > 1) {
-            for (x = -(size / 2); x < (this.size / 2); x++) {
-                for (z = (size / 2); z > -(this.size / 2); z--) {
-                    entities.add(new Entity(model, new Vector3f(x, 0, z), new Vector3f(0, 0, 0), 1f));
+    private void generateTerrain() {
+        long x, y = 0, z;
+
+        Vector3f vector;
+
+        if (size > 1) {
+            for (x = ((int) camPos.x - (size / 2)); x < ((int) camPos.x + (size / 2)); x++) {
+                for (z = ((int) camPos.z - (size / 2)); z < ((int) camPos.z + (size / 2)); z++) {
+                    vector = new Vector3f(x, 0, z);
+
+                    if (!usedPos.contains(vector)) {
+                        entities.add(new Entity(model, vector, new Vector3f(0, 0, 0), 1f));
+                        usedPos.add(vector);
+                    }
                 }
             }
         } else {
@@ -160,7 +170,29 @@ public class Terrain {
         }
     }
 
+    public void update() {
+        this.running = true;
+    }
+
     public List<Entity> getTerrain() {
         return entities;
+    }
+
+    public void setCamPos(Vector3f camPos) {
+        this.camPos = camPos;
+    }
+
+    public void stopLoop() {
+        running = false;
+    }
+
+    public void run() {
+        try {
+            while (true) {
+                generateTerrain();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

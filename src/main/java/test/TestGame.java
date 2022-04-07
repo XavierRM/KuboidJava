@@ -24,7 +24,7 @@ public class TestGame implements ILogic {
     private Entity entity1;
     private Entity entity2;
     private Camera camera;
-    private boolean isWireframe = true;
+    private boolean isWireframe = false;
 
     private Vector3f cameraInc;
 
@@ -46,7 +46,11 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.0f, 0.0f, 0.0f, 0.0f);
 
-        terrain = new Terrain(1, true, isWireframe);
+        terrain = new Terrain(100, true, isWireframe, camera.getPosition(), window);
+        Thread thread = new Thread(terrain);
+        thread.start();
+        //terrain.setParameters(30, true, isWireframe, camera.getPosition());
+        //terrain.init();
 
     }
 
@@ -98,7 +102,6 @@ public class TestGame implements ILogic {
         if (window.isKeyPressed(GLFW_KEY_P)) {
             previousKey = GLFW_KEY_P;
             isWireframe = !isWireframe;
-            window.switchWireframe(isWireframe);
             renderer.setWireframe(isWireframe);
             renderer.switchRenderer();
             //We need some time for the renderer to switch context before displaying everything again
@@ -124,20 +127,22 @@ public class TestGame implements ILogic {
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
         }
 
+        terrain.setCamPos(camera.getPosition());
         //entity.incRotation(0.0f, 0.5f, 0.0f);
     }
 
     @Override
     public void render() {
         renderer.clear();
-
-        for (Entity entity : terrain.getTerrain()) {
-            renderer.render(entity);
+        var t = terrain.getTerrain();
+        for (int i = 0; i < t.size(); i++) {
+            renderer.render(t.get(i));
         }
     }
 
     @Override
     public void cleanup() {
+        //terrain.stopLoop();
         renderer.cleanup();
         loader.cleanup();
     }

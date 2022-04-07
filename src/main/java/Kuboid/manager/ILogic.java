@@ -6,7 +6,7 @@ public interface ILogic {
 
     void input() throws Exception;
 
-    void update(float interval, MouseInput mouseInput);
+    void update(float interval, MouseInput mouseInput) throws Exception;
 
     void render();
 

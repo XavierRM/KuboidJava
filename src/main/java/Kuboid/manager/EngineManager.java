@@ -100,7 +100,7 @@ public class EngineManager {
         window.update();
     }
 
-    private void update(float interval) {
+    private void update(float interval) throws Exception {
         gameLogic.update(interval, mouseInput);
     }
 
