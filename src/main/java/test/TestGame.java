@@ -127,10 +127,7 @@ public class TestGame implements ILogic {
     @Override
     public void render() {
         renderer.clear();
-        var t = terrain.getTerrain();
-        for (int i = 0; i < t.size(); i++) {
-            renderer.render(t.get(i));
-        }
+        renderer.render(terrain.getTerrain());
     }
 
     @Override

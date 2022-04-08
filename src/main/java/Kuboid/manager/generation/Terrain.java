@@ -6,16 +6,12 @@ import Kuboid.manager.entity.Model;
 import Kuboid.manager.entity.Texture;
 import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Terrain implements Runnable {
 
     private ObjectLoader loader;
     private Model model;
-
-    Thread cleanupThread;
 
     private long size;
     private boolean plain;
@@ -194,12 +190,24 @@ public class Terrain implements Runnable {
         this.camPos = camPos;
     }
 
-    public List<Entity> getTerrain() {
-        return entities;
-    }
+    public Map<Model, List<Entity>> getTerrain() {
+        Map<Model, List<Entity>> entitiesMap = new HashMap<>();
 
-    public void setCamPos(Vector3f camPos) {
-        this.camPos = camPos;
+        for (int i = 0; i < entities.size(); i++) {
+            Entity entity = entities.get(i);
+
+            List<Entity> entitiesList = entitiesMap.get(entity.getModel());
+            if (entitiesList != null) {
+                entitiesList.add(entity);
+                entitiesMap.put(entity.getModel(), entitiesList);
+            } else {
+                List<Entity> aux = new ArrayList<>();
+                aux.add(entity);
+                entitiesMap.put(entity.getModel(), aux);
+            }
+        }
+
+        return entitiesMap;
     }
 
     public void stopLoop() {

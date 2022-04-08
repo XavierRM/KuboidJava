@@ -6,6 +6,9 @@ import Kuboid.manager.utils.Transformation;
 import Kuboid.manager.utils.Utils;
 import test.Launcher;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -47,7 +50,46 @@ public class RenderManager {
 
     }
 
-    public void render(Entity entity) {
+    public void render(Map<Model, List<Entity>> entities) {
+
+        for (Model model : entities.keySet()) {
+            shader.bind();
+
+            if (!isWireframe)
+                shader.setUniform("textureSampler", 0);
+
+            shader.setUniform("projectionMatrix", window.getProjectionMatrix());
+            shader.setUniform("viewMatrix", Transformation.getViewMatrix(this.camera));
+
+            glBindVertexArray(model.getId());
+            glEnableVertexAttribArray(0);
+
+            if (!isWireframe) {
+                glEnableVertexAttribArray(1);
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, model.getTexture().getId());
+            }
+
+            List<Entity> batch = entities.get(model);
+
+            for (Entity entity : batch) {
+                shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
+
+                glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+            }
+
+            glDisableVertexAttribArray(0);
+            if (!isWireframe)
+                glDisableVertexAttribArray(1);
+
+            glBindVertexArray(0);
+
+            shader.unbind();
+
+        }
+    }
+
+    /*public void render(Entity entity) {
         Model model = entity.getModel();
 
         shader.bind();
@@ -55,9 +97,9 @@ public class RenderManager {
         if (!isWireframe)
             shader.setUniform("textureSampler", 0);
 
-        shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
         shader.setUniform("projectionMatrix", window.getProjectionMatrix());
         shader.setUniform("viewMatrix", Transformation.getViewMatrix(this.camera));
+        shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
 
         glBindVertexArray(model.getId());
         glEnableVertexAttribArray(0);
@@ -69,14 +111,15 @@ public class RenderManager {
         }
 
         glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
-        glDisableVertexAttribArray(0);
 
+        glDisableVertexAttribArray(0);
         if (!isWireframe)
             glDisableVertexAttribArray(1);
 
         glBindVertexArray(0);
+
         shader.unbind();
-    }
+    }*/
 
     public void setWireframe(boolean wireframe) {
         isWireframe = wireframe;
