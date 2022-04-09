@@ -11,8 +11,6 @@ import static org.lwjgl.opengl.GL11.glViewport;
 
 public class TestGame implements ILogic {
 
-    private int direction = 0;
-    private float colour = 0.0f;
     private int previousKey;
 
     private final RenderManager renderer;
@@ -44,7 +42,7 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.0f, 0.0f, 0.0f, 0.0f);
 
-        terrain = new Terrain(50, true, isWireframe, camera.getPosition(), renderer);
+        terrain = new Terrain(80, 16, true, isWireframe, camera.getPosition(), renderer);
         thread = new Thread(terrain);
         thread.start();
     }

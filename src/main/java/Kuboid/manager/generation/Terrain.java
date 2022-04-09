@@ -16,12 +16,14 @@ public class Terrain implements Runnable {
     private Model model;
 
     private long size;
+    private long chunkSize;
     private boolean plain;
     private boolean isWireframe;
     private boolean running = true;
     private Vector3f camPos;
 
-    private Map<Model, List<Entity>> entitiesMap = new HashMap<>();
+    private Map<Model, List<Entity>> entitiesMap = Collections.synchronizedMap(new HashMap<>());
+    private List<Chunk> chunks = Collections.synchronizedList(new ArrayList<>());
     private List<Entity> entities = Collections.synchronizedList(new ArrayList<>());
     private List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<>());
 
@@ -126,8 +128,9 @@ public class Terrain implements Runnable {
             3, 2, 6, 6, 7, 3, //right
     };
 
-    public Terrain(long size, boolean plain, boolean isWireframe, Vector3f camPos, RenderManager renderer) {
+    public Terrain(long size, long chunkSize, boolean plain, boolean isWireframe, Vector3f camPos, RenderManager renderer) {
         this.size = size;
+        this.chunkSize = chunkSize;
         this.plain = plain;
         this.isWireframe = isWireframe;
         this.camPos = camPos;
@@ -147,28 +150,6 @@ public class Terrain implements Runnable {
                 e.printStackTrace();
             }
         }
-
-        /*new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                while (running) {
-                    for (int i = 0; i < entities.size(); i++) {
-
-                        Vector3f pos = entities.get(i).getPos();
-
-                        int distX = (int) (camPos.x - pos.x);
-                        int distZ = (int) (camPos.z - pos.z);
-
-                        if ((Math.abs(distX) > (size / 2)) || (Math.abs(distZ) > (size / 2))) {
-                            usedPos.remove(pos);
-                            entities.remove(i);
-                        }
-                    }
-                }
-            }
-        }).start();*/
     }
 
     private void generateTerrain() {
@@ -176,20 +157,25 @@ public class Terrain implements Runnable {
 
         Vector3f vector;
 
-        if (size > 1) {
-            for (x = ((int) camPos.x - (size / 2)); x < ((int) camPos.x + (size / 2)); x++) {
-                for (z = ((int) camPos.z - (size / 2)); z < ((int) camPos.z + (size / 2)); z++) {
-                    vector = new Vector3f(x, 0, z);
+        for (x = ((int) camPos.x - (size / 2)) / chunkSize; x < ((int) camPos.x + (size / 2)) / chunkSize; x++) {
+            for (z = ((int) camPos.z - (size / 2)) / chunkSize; z < ((int) camPos.z + (size / 2)) / chunkSize; z++) {
+                vector = new Vector3f(x * chunkSize, 0, z * chunkSize);
 
-                    if (!usedPos.contains(vector)) {
+                if (!usedPos.contains(vector)) {
 
-                        entities.add(new Entity(model, vector, new Vector3f(0, 0, 0), 1f));
-                        usedPos.add(vector);
+                    List<Entity> blocks = new ArrayList<>();
+
+                    for (int i = 0; i < chunkSize; i++) {
+                        for (int j = 0; j < chunkSize; j++) {
+
+                            blocks.add(new Entity(model, new Vector3f(vector.x + i, vector.y, vector.z + j), new Vector3f(0, 0, 0), 1f));
+
+                        }
                     }
+                    chunks.add(new Chunk(blocks, vector, chunkSize));
+                    usedPos.add(vector);
                 }
             }
-        } else {
-            entities.add(new Entity(model, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), 1f));
         }
     }
 
@@ -200,16 +186,20 @@ public class Terrain implements Runnable {
     public Map<Model, List<Entity>> getTerrain() {
         entitiesMap = new HashMap<>();
 
-        for (int i = 0; i < entities.size(); i++) {
-            Entity entity = entities.get(i);
+        for (int i = 0; i < chunks.size(); i++) {
+            Chunk chunk = chunks.get(i);
 
-            Vector3f pos = entities.get(i).getPos();
+            Vector3f pos = chunk.getOrigin();
 
-            float distX = (this.camPos.x - pos.x);
-            float distZ = (this.camPos.z - pos.z);
+            float distX = (camPos.x - pos.x);
+            float distZ = (camPos.z - pos.z);
 
             if ((Math.abs(distX) <= (size / 2)) && (Math.abs(distZ) <= (size / 2))) {
-                addEntity(entity);
+                List<Entity> blocks = chunk.getEntities();
+
+                for (int j = 0; j < blocks.size(); j++) {
+                    addEntity(blocks.get(j));
+                }
             }
         }
 
