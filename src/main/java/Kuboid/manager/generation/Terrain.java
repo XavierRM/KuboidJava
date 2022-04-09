@@ -1,6 +1,7 @@
 package Kuboid.manager.generation;
 
 import Kuboid.manager.ObjectLoader;
+import Kuboid.manager.RenderManager;
 import Kuboid.manager.entity.Entity;
 import Kuboid.manager.entity.Model;
 import Kuboid.manager.entity.Texture;
@@ -11,6 +12,7 @@ import java.util.*;
 public class Terrain implements Runnable {
 
     private ObjectLoader loader;
+    private RenderManager renderer;
     private Model model;
 
     private long size;
@@ -19,6 +21,7 @@ public class Terrain implements Runnable {
     private boolean running = true;
     private Vector3f camPos;
 
+    private Map<Model, List<Entity>> entitiesMap = new HashMap<>();
     private List<Entity> entities = Collections.synchronizedList(new ArrayList<>());
     private List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<>());
 
@@ -123,11 +126,12 @@ public class Terrain implements Runnable {
             3, 2, 6, 6, 7, 3, //right
     };
 
-    public Terrain(long size, boolean plain, boolean isWireframe, Vector3f camPos) {
+    public Terrain(long size, boolean plain, boolean isWireframe, Vector3f camPos, RenderManager renderer) {
         this.size = size;
         this.plain = plain;
         this.isWireframe = isWireframe;
         this.camPos = camPos;
+        this.renderer = renderer;
         loader = new ObjectLoader();
 
         if (isWireframe)
@@ -144,9 +148,11 @@ public class Terrain implements Runnable {
             }
         }
 
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
+
             @Override
             public void run() {
+
                 while (running) {
                     for (int i = 0; i < entities.size(); i++) {
 
@@ -162,7 +168,7 @@ public class Terrain implements Runnable {
                     }
                 }
             }
-        }).start();
+        }).start();*/
     }
 
     private void generateTerrain() {
@@ -176,6 +182,7 @@ public class Terrain implements Runnable {
                     vector = new Vector3f(x, 0, z);
 
                     if (!usedPos.contains(vector)) {
+
                         entities.add(new Entity(model, vector, new Vector3f(0, 0, 0), 1f));
                         usedPos.add(vector);
                     }
@@ -191,23 +198,37 @@ public class Terrain implements Runnable {
     }
 
     public Map<Model, List<Entity>> getTerrain() {
-        Map<Model, List<Entity>> entitiesMap = new HashMap<>();
+        entitiesMap = new HashMap<>();
 
         for (int i = 0; i < entities.size(); i++) {
             Entity entity = entities.get(i);
 
-            List<Entity> entitiesList = entitiesMap.get(entity.getModel());
-            if (entitiesList != null) {
-                entitiesList.add(entity);
-                entitiesMap.put(entity.getModel(), entitiesList);
-            } else {
-                List<Entity> aux = new ArrayList<>();
-                aux.add(entity);
-                entitiesMap.put(entity.getModel(), aux);
+            Vector3f pos = entities.get(i).getPos();
+
+            float distX = (this.camPos.x - pos.x);
+            float distZ = (this.camPos.z - pos.z);
+
+            if ((Math.abs(distX) <= (size / 2)) && (Math.abs(distZ) <= (size / 2))) {
+                addEntity(entity);
             }
         }
 
         return entitiesMap;
+    }
+
+
+    public void addEntity(Entity entity) {
+        List<Entity> entitiesList = entitiesMap.get(entity.getModel());
+        if (entitiesList != null) {
+            if (!entitiesList.contains(entity)) {
+                entitiesList.add(entity);
+                entitiesMap.put(entity.getModel(), entitiesList);
+            }
+        } else {
+            List<Entity> aux = new ArrayList<>();
+            aux.add(entity);
+            entitiesMap.put(entity.getModel(), aux);
+        }
     }
 
     public void stopLoop() {
@@ -217,6 +238,7 @@ public class Terrain implements Runnable {
     public void run() {
         try {
             while (running) {
+                //System.out.println(entities.size());
                 generateTerrain();
             }
         } catch (Exception e) {

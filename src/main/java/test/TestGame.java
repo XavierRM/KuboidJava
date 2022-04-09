@@ -23,6 +23,7 @@ public class TestGame implements ILogic {
     private Camera camera;
     private boolean isWireframe = false;
 
+    Thread thread;
     private Vector3f cameraInc;
 
     public TestGame() {
@@ -43,8 +44,8 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.0f, 0.0f, 0.0f, 0.0f);
 
-        terrain = new Terrain(30, true, isWireframe, camera.getPosition());
-        Thread thread = new Thread(terrain);
+        terrain = new Terrain(50, true, isWireframe, camera.getPosition(), renderer);
+        thread = new Thread(terrain);
         thread.start();
     }
 
@@ -133,6 +134,7 @@ public class TestGame implements ILogic {
     @Override
     public void cleanup() {
         terrain.stopLoop();
+        thread.interrupt();
         renderer.cleanup();
         loader.cleanup();
     }

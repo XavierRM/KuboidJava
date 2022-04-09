@@ -51,7 +51,6 @@ public class RenderManager {
     }
 
     public void render(Map<Model, List<Entity>> entities) {
-
         for (Model model : entities.keySet()) {
             shader.bind();
 
