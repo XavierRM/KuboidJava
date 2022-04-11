@@ -40,9 +40,9 @@ public class TestGame implements ILogic {
         //Here we would set the checks for the resizable window
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
-        window.setClearColour(0.0f, 0.0f, 0.0f, 0.0f);
+        window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
-        terrain = new Terrain(80, 16, true, isWireframe, camera.getPosition(), renderer);
+        terrain = new Terrain(96, 16, true, isWireframe, camera.getPosition(), renderer);
         thread = new Thread(terrain);
         thread.start();
     }
