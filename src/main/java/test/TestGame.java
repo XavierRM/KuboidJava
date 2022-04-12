@@ -42,10 +42,10 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
-        terrain = new Terrain(96, 16, true, isWireframe, camera.getPosition(), renderer);
-        terrain.generateTerrain();
-        //thread = new Thread(terrain);
-        //thread.start();
+        terrain = new Terrain(96, 16, true, isWireframe, camera.getPosition());
+        //terrain.generateTerrain();
+        thread = new Thread(terrain);
+        thread.start();
     }
 
     @Override
@@ -98,8 +98,7 @@ public class TestGame implements ILogic {
             isWireframe = !isWireframe;
             renderer.setWireframe(isWireframe);
             renderer.switchRenderer();
-            //We need some time for the renderer to switch context before displaying everything again
-            Thread.sleep(200);
+            //Might stop for a couple milliseconds
             init();
         }
 
@@ -133,7 +132,7 @@ public class TestGame implements ILogic {
     @Override
     public void cleanup() {
         terrain.stopLoop();
-        //thread.interrupt();
+        thread.interrupt();
         renderer.cleanup();
         loader.cleanup();
     }

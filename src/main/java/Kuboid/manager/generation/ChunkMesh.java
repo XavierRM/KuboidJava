@@ -50,6 +50,8 @@ public class ChunkMesh {
         return auxList;
     }
 
+    //Join both parts of the method by negating the condition on the first set of if statements and adding the k
+    //loops to them
     private void buildMesh() {
 
         for (int i = 0; i < chunk.getVoxels().size(); i++) {
@@ -86,41 +88,6 @@ public class ChunkMesh {
             if (usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z - 1))) {
                 nz = true;
             }
-
-            /*for (int j = 0; j < chunk.getVoxels().size(); j++) {
-
-                Voxel voxelJ = chunk.getVoxels().get(j);
-
-                //PX
-                if (((voxelI.origin.x + 1) == voxelJ.origin.x) && ((voxelI.origin.y) == (voxelJ.origin.y)) && ((voxelI.origin.z) == (voxelJ.origin.z))) {
-                    px = true;
-                }
-
-                //NX
-                if (((voxelI.origin.x - 1) == voxelJ.origin.x) && ((voxelI.origin.y) == (voxelJ.origin.y)) && ((voxelI.origin.z) == (voxelJ.origin.z))) {
-                    nx = true;
-                }
-
-                //PY
-                if (((voxelI.origin.y + 1) == voxelJ.origin.y) && ((voxelI.origin.x) == (voxelJ.origin.x)) && ((voxelI.origin.z) == (voxelJ.origin.z))) {
-                    py = true;
-                }
-
-                //NY
-                if (((voxelI.origin.y - 1) == voxelJ.origin.y) && ((voxelI.origin.x) == (voxelJ.origin.x)) && ((voxelI.origin.z) == (voxelJ.origin.z))) {
-                    ny = true;
-                }
-
-                //PZ
-                if (((voxelI.origin.z + 1) == voxelJ.origin.z) && ((voxelI.origin.y) == (voxelJ.origin.y)) && ((voxelI.origin.x) == (voxelJ.origin.x))) {
-                    pz = true;
-                }
-
-                //NZ
-                if (((voxelI.origin.z - 1) == voxelJ.origin.z) && ((voxelI.origin.y) == (voxelJ.origin.y)) && ((voxelI.origin.x) == (voxelJ.origin.x))) {
-                    nz = true;
-                }
-            }*/
 
             if (!px) {
                 for (int k = 0; k < 6; k++) {
@@ -172,6 +139,7 @@ public class ChunkMesh {
         }
     }
 
+    //Could be improved
     private void populateList() {
 
         for (int i = 0; i < vertices.size(); i++) {
