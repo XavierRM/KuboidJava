@@ -129,8 +129,8 @@ public class Terrain implements Runnable {
             3, 2, 6, 6, 7, 3, //right
     };
 
-    public Terrain(long size, long chunkSize, boolean plain, boolean isWireframe, Vector3f camPos) {
-        this.size = size;
+    public Terrain(long chunksPerAxis, long chunkSize, boolean plain, boolean isWireframe, Vector3f camPos) {
+        this.size = chunksPerAxis * chunkSize;
         this.chunkSize = chunkSize;
         this.chunkDepth = 5;
         this.plain = plain;
@@ -180,7 +180,6 @@ public class Terrain implements Runnable {
 
                     Chunk chunk = new Chunk(blocks, vector, chunkSize);
 
-                    //new Entity(model, new Vector3f(vector.x + i, vector.y, vector.z + j), new Vector3f(0, 0, 0), 1f)
                     chunks.add(new ChunkMesh(chunk));
                     usedPos.add(vector);
                 }

@@ -57,39 +57,8 @@ public class ChunkMesh {
         for (int i = 0; i < chunk.getVoxels().size(); i++) {
             Voxel voxelI = chunk.getVoxels().get(i);
 
-            boolean px = false, nx = false, py = false, ny = false, pz = false, nz = false;
-
             //PX
-            if (usedPos.contains(new Vector3f(voxelI.origin.x + 1, voxelI.origin.y, voxelI.origin.z))) {
-                px = true;
-            }
-
-            //NX
-            if (usedPos.contains(new Vector3f(voxelI.origin.x - 1, voxelI.origin.y, voxelI.origin.z))) {
-                nx = true;
-            }
-
-            //PY
-            if (usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y + 1, voxelI.origin.z))) {
-                py = true;
-            }
-
-            //NY
-            if (usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y - 1, voxelI.origin.z))) {
-                ny = true;
-            }
-
-            //PZ
-            if (usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z + 1))) {
-                pz = true;
-            }
-
-            //NZ
-            if (usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z - 1))) {
-                nz = true;
-            }
-
-            if (!px) {
+            if (!usedPos.contains(new Vector3f(voxelI.origin.x + 1, voxelI.origin.y, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.PX_POS[k].x + voxelI.origin.x, VoxelModel.PX_POS[k].y + voxelI.origin.y, VoxelModel.PX_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
@@ -97,7 +66,8 @@ public class ChunkMesh {
                 }
             }
 
-            if (!nx) {
+            //NX
+            if (!usedPos.contains(new Vector3f(voxelI.origin.x - 1, voxelI.origin.y, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.NX_POS[k].x + voxelI.origin.x, VoxelModel.NX_POS[k].y + voxelI.origin.y, VoxelModel.NX_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
@@ -105,7 +75,8 @@ public class ChunkMesh {
                 }
             }
 
-            if (!py) {
+            //PY
+            if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y + 1, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.PY_POS[k].x + voxelI.origin.x, VoxelModel.PY_POS[k].y + voxelI.origin.y, VoxelModel.PY_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
@@ -113,7 +84,8 @@ public class ChunkMesh {
                 }
             }
 
-            if (!ny) {
+            //NY
+            if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y - 1, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.NY_POS[k].x + voxelI.origin.x, VoxelModel.NY_POS[k].y + voxelI.origin.y, VoxelModel.NY_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
@@ -121,7 +93,8 @@ public class ChunkMesh {
                 }
             }
 
-            if (!pz) {
+            //PZ
+            if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z + 1))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.PZ_POS[k].x + voxelI.origin.x, VoxelModel.PZ_POS[k].y + voxelI.origin.y, VoxelModel.PZ_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
@@ -129,7 +102,8 @@ public class ChunkMesh {
                 }
             }
 
-            if (!nz) {
+            //NZ
+            if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z - 1))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.NZ_POS[k].x + voxelI.origin.x, VoxelModel.NZ_POS[k].y + voxelI.origin.y, VoxelModel.NZ_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
