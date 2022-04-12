@@ -3,8 +3,10 @@ package Kuboid.manager.generation;
 import Kuboid.manager.ObjectLoader;
 import Kuboid.manager.RenderManager;
 import Kuboid.manager.entity.Entity;
-import Kuboid.manager.entity.Model;
-import Kuboid.manager.entity.Texture;
+import Kuboid.manager.model.Model;
+import Kuboid.manager.model.Texture;
+import Kuboid.manager.voxel.Voxel;
+import Kuboid.manager.voxel.VoxelType;
 import org.joml.Vector3f;
 
 import java.util.*;
@@ -13,7 +15,8 @@ public class Terrain implements Runnable {
 
     private ObjectLoader loader;
     private RenderManager renderer;
-    private Model model;
+    private Model model, newModel;
+    Entity entity;
 
     private long size;
     private long chunkSize;
@@ -141,22 +144,26 @@ public class Terrain implements Runnable {
             model = loader.loadModel(verticesDirt, indicesDirt);
         else {
             //model = loader.loadModel(verticesDirt, textCoordsDirt, indicesDirt);
-            //model.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
+            try {
+                model.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            model = loader.loadModel(verticesGrassBlock, textCoordsGrassBlock, indicesGrassBlock);
+            /*model = loader.loadModel(verticesGrassBlock, textCoordsGrassBlock, indicesGrassBlock);
             try {
                 model.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")));
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
         }
     }
 
-    private void generateTerrain() {
-        long x, y = 0, z;
+    public void generateTerrain() {
+        //long x, y = 0, z;
 
         Vector3f vector;
-
+        /*
         for (x = ((int) camPos.x - (size / 2)) / chunkSize; x < ((int) camPos.x + (size / 2)) / chunkSize; x++) {
             for (z = ((int) camPos.z - (size / 2)) / chunkSize; z < ((int) camPos.z + (size / 2)) / chunkSize; z++) {
                 vector = new Vector3f(x * chunkSize, 0, z * chunkSize);
@@ -176,7 +183,34 @@ public class Terrain implements Runnable {
                     usedPos.add(vector);
                 }
             }
+        }*/
+
+        List<Voxel> voxels = new ArrayList<>();
+
+        for (int x = 0; x < 20; x++) {
+            for (int z = 0; z < 20; z++) {
+                for (int y = 0; y < 5; y++) {
+
+                    voxels.add(new Voxel(new Vector3f(x, y, z), VoxelType.DIRT));
+
+                    System.out.println(new Vector3f(x, y, z));
+
+                }
+            }
         }
+
+        Chunk chunk = new Chunk(voxels, new Vector3f(0, 0, 0), 20);
+        ChunkMesh chunkMesh = new ChunkMesh(chunk);
+
+        newModel = loader.loadModel(chunkMesh.positions, chunkMesh.uvs);
+        try {
+            newModel.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        entity = new Entity(newModel, new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), 1);
+
     }
 
     public void update(Vector3f camPos) {
@@ -186,6 +220,9 @@ public class Terrain implements Runnable {
     public Map<Model, List<Entity>> getTerrain() {
         entitiesMap = new HashMap<>();
 
+        addEntity(entity);
+
+        /*
         for (int i = 0; i < chunks.size(); i++) {
             Chunk chunk = chunks.get(i);
 
@@ -195,13 +232,15 @@ public class Terrain implements Runnable {
             float distZ = (camPos.z - pos.z);
 
             if ((Math.abs(distX) <= (size / 2)) && (Math.abs(distZ) <= (size / 2))) {
-                List<Entity> blocks = chunk.getEntities();
+                List<Entity> blocks = chunk.getVoxels();
 
                 for (int j = 0; j < blocks.size(); j++) {
                     addEntity(blocks.get(j));
                 }
             }
         }
+         */
+
 
         return entitiesMap;
     }

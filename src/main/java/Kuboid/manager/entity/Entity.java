@@ -1,5 +1,6 @@
 package Kuboid.manager.entity;
 
+import Kuboid.manager.model.Model;
 import org.joml.Vector3f;
 
 public class Entity {

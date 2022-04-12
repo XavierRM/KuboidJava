@@ -1,6 +1,6 @@
 package Kuboid.manager.generation;
 
-import Kuboid.manager.entity.Entity;
+import Kuboid.manager.voxel.Voxel;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -8,22 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Chunk {
-    private List<Entity> entities = new ArrayList<>();
+    private List<Voxel> voxels = new ArrayList<>();
     private Vector3f origin;
     private long chunkSize;
 
-    public Chunk(List<Entity> blocks, Vector3f origin, long chunkSize) {
-        this.entities = blocks;
+    public Chunk(List<Voxel> blocks, Vector3f origin, long chunkSize) {
+        this.voxels = blocks;
         this.origin = origin;
         this.chunkSize = chunkSize;
     }
 
-    public List<Entity> getEntities() {
-        return entities;
+    public List<Voxel> getVoxels() {
+        return voxels;
     }
 
-    public void setEntities(List<Entity> entities) {
-        this.entities = entities;
+    public void setVoxels(List<Voxel> voxels) {
+        this.voxels = voxels;
     }
 
     public Vector3f getOrigin() {

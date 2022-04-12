@@ -1,7 +1,7 @@
 package Kuboid.manager;
 
 import Kuboid.manager.entity.Entity;
-import Kuboid.manager.entity.Model;
+import Kuboid.manager.model.Model;
 import Kuboid.manager.utils.Transformation;
 import Kuboid.manager.utils.Utils;
 import test.Launcher;
@@ -74,7 +74,8 @@ public class RenderManager {
             for (Entity entity : batch) {
                 shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
 
-                glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+                glDrawArrays(GL_TRIANGLES, 0, model.getVertexCount());
+                //glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
             }
 
             glDisableVertexAttribArray(0);

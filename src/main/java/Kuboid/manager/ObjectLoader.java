@@ -1,6 +1,6 @@
 package Kuboid.manager;
 
-import Kuboid.manager.entity.Model;
+import Kuboid.manager.model.Model;
 import Kuboid.manager.utils.Utils;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.system.MemoryStack;
@@ -22,13 +22,21 @@ public class ObjectLoader {
     private List<Integer> vbos = new ArrayList<>();
     private List<Integer> textures = new ArrayList<>();
 
-    public Model loadModel(float[] vertices, float[] textureCoords, int[] indices) {
+    public Model loadModel(float[] vertices, float[] uvs, int[] indices) {
         int id = createVAO();
         storeIndicesBuffer(indices);
         storeDatainAttribList(0, 3, vertices);
-        storeDatainAttribList(1, 2, textureCoords);
+        storeDatainAttribList(1, 2, uvs);
         unbind();
         return new Model(id, indices.length);
+    }
+
+    public Model loadModel(float[] vertices, float[] uvs) {
+        int id = createVAO();
+        storeDatainAttribList(0, 3, vertices);
+        storeDatainAttribList(1, 2, uvs);
+        unbind();
+        return new Model(id, vertices.length);
     }
 
     public Model loadModel(float[] vertices, int[] indices) {

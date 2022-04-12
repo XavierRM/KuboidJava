@@ -1,4 +1,4 @@
-package Kuboid.manager.entity;
+package Kuboid.manager.model;
 
 public class Model {
 
