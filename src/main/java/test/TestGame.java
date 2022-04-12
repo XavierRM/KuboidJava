@@ -19,7 +19,7 @@ public class TestGame implements ILogic {
 
     private Terrain terrain;
     private Camera camera;
-    private boolean isWireframe = true;
+    private boolean isWireframe = false;
 
     Thread thread;
     private Vector3f cameraInc;

@@ -11,6 +11,7 @@ import java.util.List;
 public class ChunkMesh {
 
     private List<Vertex> vertices;
+    private List<Vector3f> usedPos;
 
     private List<Float> positionsList;
     private List<Float> normalsList;
@@ -22,6 +23,7 @@ public class ChunkMesh {
 
     public ChunkMesh(Chunk chunk) {
         vertices = new ArrayList<>();
+        usedPos = new ArrayList<>();
         positionsList = new ArrayList<>();
         normalsList = new ArrayList<>();
         uvsList = new ArrayList<>();
@@ -32,18 +34,60 @@ public class ChunkMesh {
     public void update(Chunk chunk) {
         this.chunk = chunk;
 
+        usedPos = getUsedPositions(chunk.getVoxels());
+
         buildMesh();
         populateList();
     }
 
+    private List<Vector3f> getUsedPositions(List<Voxel> blocks) {
+        List<Vector3f> auxList = new ArrayList<>();
+
+        for (int i = 0; i < blocks.size(); i++) {
+            auxList.add(blocks.get(i).origin);
+        }
+
+        return auxList;
+    }
+
     private void buildMesh() {
-        long u = 0;
+
         for (int i = 0; i < chunk.getVoxels().size(); i++) {
             Voxel voxelI = chunk.getVoxels().get(i);
 
             boolean px = false, nx = false, py = false, ny = false, pz = false, nz = false;
 
-            for (int j = 0; j < chunk.getVoxels().size(); j++) {
+            //PX
+            if (usedPos.contains(new Vector3f(voxelI.origin.x + 1, voxelI.origin.y, voxelI.origin.z))) {
+                px = true;
+            }
+
+            //NX
+            if (usedPos.contains(new Vector3f(voxelI.origin.x - 1, voxelI.origin.y, voxelI.origin.z))) {
+                nx = true;
+            }
+
+            //PY
+            if (usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y + 1, voxelI.origin.z))) {
+                py = true;
+            }
+
+            //NY
+            if (usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y - 1, voxelI.origin.z))) {
+                ny = true;
+            }
+
+            //PZ
+            if (usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z + 1))) {
+                pz = true;
+            }
+
+            //NZ
+            if (usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z - 1))) {
+                nz = true;
+            }
+
+            /*for (int j = 0; j < chunk.getVoxels().size(); j++) {
 
                 Voxel voxelJ = chunk.getVoxels().get(j);
 
@@ -76,7 +120,7 @@ public class ChunkMesh {
                 if (((voxelI.origin.z - 1) == voxelJ.origin.z) && ((voxelI.origin.y) == (voxelJ.origin.y)) && ((voxelI.origin.x) == (voxelJ.origin.x))) {
                     nz = true;
                 }
-            }
+            }*/
 
             if (!px) {
                 for (int k = 0; k < 6; k++) {

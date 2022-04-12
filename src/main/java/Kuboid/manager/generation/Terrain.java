@@ -187,9 +187,9 @@ public class Terrain implements Runnable {
 
         List<Voxel> voxels = new ArrayList<>();
 
-        for (int x = 0; x < 20; x++) {
-            for (int z = 0; z < 20; z++) {
-                for (int y = 0; y < 5; y++) {
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                for (int y = 0; y < 64; y++) {
 
                     voxels.add(new Voxel(new Vector3f(x, y, z), VoxelType.DIRT));
 
