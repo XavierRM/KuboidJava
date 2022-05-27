@@ -4,6 +4,7 @@ import Kuboid.manager.ObjectLoader;
 import Kuboid.manager.entity.Entity;
 import Kuboid.manager.model.Model;
 import Kuboid.manager.model.Texture;
+import Kuboid.manager.utils.PerlinNoise;
 import Kuboid.manager.voxel.Voxel;
 import Kuboid.manager.voxel.VoxelType;
 import org.joml.Vector3f;
@@ -14,6 +15,7 @@ public class Terrain implements Runnable {
 
     private ObjectLoader loader;
     private Model model, newModel;
+    private PerlinNoise generator;
 
     private long size;
     private long index = 0;
@@ -25,8 +27,10 @@ public class Terrain implements Runnable {
 
     private Map<Model, List<Entity>> entitiesMap = Collections.synchronizedMap(new HashMap<>());
     private List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<>());
+    //private List<ChunkMesh> activeChunks = Collections.synchronizedList(new ArrayList<>());
     private List<Entity> entities = Collections.synchronizedList(new ArrayList<>());
     private List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<>());
+    private List<Vector3f> usedAbsolutePositions = Collections.synchronizedList(new ArrayList<>());
 
     private final float[] verticesDirt = new float[]{
             -0.5f, 0.5f, 0.5f, //0
@@ -132,11 +136,12 @@ public class Terrain implements Runnable {
     public Terrain(long chunksPerAxis, long chunkSize, boolean plain, boolean isWireframe, Vector3f camPos) {
         this.size = chunksPerAxis * chunkSize;
         this.chunkSize = chunkSize;
-        this.chunkDepth = 5;
+        this.chunkDepth = 1;
         this.plain = plain;
         this.isWireframe = isWireframe;
         this.camPos = camPos;
-        loader = new ObjectLoader();
+        this.loader = new ObjectLoader();
+        this.generator = new PerlinNoise();
 
         if (isWireframe)
             model = loader.loadModel(verticesDirt, indicesDirt);
@@ -161,6 +166,7 @@ public class Terrain implements Runnable {
         long x, y = 0, z;
 
         Vector3f vector;
+        Chunk chunk;
 
         for (x = ((int) camPos.x - (size / 2)) / chunkSize; x < ((int) camPos.x + (size / 2)) / chunkSize; x++) {
             for (z = ((int) camPos.z - (size / 2)) / chunkSize; z < ((int) camPos.z + (size / 2)) / chunkSize; z++) {
@@ -172,16 +178,18 @@ public class Terrain implements Runnable {
 
                     for (int i = 0; i < chunkSize; i++) {
                         for (int j = 0; j < chunkSize; j++) {
-                            for (int k = (int) -chunkDepth; k < 0; k++) {
-                                blocks.add(new Voxel(new Vector3f(i, k, j), VoxelType.DIRT));
-                            }
+                            float k = (float) generator.generateHeight((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize)));
+                            //for (int k = (int) perlinNoiseGenerator.generateHeight((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize))); k > -chunkDepth; k--) {
+                            blocks.add(new Voxel(new Vector3f(i, k, j), VoxelType.DIRT));
+                            usedAbsolutePositions.add(new Vector3f((vector.x * chunkSize) + i, vector.y + k, (vector.z * chunkSize) + j));
+                            //}
                         }
                     }
 
-                    Chunk chunk = new Chunk(blocks, vector, chunkSize);
+                    chunk = new Chunk(blocks, vector, chunkSize);
 
-                    chunks.add(new ChunkMesh(chunk));
                     usedPos.add(vector);
+                    chunks.add(new ChunkMesh(chunk));
                 }
             }
         }
@@ -201,6 +209,7 @@ public class Terrain implements Runnable {
                 }
 
                 entities.add(new Entity(newModel, chunks.get(i).chunk.getOrigin(), new Vector3f(0, 0, 0), 1));
+
             }
 
             index++;
@@ -209,6 +218,7 @@ public class Terrain implements Runnable {
 
     public Map<Model, List<Entity>> getTerrain() {
         entitiesMap = new HashMap<>();
+        //activeChunks = Collections.synchronizedList(new ArrayList<>());
 
         for (int i = 0; i < entities.size(); i++) {
             Entity entity = entities.get(i);
@@ -220,6 +230,12 @@ public class Terrain implements Runnable {
 
             if ((Math.abs(distX) <= (size / 2)) && (Math.abs(distZ) <= (size / 2))) {
                 addEntity(entity);
+
+                /*for (int j = 0; j < chunks.size(); j++) {
+                    if(pos.equals(chunks.get(j).chunk.getOrigin())) {
+                        activeChunks.add(chunks.get(j));
+                    }
+                }*/
             }
         }
 
@@ -247,6 +263,7 @@ public class Terrain implements Runnable {
 
     public void run() {
         try {
+            generateTerrain();
             while (running) {
                 generateTerrain();
             }

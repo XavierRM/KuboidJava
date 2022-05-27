@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static Kuboid.manager.utils.Utils.storeDataInFloatBuffer;
@@ -20,7 +21,8 @@ public class ObjectLoader {
 
     private List<Integer> vaos = new ArrayList<>();
     private List<Integer> vbos = new ArrayList<>();
-    private List<Integer> textures = new ArrayList<>();
+    //private List<Integer> textures = new ArrayList<>();
+    private HashMap<String, Integer> textures = new HashMap<String, Integer>();
 
     public Model loadModel(float[] vertices, float[] uvs, int[] indices) {
         int id = createVAO();
@@ -51,30 +53,34 @@ public class ObjectLoader {
         int width, height;
         ByteBuffer buffer;
 
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            IntBuffer w = stack.mallocInt(1);
-            IntBuffer h = stack.mallocInt(1);
-            IntBuffer c = stack.mallocInt(1);
+        if (textures.containsKey(filename)) {
+            return textures.get(filename);
+        } else {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
+                IntBuffer w = stack.mallocInt(1);
+                IntBuffer h = stack.mallocInt(1);
+                IntBuffer c = stack.mallocInt(1);
 
-            buffer = STBImage.stbi_load(filename, w, h, c, 4);
+                buffer = STBImage.stbi_load(filename, w, h, c, 4);
 
-            if(buffer == null)
-                throw new Exception("Image File " + filename + " not loaded. " + STBImage.stbi_failure_reason());
+                if (buffer == null)
+                    throw new Exception("Image File " + filename + " not loaded. " + STBImage.stbi_failure_reason());
 
-            width = w.get();
-            height = h.get();
+                width = w.get();
+                height = h.get();
+            }
+
+            int id = glGenTextures();
+            textures.put(filename, id);
+
+            glBindTexture(GL_TEXTURE_2D, id);
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            STBImage.stbi_image_free(buffer);
+
+            return id;
         }
-
-        int id = glGenTextures();
-        textures.add(id);
-
-        glBindTexture(GL_TEXTURE_2D, id);
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        STBImage.stbi_image_free(buffer);
-
-        return id;
     }
 
     private int createVAO() {
@@ -110,9 +116,9 @@ public class ObjectLoader {
     public void cleanup() {
         for(int vao : vaos)
             glDeleteVertexArrays(vao);
-        for(int vbo : vbos)
+        for (int vbo : vbos)
             glDeleteBuffers(vbo);
-        for(int texture : textures)
+        for (int texture : textures.values())
             glDeleteTextures(texture);
     }
 }

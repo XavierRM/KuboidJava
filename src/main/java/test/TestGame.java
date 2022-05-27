@@ -42,7 +42,7 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
-        terrain = new Terrain(6, 16, true, isWireframe, camera.getPosition());
+        terrain = new Terrain(10, 16, true, isWireframe, camera.getPosition());
         //terrain.generateTerrain();
         thread = new Thread(terrain);
         thread.start();
@@ -67,7 +67,6 @@ public class TestGame implements ILogic {
             previousKey = GLFW_KEY_S;
             cameraInc.z = 1;
         }
-
 
         //Go left
         if(window.isKeyPressed(GLFW_KEY_A)) {

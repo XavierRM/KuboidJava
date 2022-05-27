@@ -27,11 +27,6 @@ public class ChunkMesh {
         positionsList = new ArrayList<>();
         normalsList = new ArrayList<>();
         uvsList = new ArrayList<>();
-
-        update(chunk);
-    }
-
-    public void update(Chunk chunk) {
         this.chunk = chunk;
 
         usedPos = getUsedPositions(chunk.getVoxels());
@@ -40,11 +35,19 @@ public class ChunkMesh {
         populateList();
     }
 
-    private List<Vector3f> getUsedPositions(List<Voxel> blocks) {
+    public void update(List<ChunkMesh> chunks) {
+
+        usedPos = getUsedPositions(chunk.getVoxels());
+
+        buildMesh();
+        populateList();
+    }
+
+    private List<Vector3f> getUsedPositions(List<Voxel> voxels) {
         List<Vector3f> auxList = new ArrayList<>();
 
-        for (int i = 0; i < blocks.size(); i++) {
-            auxList.add(blocks.get(i).origin);
+        for (int i = 0; i < voxels.size(); i++) {
+            auxList.add(voxels.get(i).origin);
         }
 
         return auxList;
@@ -56,6 +59,12 @@ public class ChunkMesh {
 
         for (int i = 0; i < chunk.getVoxels().size(); i++) {
             Voxel voxelI = chunk.getVoxels().get(i);
+
+            /*
+             * On the edges of the chunk, so on the voxels where ((x or z) == 0) or ((x or z) == chunkSize)
+             * we need to check if there's an active chunk on the exterior side of the current chunk, if there is
+             * one, then we don't add those vertices to the vertices list so that they don't get rendered on the screen
+             * */
 
             //PX
             if (!usedPos.contains(new Vector3f(voxelI.origin.x + 1, voxelI.origin.y, voxelI.origin.z))) {
@@ -129,6 +138,7 @@ public class ChunkMesh {
             normalsList.add(vertex.normals.x);
             normalsList.add(vertex.normals.y);
             normalsList.add(vertex.normals.z);
+
         }
 
         positions = new float[positionsList.size()];
@@ -146,6 +156,10 @@ public class ChunkMesh {
         for (int i = 0; i < uvsList.size(); i++) {
             uvs[i] = uvsList.get(i);
         }
+
+        positionsList.clear();
+        uvsList.clear();
+        normalsList.clear();
 
     }
 }
