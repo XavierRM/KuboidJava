@@ -35,20 +35,15 @@ public class ChunkMesh {
         populateList();
     }
 
-    public void update(List<ChunkMesh> chunks) {
-
-        usedPos = getUsedPositions(chunk.getVoxels());
-
-        buildMesh();
-        populateList();
-    }
-
     private List<Vector3f> getUsedPositions(List<Voxel> voxels) {
         List<Vector3f> auxList = new ArrayList<>();
 
-        for (int i = 0; i < voxels.size(); i++) {
+        for (Voxel voxel : voxels)
+            auxList.add(voxel.origin);
+
+        /*for (int i = 0; i < voxels.size(); i++) {
             auxList.add(voxels.get(i).origin);
-        }
+        }*/
 
         return auxList;
     }
@@ -59,12 +54,6 @@ public class ChunkMesh {
 
         for (int i = 0; i < chunk.getVoxels().size(); i++) {
             Voxel voxelI = chunk.getVoxels().get(i);
-
-            /*
-             * On the edges of the chunk, so on the voxels where ((x or z) == 0) or ((x or z) == chunkSize)
-             * we need to check if there's an active chunk on the exterior side of the current chunk, if there is
-             * one, then we don't add those vertices to the vertices list so that they don't get rendered on the screen
-             * */
 
             //PX
             if (!usedPos.contains(new Vector3f(voxelI.origin.x + 1, voxelI.origin.y, voxelI.origin.z))) {

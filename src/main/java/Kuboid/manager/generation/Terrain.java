@@ -27,10 +27,9 @@ public class Terrain implements Runnable {
 
     private Map<Model, List<Entity>> entitiesMap = Collections.synchronizedMap(new HashMap<>());
     private List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<>());
-    //private List<ChunkMesh> activeChunks = Collections.synchronizedList(new ArrayList<>());
     private List<Entity> entities = Collections.synchronizedList(new ArrayList<>());
     private List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<>());
-    private List<Vector3f> usedAbsolutePositions = Collections.synchronizedList(new ArrayList<>());
+//    private List<Vector3f> usedAbsolutePositions = Collections.synchronizedList(new ArrayList<>());
 
     private final float[] verticesDirt = new float[]{
             -0.5f, 0.5f, 0.5f, //0
@@ -162,6 +161,10 @@ public class Terrain implements Runnable {
         }
     }
 
+    public void setWireframe(boolean wireframe) {
+        isWireframe = wireframe;
+    }
+
     public void generateTerrain() {
         long x, y = 0, z;
 
@@ -181,7 +184,7 @@ public class Terrain implements Runnable {
                             float k = (float) generator.generateHeight((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize)));
                             //for (int k = (int) perlinNoiseGenerator.generateHeight((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize))); k > -chunkDepth; k--) {
                             blocks.add(new Voxel(new Vector3f(i, k, j), VoxelType.DIRT));
-                            usedAbsolutePositions.add(new Vector3f((vector.x * chunkSize) + i, vector.y + k, (vector.z * chunkSize) + j));
+                            //usedAbsolutePositions.add(new Vector3f((vector.x * chunkSize) + i, vector.y + k, (vector.z * chunkSize) + j));
                             //}
                         }
                     }
