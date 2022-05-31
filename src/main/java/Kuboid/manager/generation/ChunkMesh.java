@@ -41,10 +41,6 @@ public class ChunkMesh {
         for (Voxel voxel : voxels)
             auxList.add(voxel.origin);
 
-        /*for (int i = 0; i < voxels.size(); i++) {
-            auxList.add(voxels.get(i).origin);
-        }*/
-
         return auxList;
     }
 
@@ -108,7 +104,10 @@ public class ChunkMesh {
                             VoxelModel.UV[k]));
                 }
             }
+
+            //voxelI = null;
         }
+        usedPos.clear();
     }
 
     //Could be improved
@@ -129,6 +128,7 @@ public class ChunkMesh {
             normalsList.add(vertex.normals.z);
 
         }
+        vertices.clear();
 
         positions = new float[positionsList.size()];
         normals = new float[normalsList.size()];

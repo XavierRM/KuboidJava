@@ -9,7 +9,7 @@ public class PerlinNoise {
     public static float ROUGHNESS = 0.3f;
 
     private Random random = new Random();
-    private int seed;
+    private long seed;
     private int xOffset = 0;
     private int zOffset = 0;
 
@@ -18,10 +18,14 @@ public class PerlinNoise {
     }
 
     //only works with POSITIVE gridX and gridZ values!
-    public PerlinNoise(int gridX, int gridZ, int vertexCount, int seed) {
+    public PerlinNoise(int gridX, int gridZ, int vertexCount, long seed) {
         this.seed = seed;
         xOffset = gridX * (vertexCount - 1);
         zOffset = gridZ * (vertexCount - 1);
+    }
+
+    public void setSeed(long seed) {
+        this.seed = seed;
     }
 
     public float generateHeight(int x, int z) {

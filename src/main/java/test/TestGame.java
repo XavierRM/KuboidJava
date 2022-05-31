@@ -42,7 +42,7 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
-        terrain = new Terrain(7, 16, true, isWireframe, camera.getPosition());
+        terrain = new Terrain(6, 48, true, isWireframe, camera.getPosition());
 
         if (thread != null && thread.isAlive()) {
             thread.interrupt();

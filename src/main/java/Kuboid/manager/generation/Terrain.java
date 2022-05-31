@@ -7,9 +7,11 @@ import Kuboid.manager.model.Texture;
 import Kuboid.manager.utils.PerlinNoise;
 import Kuboid.manager.voxel.Voxel;
 import Kuboid.manager.voxel.VoxelType;
+import org.joml.Vector2i;
 import org.joml.Vector3f;
 
 import java.util.*;
+import java.util.random.RandomGenerator;
 
 public class Terrain implements Runnable {
 
@@ -142,6 +144,9 @@ public class Terrain implements Runnable {
         this.loader = new ObjectLoader();
         this.generator = new PerlinNoise();
 
+        RandomGenerator random = RandomGenerator.of("Random");
+        generator.setSeed(random.nextLong());
+
         if (isWireframe)
             model = loader.loadModel(verticesDirt, indicesDirt);
         else {
@@ -171,6 +176,9 @@ public class Terrain implements Runnable {
         Vector3f vector;
         Chunk chunk;
 
+        System.out.println(size / 2);
+
+        //This could be optimized for sure
         for (x = ((int) camPos.x - (size / 2)) / chunkSize; x < ((int) camPos.x + (size / 2)) / chunkSize; x++) {
             for (z = ((int) camPos.z - (size / 2)) / chunkSize; z < ((int) camPos.z + (size / 2)) / chunkSize; z++) {
                 vector = new Vector3f(x * chunkSize, 0, z * chunkSize);
@@ -181,7 +189,7 @@ public class Terrain implements Runnable {
 
                     for (int i = 0; i < chunkSize; i++) {
                         for (int j = 0; j < chunkSize; j++) {
-                            float k = (float) generator.generateHeight((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize)));
+                            float k = generator.generateHeight((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize)));
                             //for (int k = (int) perlinNoiseGenerator.generateHeight((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize))); k > -chunkDepth; k--) {
                             blocks.add(new Voxel(new Vector3f(i, k, j), VoxelType.DIRT));
                             //usedAbsolutePositions.add(new Vector3f((vector.x * chunkSize) + i, vector.y + k, (vector.z * chunkSize) + j));
@@ -196,6 +204,58 @@ public class Terrain implements Runnable {
                 }
             }
         }
+    }
+
+    public void generateTerrainDiamondSquare() {
+        int TOP_LEFT = 0;
+        int TOP_RIGHT = 1;
+        int BOTTOM_RIGHT = 2;
+        int BOTTOM_LEFT = 3;
+
+        List<Vector2i> corners = new ArrayList<>();
+
+        //TOP_LEFT
+        corners.add(new Vector2i((int) (camPos.x - (size / 2)), (int) (camPos.z - (size / 2))));
+        //TOP_RIGHT
+        corners.add(new Vector2i((int) (camPos.x + (size / 2)), (int) (camPos.z - (size / 2))));
+        //BOTTOM_RIGHT
+        corners.add(new Vector2i((int) (camPos.x - (size / 2)), (int) (camPos.z + (size / 2))));
+        //BOTTOM_LEFT
+        corners.add(new Vector2i((int) (camPos.x + (size / 2)), (int) (camPos.z + (size / 2))));
+
+        //Matrix to calculate DiamondSquare result
+        float[][] m = new float[(int) size + 1][(int) size + 1];
+
+        m[0][0] = generator.generateHeight(corners.get(TOP_LEFT).x, corners.get(TOP_LEFT).y);
+        m[0][m.length] = generator.generateHeight(corners.get(TOP_RIGHT).x, corners.get(TOP_RIGHT).y);
+        m[m.length][m.length] = generator.generateHeight(corners.get(BOTTOM_RIGHT).x, corners.get(BOTTOM_RIGHT).y);
+        m[m.length][0] = generator.generateHeight(corners.get(BOTTOM_LEFT).x, corners.get(BOTTOM_LEFT).y);
+
+
+    }
+
+    private static float[][] diamondSquare(float[][] matrix, Vector2i start, Vector2i end) {
+
+        Vector2i midpoint = new Vector2i(Math.round((end.x - start.x) / 2) + start.x, Math.round((end.y - start.y) / 2) + start.y);
+
+        //Calculate center
+        matrix[midpoint.x][midpoint.y] = matrix[start.x][start.y] + matrix[start.x][end.y] + matrix[end.x][end.y] + matrix[end.x][start.y];
+        matrix[midpoint.x][midpoint.y] = Math.round(matrix[midpoint.x][midpoint.y] / 4);
+
+        //Calculate edges
+        matrix[start.x][midpoint.y] = Math.round((matrix[start.x][start.y] + matrix[midpoint.x][midpoint.y] + matrix[start.x][end.y]) / 3);
+        matrix[midpoint.x][start.y] = Math.round((matrix[start.x][start.y] + matrix[midpoint.x][midpoint.y] + matrix[end.x][start.y]) / 3);
+        matrix[end.x][midpoint.y] = Math.round((matrix[midpoint.x][midpoint.y] + matrix[end.x][start.y] + matrix[end.x][end.y]) / 3);
+        matrix[midpoint.x][end.y] = Math.round((matrix[midpoint.x][midpoint.y] + matrix[start.x][end.y] + matrix[end.x][end.y]) / 3);
+
+        if ((end.x - start.x) >= 3) {
+            matrix = diamondSquare(matrix, new Vector2i(start.x, start.y), new Vector2i(midpoint.x, midpoint.y));
+            matrix = diamondSquare(matrix, new Vector2i(midpoint.x, start.y), new Vector2i(end.x, midpoint.y));
+            matrix = diamondSquare(matrix, new Vector2i(start.x, midpoint.y), new Vector2i(midpoint.x, end.y));
+            matrix = diamondSquare(matrix, new Vector2i(midpoint.x, midpoint.y), new Vector2i(end.x, end.y));
+        }
+
+        return matrix;
     }
 
     public void update(Vector3f camPos) {
@@ -272,6 +332,21 @@ public class Terrain implements Runnable {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void main(String args[]) {
+        float[][] matrix = new float[5][5];
+
+        matrix[0][0] = 10;
+        matrix[0][matrix.length - 1] = 5;
+        matrix[matrix.length - 1][matrix.length - 1] = 7;
+        matrix[matrix.length - 1][0] = 1;
+
+        matrix = diamondSquare(matrix, new Vector2i(0, 0), new Vector2i(matrix.length - 1, matrix.length - 1));
+
+        for (float[] row : matrix) {
+            System.out.println(Arrays.toString(row));
         }
     }
 }
