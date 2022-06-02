@@ -37,6 +37,28 @@ public class Utils {
         return result;
     }
 
+    public static float power(float x, int n) {
+        /*O(log(n)) complexity*/
+        long pow = 1L;
+
+        // loop till `n` become 0
+        while (n > 0) {
+            // if `n` is odd, multiply the result by `x`
+            if ((n & 1) == 1) {
+                pow *= x;
+            }
+
+            // divide `n` by 2
+            n = n >> 1;
+
+            // multiply `x` by itself
+            x = x * x;
+        }
+
+        // return result
+        return pow;
+    }
+
     public static float[][] diamondSquare(float[][] matrix, Vector2i start, Vector2i end) {
 
         Vector2i midpoint = new Vector2i(Math.round((end.x - start.x) / 2) + start.x, Math.round((end.y - start.y) / 2) + start.y);

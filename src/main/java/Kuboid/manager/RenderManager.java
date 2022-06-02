@@ -57,6 +57,7 @@ public class RenderManager {
             if (!isWireframe)
                 shader.setUniform("textureSampler", 0);
 
+            //Should precompute this
             shader.setUniform("projectionMatrix", window.getProjectionMatrix());
             shader.setUniform("viewMatrix", Transformation.getViewMatrix(this.camera));
 
@@ -75,7 +76,6 @@ public class RenderManager {
                 shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
 
                 glDrawArrays(GL_TRIANGLES, 0, model.getVertexCount());
-                //glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
             }
 
             glDisableVertexAttribArray(0);
