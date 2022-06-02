@@ -192,10 +192,41 @@ public class Terrain implements Runnable {
 
                     for (int i = 0; i < chunkSize; i++) {
                         for (int j = 0; j < chunkSize; j++) {
-                            float k = generator.generateHeight((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize)));
-                            //float k = (float) simplexNoise.noise((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize)));
+                            //float k = generator.generateHeight((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize)));
+
+                            double nx = (i + (x * chunkSize));
+                            double nz = (j + (z * chunkSize));
+
+                            /*
+                             * The values multiplying the nx and nz variables are the frequency of the noise generation,
+                             * for terrain generation this translates into a flatter world when values are near 0 and more
+                             * hills or extreme changes in altitude when does values get further away from 0, to get a better
+                             * terrain generation we can combine multiple wavelengths of noise giving us the perfect combination
+                             * of flat and hilly terrain.
+                             * */
+
+                            double noise = simplexNoise.noise(0.01 * nx, 0.01 * nz);
+                            noise += 0.5 * simplexNoise.noise(0.02 * nx, 0.02 * nz);
+                            noise += 0.25 * simplexNoise.noise(0.04 * nx, 0.04 * nz);
+                            double k = (1 + noise) / 2;
+
+                            //This returns values from -1 to 1, we have to convert it to a 0-16 for example
+                            //float k = (float) simplexNoise.noise(nx, ny)
+                            //        + 0.5f * (float) simplexNoise.noise( 2 * nx, 2 * ny)
+                            //        + 0.25f * (float) simplexNoise.noise( 4 * nx, 4 * ny);
+
+                            //k = (float) simplexNoise.noise(0.25 * nx, 0.25 * ny);
+
+                            //k = (float) Math.pow((k * 3)/(1 + 0.5 + 0.25), 3);
+                            //k = (float) Math.pow((k * 16), 1.5);
+
                             //for (int k = (int) perlinNoiseGenerator.generateHeight((int) (i + (x * chunkSize)), (int) (j + (z * chunkSize))); k > -chunkDepth; k--) {
-                            blocks.add(new Voxel(new Vector3f(i, k, j), VoxelType.DIRT));
+                            //System.out.println(Math.round(simplexNoise.noise(0.25 * nx, 0.25 * ny)));
+
+                            //Altitude ranges from 0 to 16
+                            long h = Math.round(k / 0.0625);
+                            //for (long h = Math.round(k / 0.0625); h > -2; h--) {
+                            blocks.add(new Voxel(new Vector3f(i, h, j), VoxelType.DIRT));
                             //usedAbsolutePositions.add(new Vector3f((vector.x * chunkSize) + i, vector.y + k, (vector.z * chunkSize) + j));
                             //}
                         }
