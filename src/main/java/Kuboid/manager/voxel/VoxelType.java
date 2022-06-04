@@ -1,5 +1,5 @@
 package Kuboid.manager.voxel;
 
 public enum VoxelType {
-    DIRT, GRASS;
+    GRASS, DIRT, STONE, TREEBARK, TREELEAF;
 }

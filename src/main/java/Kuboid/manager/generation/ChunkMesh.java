@@ -56,7 +56,7 @@ public class ChunkMesh {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.PX_POS[k].x + voxelI.origin.x, VoxelModel.PX_POS[k].y + voxelI.origin.y, VoxelModel.PX_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
-                            VoxelModel.UV[k]));
+                            VoxelModel.UV_PX[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
 
@@ -65,7 +65,7 @@ public class ChunkMesh {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.NX_POS[k].x + voxelI.origin.x, VoxelModel.NX_POS[k].y + voxelI.origin.y, VoxelModel.NX_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
-                            VoxelModel.UV[k]));
+                            VoxelModel.UV_NX[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
 
@@ -74,7 +74,7 @@ public class ChunkMesh {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.PY_POS[k].x + voxelI.origin.x, VoxelModel.PY_POS[k].y + voxelI.origin.y, VoxelModel.PY_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
-                            VoxelModel.UV[k]));
+                            VoxelModel.UV_PY[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
 
@@ -83,7 +83,7 @@ public class ChunkMesh {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.NY_POS[k].x + voxelI.origin.x, VoxelModel.NY_POS[k].y + voxelI.origin.y, VoxelModel.NY_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
-                            VoxelModel.UV[k]));
+                            VoxelModel.UV_NY[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
 
@@ -92,7 +92,7 @@ public class ChunkMesh {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.PZ_POS[k].x + voxelI.origin.x, VoxelModel.PZ_POS[k].y + voxelI.origin.y, VoxelModel.PZ_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
-                            VoxelModel.UV[k]));
+                            VoxelModel.UV_PZ[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
 
@@ -101,11 +101,9 @@ public class ChunkMesh {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.NZ_POS[k].x + voxelI.origin.x, VoxelModel.NZ_POS[k].y + voxelI.origin.y, VoxelModel.NZ_POS[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
-                            VoxelModel.UV[k]));
+                            VoxelModel.UV_NZ[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
-
-            //voxelI = null;
         }
         usedPos.clear();
     }

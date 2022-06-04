@@ -217,7 +217,7 @@ public class Terrain implements Runnable {
                             //Altitude ranges from 0 to 16
                             k = Math.round(k / 0.0625);
 
-                            blocks.add(new Voxel(new Vector3f(i, (float) k, j), VoxelType.DIRT));
+                            blocks.add(new Voxel(new Vector3f(i, (float) k, j), VoxelType.GRASS));
                             blocks.add(new Voxel(new Vector3f(i, (float) (k - 1), j), VoxelType.DIRT));
                         }
                     }
@@ -284,7 +284,7 @@ public class Terrain implements Runnable {
                 newModel = loader.loadModel(chunks.get(i).positions, chunks.get(i).uvs);
 
                 try {
-                    newModel.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
+                    newModel.setTexture(new Texture(loader.loadTexture("textures/terrain.jpg")));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
