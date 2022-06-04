@@ -4,6 +4,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class VoxelModel {
+    private static final float ERROR = 0.002f;
 
     public static Vector3f[] PX_POS = {
 
@@ -85,20 +86,20 @@ public class VoxelModel {
     public static Vector2f[] UV_PX = {
 
             // GRASS
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f((3.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((3.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((3.f / 16.f) + ERROR, 0.f + ERROR),
 
             // DIRT
-            new Vector2f(2.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
             new Vector2f(3.f / 16.f, 0.f),
@@ -129,20 +130,20 @@ public class VoxelModel {
     public static Vector2f[] UV_NX = {
 
             // GRASS
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f((3.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((3.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((3.f / 16.f) + ERROR, 0.f + ERROR),
 
             // DIRT
-            new Vector2f(2.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
             new Vector2f(3.f / 16.f, 0.f),
@@ -173,20 +174,20 @@ public class VoxelModel {
     public static Vector2f[] UV_PY = {
 
             // GRASS
-            new Vector2f(0.f, 0.f),
-            new Vector2f(0.f, 1.f / 16.f),
-            new Vector2f(1.f / 16.f, 1.f / 16.f),
-            new Vector2f(1.f / 16.f, 1.f / 16.f),
-            new Vector2f(1.f / 16.f, 0.f),
-            new Vector2f(0.f, 0.f),
+            new Vector2f(0.f + ERROR, 0.f + ERROR),
+            new Vector2f(0.f + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((1.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((1.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((1.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f(0.f + ERROR, 0.f + ERROR),
 
             // DIRT
-            new Vector2f(2.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
             new Vector2f(3.f / 16.f, 0.f),
@@ -217,20 +218,20 @@ public class VoxelModel {
     public static Vector2f[] UV_NY = {
 
             // GRASS
-            new Vector2f(2.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // DIRT
-            new Vector2f(2.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
             new Vector2f(3.f / 16.f, 0.f),
@@ -261,20 +262,20 @@ public class VoxelModel {
     public static Vector2f[] UV_PZ = {
 
             // GRASS
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f((3.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((3.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((3.f / 16.f) + ERROR, 0.f + ERROR),
 
             // DIRT
-            new Vector2f(2.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
             new Vector2f(3.f / 16.f, 0.f),
@@ -305,20 +306,20 @@ public class VoxelModel {
     public static Vector2f[] UV_NZ = {
 
             // GRASS
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f((3.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((3.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((4.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((3.f / 16.f) + ERROR, 0.f + ERROR),
 
             // DIRT
-            new Vector2f(2.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(2.f / 16.f, 0.f),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((3.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
             new Vector2f(3.f / 16.f, 0.f),
