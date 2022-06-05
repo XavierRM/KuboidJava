@@ -13,16 +13,19 @@ import static org.lwjgl.system.MemoryUtil.memAllocInt;
 
 public class Utils {
 
+    private static FloatBuffer floatBuffer;
+    private static IntBuffer intBuffer;
+
     public static FloatBuffer storeDataInFloatBuffer(float[] data) {
-        FloatBuffer buffer = memAllocFloat(data.length);
-        buffer.put(data).flip();
-        return buffer;
+        floatBuffer = memAllocFloat(data.length);
+        floatBuffer.put(data).flip();
+        return floatBuffer;
     }
 
     public static IntBuffer storeDataInIntBuffer(int[] data) {
-        IntBuffer buffer = memAllocInt(data.length);
-        buffer.put(data).flip();
-        return buffer;
+        intBuffer = memAllocInt(data.length);
+        intBuffer.put(data).flip();
+        return intBuffer;
     }
 
     public static String loadResource(String filename) throws Exception {
@@ -37,27 +40,46 @@ public class Utils {
         return result;
     }
 
-    public static float power(float x, int n) {
-        /*O(log(n)) complexity*/
-        long pow = 1L;
+    /*public float[][] generateTerrainDiamondSquare() {
+        int TOP_LEFT = 0;
+        int TOP_RIGHT = 1;
+        int BOTTOM_RIGHT = 2;
+        int BOTTOM_LEFT = 3;
 
-        // loop till `n` become 0
-        while (n > 0) {
-            // if `n` is odd, multiply the result by `x`
-            if ((n & 1) == 1) {
-                pow *= x;
-            }
+        List<Vector2i> corners = new ArrayList<>();
 
-            // divide `n` by 2
-            n = n >> 1;
+        //TOP_LEFT
+        corners.add(new Vector2i((int) (camPos.x - (size / 2)), (int) (camPos.z - (size / 2))));
+        //TOP_RIGHT
+        corners.add(new Vector2i((int) (camPos.x + (size / 2)), (int) (camPos.z - (size / 2))));
+        //BOTTOM_RIGHT
+        corners.add(new Vector2i((int) (camPos.x - (size / 2)), (int) (camPos.z + (size / 2))));
+        //BOTTOM_LEFT
+        corners.add(new Vector2i((int) (camPos.x + (size / 2)), (int) (camPos.z + (size / 2))));
 
-            // multiply `x` by itself
-            x = x * x;
-        }
+        System.out.println(corners.toString());
+        System.out.println();
 
-        // return result
-        return pow;
-    }
+        //Matrix to calculate DiamondSquare result
+        float[][] m = new float[(int) size + 1][(int) size + 1];
+
+        //PerlinNoise
+        m[0][0] = generator.generateHeight(corners.get(TOP_LEFT).x, corners.get(TOP_LEFT).y);
+        m[0][m.length - 1] = generator.generateHeight(corners.get(TOP_RIGHT).x, corners.get(TOP_RIGHT).y);
+        m[m.length - 1][m.length - 1] = generator.generateHeight(corners.get(BOTTOM_RIGHT).x, corners.get(BOTTOM_RIGHT).y);
+        m[m.length - 1][0] = generator.generateHeight(corners.get(BOTTOM_LEFT).x, corners.get(BOTTOM_LEFT).y);
+
+        //System.out.println(generator.generateHeight(corners.get(TOP_LEFT).x, corners.get(TOP_LEFT).y));
+        //System.out.println(generator.generateHeight(corners.get(TOP_RIGHT).x, corners.get(TOP_RIGHT).y));
+        //System.out.println(generator.generateHeight(corners.get(BOTTOM_RIGHT).x, corners.get(BOTTOM_RIGHT).y));
+        //System.out.println(generator.generateHeight(corners.get(BOTTOM_LEFT).x, corners.get(BOTTOM_LEFT).y));
+        //System.out.println();
+
+        var result = diamondSquare(m, new Vector2i(0, 0), new Vector2i((int) size, (int) size));
+
+        return result;
+
+    }*/
 
     public static float[][] diamondSquare(float[][] matrix, Vector2i start, Vector2i end) {
 

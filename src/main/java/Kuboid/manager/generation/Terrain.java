@@ -8,13 +8,10 @@ import Kuboid.manager.utils.PerlinNoise;
 import Kuboid.manager.utils.SimplexNoise;
 import Kuboid.manager.voxel.Voxel;
 import Kuboid.manager.voxel.VoxelType;
-import org.joml.Vector2i;
 import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.random.RandomGenerator;
-
-import static Kuboid.manager.utils.Utils.diamondSquare;
 
 public class Terrain implements Runnable {
 
@@ -159,57 +156,13 @@ public class Terrain implements Runnable {
         }
     }
 
-    public float[][] generateTerrainDiamondSquare() {
-        int TOP_LEFT = 0;
-        int TOP_RIGHT = 1;
-        int BOTTOM_RIGHT = 2;
-        int BOTTOM_LEFT = 3;
-
-        List<Vector2i> corners = new ArrayList<>();
-
-        //TOP_LEFT
-        corners.add(new Vector2i((int) (camPos.x - (size / 2)), (int) (camPos.z - (size / 2))));
-        //TOP_RIGHT
-        corners.add(new Vector2i((int) (camPos.x + (size / 2)), (int) (camPos.z - (size / 2))));
-        //BOTTOM_RIGHT
-        corners.add(new Vector2i((int) (camPos.x - (size / 2)), (int) (camPos.z + (size / 2))));
-        //BOTTOM_LEFT
-        corners.add(new Vector2i((int) (camPos.x + (size / 2)), (int) (camPos.z + (size / 2))));
-
-        System.out.println(corners.toString());
-        System.out.println();
-
-        //Matrix to calculate DiamondSquare result
-        float[][] m = new float[(int) size + 1][(int) size + 1];
-
-        //PerlinNoise
-        m[0][0] = generator.generateHeight(corners.get(TOP_LEFT).x, corners.get(TOP_LEFT).y);
-        m[0][m.length - 1] = generator.generateHeight(corners.get(TOP_RIGHT).x, corners.get(TOP_RIGHT).y);
-        m[m.length - 1][m.length - 1] = generator.generateHeight(corners.get(BOTTOM_RIGHT).x, corners.get(BOTTOM_RIGHT).y);
-        m[m.length - 1][0] = generator.generateHeight(corners.get(BOTTOM_LEFT).x, corners.get(BOTTOM_LEFT).y);
-
-        //System.out.println(generator.generateHeight(corners.get(TOP_LEFT).x, corners.get(TOP_LEFT).y));
-        //System.out.println(generator.generateHeight(corners.get(TOP_RIGHT).x, corners.get(TOP_RIGHT).y));
-        //System.out.println(generator.generateHeight(corners.get(BOTTOM_RIGHT).x, corners.get(BOTTOM_RIGHT).y));
-        //System.out.println(generator.generateHeight(corners.get(BOTTOM_LEFT).x, corners.get(BOTTOM_LEFT).y));
-        //System.out.println();
-
-        var result = diamondSquare(m, new Vector2i(0, 0), new Vector2i((int) size, (int) size));
-
-        /*for (float[] row : result) {
-            System.out.println(Arrays.toString(row));
-        }*/
-
-        return result;
-
-    }
-
     public void update(Vector3f camPos) {
         this.camPos = camPos;
 
         if (index < chunks.size()) {
             for (long i = index; i < chunks.size(); i++) {
-                newModel = loader.loadModel(chunks.get((int) i).positions, chunks.get((int) i).uvs);
+                ChunkMesh chunk = chunks.get((int) i);
+                newModel = loader.loadModel(chunk.positions, chunk.uvs);
 
                 try {
                     newModel.setTexture(texture);
@@ -217,7 +170,7 @@ public class Terrain implements Runnable {
                     e.printStackTrace();
                 }
 
-                entities.add(new Entity(newModel, chunks.get((int) i).chunk.getOrigin(), new Vector3f(0, 0, 0), 1));
+                entities.add(new Entity(newModel, chunk.chunk.getOrigin(), new Vector3f(0, 0, 0), 1));
 
             }
 
@@ -227,7 +180,6 @@ public class Terrain implements Runnable {
 
     public Map<Model, List<Entity>> getTerrain() {
         entitiesMap = new HashMap<>();
-        //activeChunks = Collections.synchronizedList(new ArrayList<>());
 
         for (int i = 0; i < entities.size(); i++) {
             Entity entity = entities.get(i);
@@ -239,12 +191,6 @@ public class Terrain implements Runnable {
 
             if ((Math.abs(distX) <= (size / 2)) && (Math.abs(distZ) <= (size / 2))) {
                 addEntity(entity);
-
-                /*for (int j = 0; j < chunks.size(); j++) {
-                    if(pos.equals(chunks.get(j).chunk.getOrigin())) {
-                        activeChunks.add(chunks.get(j));
-                    }
-                }*/
             }
         }
 

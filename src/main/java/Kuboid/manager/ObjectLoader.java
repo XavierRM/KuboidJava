@@ -68,6 +68,10 @@ public class ObjectLoader {
 
                 width = w.get();
                 height = h.get();
+
+                w = null;
+                h = null;
+                c = null;
             }
 
             int id = glGenTextures();
