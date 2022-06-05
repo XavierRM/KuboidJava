@@ -20,6 +20,7 @@ public class Terrain implements Runnable {
 
     private ObjectLoader loader;
     private Model model, newModel;
+    private Texture texture;
     private PerlinNoise generator;
     private SimplexNoise simplexNoise;
 
@@ -35,7 +36,6 @@ public class Terrain implements Runnable {
     private List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<>());
     private List<Entity> entities = Collections.synchronizedList(new ArrayList<>());
     private List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<>());
-//    private List<Vector3f> usedAbsolutePositions = Collections.synchronizedList(new ArrayList<>());
 
     private final float[] verticesDirt = new float[]{
             -0.5f, 0.5f, 0.5f, //0
@@ -56,70 +56,6 @@ public class Terrain implements Runnable {
 
     };
 
-    private final float[] verticesGrassBlock = new float[]{
-            -0.5f, 0.5f, 0.5f, //0
-            -0.5f, -0.5f, 0.5f, //1
-            0.5f, -0.5f, 0.5f, //2
-            0.5f, 0.5f, 0.5f, //3
-            //Front
-            -0.5f, 0.5f, -0.5f, //4
-            -0.5f, -0.5f, -0.5f, //5
-            0.5f, -0.5f, -0.5f, //6
-            0.5f, 0.5f, -0.5f, //7
-            //Back
-            -0.5f, 0.5f, -0.5f, //8
-            -0.5f, 0.5f, 0.5f, //9
-            0.5f, 0.5f, 0.5f, //10
-            0.5f, 0.5f, -0.5f, //11
-            //Top
-            -0.5f, -0.5f, -0.5f, //12
-            -0.5f, -0.5f, 0.5f, //13
-            0.5f, -0.5f, 0.5f, //14
-            0.5f, -0.5f, -0.5f, //15
-            //Bottom
-
-    };
-
-    private final float[] textCoordsDirt = new float[]{
-            0.0f, 0.0f,
-            0.0f, 1.0f,
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            //
-            1.0f, 0.0f,
-            1.0f, 1.0f,
-            0.0f, 1.0f,
-            0.0f, 0.0f,
-            //
-            0.0f, 1.0f,
-            0.0f, 0.0f,
-            1.0f, 0.0f,
-            1.0f, 1.0f,
-    };
-
-    private final float[] textCoordsGrassBlock = new float[]{
-            0.0f, 0.25f,
-            0.0f, 0.5f,
-            0.25f, 0.5f,
-            0.25f, 0.25f,
-            //ok
-            0.25f, 0.25f,
-            0.25f, 0.5f,
-            0.0f, 0.5f,
-            0.0f, 0.25f,
-            //ok
-            0.5f, 0.5f,
-            0.5f, 0.75f,
-            0.75f, 0.75f,
-            0.75f, 0.5f,
-            //Top
-            0.0f, 0.5f,
-            0.0f, 0.75f,
-            0.25f, 0.75f,
-            0.25f, 0.5f,
-            //Bottom
-    };
-
     private final int[] indicesDirt = new int[]{
             0, 1, 2, 2, 3, 0, //front
             7, 6, 5, 5, 4, 7, //back
@@ -129,16 +65,7 @@ public class Terrain implements Runnable {
             3, 2, 6, 6, 7, 3, //right
     };
 
-    private final int[] indicesGrassBlock = new int[]{
-            0, 1, 2, 2, 3, 0, //front
-            7, 6, 5, 5, 4, 7, //back
-            8, 9, 10, 10, 11, 8, //top
-            12, 13, 14, 14, 15, 12, // bottom
-            4, 5, 1, 1, 0, 4, //left
-            3, 2, 6, 6, 7, 3, //right
-    };
-
-    public Terrain(long chunksPerAxis, long chunkSize, boolean plain, boolean isWireframe, Vector3f camPos) {
+    public Terrain(long chunksPerAxis, long chunkSize, boolean plain, boolean isWireframe, Vector3f camPos) throws Exception {
         this.size = chunksPerAxis * chunkSize;
         this.chunkSize = chunkSize;
         this.chunkDepth = 1;
@@ -148,6 +75,7 @@ public class Terrain implements Runnable {
         this.loader = new ObjectLoader();
         this.generator = new PerlinNoise();
         this.simplexNoise = new SimplexNoise();
+        this.texture = new Texture(loader.loadTexture("textures/terrain.jpg"));
 
         RandomGenerator random = RandomGenerator.of("Random");
         generator.setSeed(random.nextLong());
@@ -205,14 +133,14 @@ public class Terrain implements Runnable {
                              * of flat and hilly terrain.
                              * */
 
-                            double noise = 0.8 * simplexNoise.noise(0.02 * nx, 0.02 * nz);
-                            noise += 0.75 * simplexNoise.noise(0.04 * nx, 0.04 * nz);
-                            noise += 0.35 * simplexNoise.noise(0.06 * nx, 0.06 * nz);
-                            noise /= 1.9;
+                            double noise = simplexNoise.noise(0.02 * nx, 0.02 * nz);
+                            noise += 0.35 * simplexNoise.noise(0.04 * nx, 0.04 * nz);
+                            noise += 0.50 * simplexNoise.noise(0.06 * nx, 0.06 * nz);
+                            noise /= 1.85;
                             double k = (1 + noise) / 2;
 
                             //To enhance the flat areas or create news ones the redistribution function can be changed
-                            k = Math.pow((float) k, 1);
+                            k = Math.pow((float) k, 1.5);
 
                             //Altitude ranges from 0 to 16
                             k = Math.round(k / 0.0625);
@@ -280,16 +208,16 @@ public class Terrain implements Runnable {
         this.camPos = camPos;
 
         if (index < chunks.size()) {
-            for (int i = 0; i < chunks.size(); i++) {
-                newModel = loader.loadModel(chunks.get(i).positions, chunks.get(i).uvs);
+            for (long i = index; i < chunks.size(); i++) {
+                newModel = loader.loadModel(chunks.get((int) i).positions, chunks.get((int) i).uvs);
 
                 try {
-                    newModel.setTexture(new Texture(loader.loadTexture("textures/terrain.jpg")));
+                    newModel.setTexture(texture);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                entities.add(new Entity(newModel, chunks.get(i).chunk.getOrigin(), new Vector3f(0, 0, 0), 1));
+                entities.add(new Entity(newModel, chunks.get((int) i).chunk.getOrigin(), new Vector3f(0, 0, 0), 1));
 
             }
 
