@@ -90,7 +90,7 @@ public class Terrain implements Runnable {
 
     public void generateTerrain() {
         long x, z;
-        float levels = 1 / 32f;
+        float levels = 1 / 64f;
 
         Vector3f vector;
         Chunk chunk;
@@ -120,18 +120,19 @@ public class Terrain implements Runnable {
                              * */
 
                             double noise = simplexNoise.noise(0.01 * nx, 0.01 * nz);
-                            noise += 0.75 * simplexNoise.noise(0.02 * nx, 0.02 * nz);
+                            noise += simplexNoise.noise(0.001 * nx, 0.001 * nz);
+                            noise += 0.75 * simplexNoise.noise(0.03 * nx, 0.03 * nz);
                             noise += 0.05 * simplexNoise.noise(0.04 * nx, 0.04 * nz);
                             noise += 0.20 * simplexNoise.noise(0.06 * nx, 0.06 * nz);
                             noise += 0.10 * simplexNoise.noise(0.08 * nx, 0.08 * nz);
                             noise += 0.05 * simplexNoise.noise(0.1 * nx, 0.1 * nz);
-                            noise /= 2.15;
+                            noise /= 3.15;
                             double k = (1 + noise) / 2;
 
                             //To enhance the flat areas or create news ones the redistribution function can be changed
                             k = Math.pow((float) k, .75);
 
-                            //Altitude ranges from 0 to 32
+                            //Altitude ranges from 0 to 64
                             k = Math.round(k / levels);
 
                             blocks.add(new Voxel(new Vector3f(i, (float) k, j), VoxelType.GRASS));
