@@ -16,6 +16,8 @@ package Kuboid.manager.utils;
  *
  */
 
+import java.util.Random;
+
 public class SimplexNoise {  // Simplex noise in 2D, 3D and 4D
     private static Grad grad3[] = {new Grad(1, 1, 0), new Grad(-1, 1, 0), new Grad(1, -1, 0), new Grad(-1, -1, 0),
             new Grad(1, 0, 1), new Grad(-1, 0, 1), new Grad(1, 0, -1), new Grad(-1, 0, -1),
@@ -46,6 +48,7 @@ public class SimplexNoise {  // Simplex noise in 2D, 3D and 4D
     // To remove the need for index wrapping, double the permutation table length
     private static short perm[] = new short[512];
     private static short permMod12[] = new short[512];
+    private static long seed;
 
     static {
         for (int i = 0; i < 512; i++) {
@@ -80,6 +83,21 @@ public class SimplexNoise {  // Simplex noise in 2D, 3D and 4D
         return g.x * x + g.y * y + g.z * z + g.w * w;
     }
 
+    public static void setSeed(long seed) {
+        SimplexNoise.seed = seed;
+
+        Random r = new Random(SimplexNoise.seed);
+
+        for (int i = 0; i < p.length; i++) {
+            p[i] = (short) r.nextInt(255);
+        }
+
+        for (int i = 0; i < 512; i++) {
+            perm[i] = p[i & 255];
+            permMod12[i] = (short) (perm[i] % 12);
+        }
+
+    }
 
     // 2D simplex noise
     public static double noise(double xin, double yin) {

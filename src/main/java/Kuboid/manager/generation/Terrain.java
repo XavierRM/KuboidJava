@@ -76,27 +76,12 @@ public class Terrain implements Runnable {
         this.texture = new Texture(loader.loadTexture("textures/terrain.jpg"));
 
         RandomGenerator random = RandomGenerator.of("Random");
-        this.seed = random.nextLong();
 
-        generator.setSeed(seed);
+        SimplexNoise.setSeed(random.nextLong(Integer.MAX_VALUE));
 
         if (isWireframe)
             model = loader.loadModel(verticesDirt, indicesDirt);
-        else {
-            //model = loader.loadModel(verticesDirt, textCoordsDirt, indicesDirt);
-            /*try {
-                model.setTexture(new Texture(loader.loadTexture("textures/dirt.png")));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
 
-            /*model = loader.loadModel(verticesGrassBlock, textCoordsGrassBlock, indicesGrassBlock);
-            try {
-                model.setTexture(new Texture(loader.loadTexture("textures/grassblock.png")));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
-        }
     }
 
     public void setWireframe(boolean wireframe) {
