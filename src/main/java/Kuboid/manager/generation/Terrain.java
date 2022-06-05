@@ -21,6 +21,7 @@ public class Terrain implements Runnable {
     private PerlinNoise generator;
     private SimplexNoise simplexNoise;
 
+    private long seed;
     private long size;
     private long index = 0;
     private long chunkSize, chunkDepth;
@@ -75,7 +76,9 @@ public class Terrain implements Runnable {
         this.texture = new Texture(loader.loadTexture("textures/terrain.jpg"));
 
         RandomGenerator random = RandomGenerator.of("Random");
-        generator.setSeed(random.nextLong());
+        this.seed = random.nextLong();
+
+        generator.setSeed(seed);
 
         if (isWireframe)
             model = loader.loadModel(verticesDirt, indicesDirt);
@@ -131,10 +134,13 @@ public class Terrain implements Runnable {
                              * of flat and hilly terrain.
                              * */
 
-                            double noise = simplexNoise.noise(0.02 * nx, 0.02 * nz);
+                            double noise = simplexNoise.noise(0.01 * nx, 0.01 * nz);
+                            noise += 0.75 * simplexNoise.noise(0.02 * nx, 0.02 * nz);
                             noise += 0.05 * simplexNoise.noise(0.04 * nx, 0.04 * nz);
                             noise += 0.20 * simplexNoise.noise(0.06 * nx, 0.06 * nz);
-                            noise /= 1.25;
+                            noise += 0.10 * simplexNoise.noise(0.08 * nx, 0.08 * nz);
+                            noise += 0.05 * simplexNoise.noise(0.1 * nx, 0.1 * nz);
+                            noise /= 2.15;
                             double k = (1 + noise) / 2;
 
                             //To enhance the flat areas or create news ones the redistribution function can be changed
