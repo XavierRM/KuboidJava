@@ -79,6 +79,7 @@ public class ObjectLoader {
 
             glBindTexture(GL_TEXTURE_2D, id);
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
             glGenerateMipmap(GL_TEXTURE_2D);
             STBImage.stbi_image_free(buffer);

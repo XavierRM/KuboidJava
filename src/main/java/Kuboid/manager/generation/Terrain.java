@@ -73,7 +73,7 @@ public class Terrain implements Runnable {
         this.loader = new ObjectLoader();
         this.generator = new PerlinNoise();
         this.simplexNoise = new SimplexNoise();
-        this.texture = new Texture(loader.loadTexture("textures/terrain.jpg"));
+        this.texture = new Texture(loader.loadTexture("textures/default_texture.png"));
 
         RandomGenerator random = RandomGenerator.of("Random");
 
@@ -119,24 +119,29 @@ public class Terrain implements Runnable {
                              * of flat and hilly terrain.
                              * */
 
-                            double noise = simplexNoise.noise(0.01 * nx, 0.01 * nz);
-                            noise += simplexNoise.noise(0.001 * nx, 0.001 * nz);
+                            double noise = 2 * simplexNoise.noise(0.01 * nx, 0.01 * nz);
+                            noise += 2 * simplexNoise.noise(0.001 * nx, 0.001 * nz);
                             noise += 0.75 * simplexNoise.noise(0.03 * nx, 0.03 * nz);
                             noise += 0.05 * simplexNoise.noise(0.04 * nx, 0.04 * nz);
                             noise += 0.20 * simplexNoise.noise(0.06 * nx, 0.06 * nz);
                             noise += 0.10 * simplexNoise.noise(0.08 * nx, 0.08 * nz);
                             noise += 0.05 * simplexNoise.noise(0.1 * nx, 0.1 * nz);
-                            noise /= 3.15;
+                            noise /= 5.15;
                             double k = (1 + noise) / 2;
 
                             //To enhance the flat areas or create news ones the redistribution function can be changed
-                            k = Math.pow((float) k, .75);
+                            k = Math.pow((float) k, 1);
 
-                            //Altitude ranges from 0 to 64
-                            k = Math.round(k / levels);
+                            //Altitude ranges from 1 to 64
+                            k = Math.floor(k / levels);
 
-                            blocks.add(new Voxel(new Vector3f(i, (float) k, j), VoxelType.GRASS));
-                            blocks.add(new Voxel(new Vector3f(i, (float) (k - 1), j), VoxelType.DIRT));
+                            if (k > 20) {
+                                blocks.add(new Voxel(new Vector3f(i, (float) k, j), VoxelType.GRASS));
+                                blocks.add(new Voxel(new Vector3f(i, (float) (k - 1), j), VoxelType.DIRT));
+                            } else {
+                                blocks.add(new Voxel(new Vector3f(i, (float) k, j), VoxelType.DIRT));
+                                blocks.add(new Voxel(new Vector3f(i, (float) (k - 1), j), VoxelType.DIRT));
+                            }
                         }
                     }
 

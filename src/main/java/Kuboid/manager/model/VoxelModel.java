@@ -4,7 +4,7 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 public class VoxelModel {
-    private static final float ERROR = 0.002f;
+    private static final float ERROR = 0.000f;
 
     public static Vector3f[] PX_POS = {
 
