@@ -21,7 +21,6 @@ public class Terrain implements Runnable {
     private PerlinNoise generator;
     private SimplexNoise simplexNoise;
 
-    private long seed;
     private long size;
     private long index = 0;
     private long chunkSize, chunkDepth;
@@ -66,7 +65,7 @@ public class Terrain implements Runnable {
     public Terrain(long chunksPerAxis, long chunkSize, boolean plain, boolean isWireframe, Vector3f camPos) throws Exception {
         this.size = chunksPerAxis * chunkSize;
         this.chunkSize = chunkSize;
-        this.chunkDepth = 1;
+        this.chunkDepth = -5;
         this.plain = plain;
         this.isWireframe = isWireframe;
         this.camPos = camPos;
@@ -120,27 +119,33 @@ public class Terrain implements Runnable {
                              * */
 
                             double noise = 2 * simplexNoise.noise(0.01 * nx, 0.01 * nz);
-                            noise += 2 * simplexNoise.noise(0.001 * nx, 0.001 * nz);
+                            noise += 2 * simplexNoise.noise(0.005 * nx, 0.005 * nz);
                             noise += 0.75 * simplexNoise.noise(0.03 * nx, 0.03 * nz);
-                            noise += 0.05 * simplexNoise.noise(0.04 * nx, 0.04 * nz);
-                            noise += 0.20 * simplexNoise.noise(0.06 * nx, 0.06 * nz);
-                            noise += 0.10 * simplexNoise.noise(0.08 * nx, 0.08 * nz);
-                            noise += 0.05 * simplexNoise.noise(0.1 * nx, 0.1 * nz);
-                            noise /= 5.15;
+                            noise += 0.20 * simplexNoise.noise(0.04 * nx, 0.04 * nz);
+                            noise += 0.25 * simplexNoise.noise(0.06 * nx, 0.06 * nz);
+                            noise += 0.20 * simplexNoise.noise(0.08 * nx, 0.08 * nz);
+                            noise += 0.15 * simplexNoise.noise(0.1 * nx, 0.1 * nz);
+                            noise /= 3.65;
                             double k = (1 + noise) / 2;
 
                             //To enhance the flat areas or create news ones the redistribution function can be changed
-                            k = Math.pow((float) k, 1);
+                            k = Math.pow((float) k, 1.5);
 
                             //Altitude ranges from 1 to 64
                             k = Math.floor(k / levels);
 
-                            if (k > 20) {
-                                blocks.add(new Voxel(new Vector3f(i, (float) k, j), VoxelType.GRASS));
-                                blocks.add(new Voxel(new Vector3f(i, (float) (k - 1), j), VoxelType.DIRT));
-                            } else {
-                                blocks.add(new Voxel(new Vector3f(i, (float) k, j), VoxelType.DIRT));
-                                blocks.add(new Voxel(new Vector3f(i, (float) (k - 1), j), VoxelType.DIRT));
+                            if (k < 0)
+                                System.out.println(true);
+
+                            for (int v = (int) k; v > (k + chunkDepth); v--) {
+                                if (v > 10) {
+                                    if (v == k)
+                                        blocks.add(new Voxel(new Vector3f(i, (float) v, j), VoxelType.GRASS));
+                                    else
+                                        blocks.add(new Voxel(new Vector3f(i, (float) v, j), VoxelType.DIRT));
+                                } else {
+                                    blocks.add(new Voxel(new Vector3f(i, (float) v, j), VoxelType.DIRT));
+                                }
                             }
                         }
                     }
@@ -179,8 +184,7 @@ public class Terrain implements Runnable {
     public Map<Model, List<Entity>> getTerrain() {
         entitiesMap = new HashMap<>();
 
-        for (int i = 0; i < entities.size(); i++) {
-            Entity entity = entities.get(i);
+        for (Entity entity : entities) {
 
             Vector3f pos = entity.getPos();
 
