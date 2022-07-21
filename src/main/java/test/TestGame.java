@@ -1,15 +1,12 @@
 package test;
 
 import Kuboid.manager.*;
-import Kuboid.manager.entity.Entity;
 import Kuboid.manager.generation.Terrain;
-import Kuboid.manager.model.Model;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import java.text.NumberFormat;
 import java.util.List;
-import java.util.Map;
 
 import static Kuboid.manager.utils.Constants.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -133,18 +130,13 @@ public class TestGame implements ILogic {
             Vector3f cameraPos = camera.getPosition();
             Vector3f cameraCenterPos = camera.getCenterPos(window);
 
-            Map<Model, List<Entity>> terrainData = terrain.getTerrain();
+            List<Vector3f> blocksPositions = terrain.getActiveBlockPositions();
 
-            for (Model model : terrainData.keySet()) {
-                List<Entity> positions = terrainData.get(model);
+            System.out.println(blocksPositions.size());
 
-                for (Entity entity : positions) {
-                    /*Check for the possible positions of voxels along the direction of the
-                    ray starting at the camera position 'n' times, being 'n' the length of the ray
-                    or the number of possible positions we'll check if we find a position that matches
-                    the terrain data then we would eliminate it from the data and finish the cycling*/
-                }
-            }
+            /*for (Vector3f pos : blocksPositions) {
+
+            }*/
 
         }
 

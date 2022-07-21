@@ -30,7 +30,9 @@ public class Terrain implements Runnable {
     private Vector3f camPos;
 
     private Map<Model, List<Entity>> entitiesMap = Collections.synchronizedMap(new HashMap<>());
-    private List<ChunkMesh> chunks = Collections.synchronizedList(new ArrayList<>());
+    private List<ChunkMesh> chunkMeshes = Collections.synchronizedList(new ArrayList<>());
+    private List<Chunk> activeChunks = Collections.synchronizedList(new ArrayList<>());
+    private List<Vector3f> blockPositions = Collections.synchronizedList(new ArrayList<>());
     private List<Entity> entities = Collections.synchronizedList(new ArrayList<>());
     private List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<>());
 
@@ -153,7 +155,7 @@ public class Terrain implements Runnable {
                     chunk = new Chunk(blocks, vector, chunkSize);
 
                     usedPos.add(vector);
-                    chunks.add(new ChunkMesh(chunk));
+                    chunkMeshes.add(new ChunkMesh(chunk));
                 }
             }
         }
@@ -162,9 +164,9 @@ public class Terrain implements Runnable {
     public void update(Vector3f camPos) {
         this.camPos = camPos;
 
-        if (index < chunks.size()) {
-            for (long i = index; i < chunks.size(); i++) {
-                ChunkMesh chunk = chunks.get((int) i);
+        if (index < chunkMeshes.size()) {
+            for (long i = index; i < chunkMeshes.size(); i++) {
+                ChunkMesh chunk = chunkMeshes.get((int) i);
                 newModel = loader.loadModel(chunk.positions, chunk.uvs);
 
                 try {
@@ -199,6 +201,31 @@ public class Terrain implements Runnable {
         return entitiesMap;
     }
 
+    public List<Vector3f> getActiveBlockPositions() {
+        activeChunks = new ArrayList<>();
+        blockPositions = new ArrayList<>();
+
+        for (ChunkMesh chunkMesh : chunkMeshes) {
+            Vector3f pos = chunkMesh.chunk.getOrigin();
+
+            float distX = (camPos.x - pos.x);
+            float distZ = (camPos.z - pos.z);
+
+            if ((Math.abs(distX) <= (size / 2)) && (Math.abs(distZ) <= (size / 2))) {
+                activeChunks.add(chunkMesh.chunk);
+            }
+        }
+
+        for (Chunk chunk : activeChunks) {
+            List<Voxel> voxels = chunk.getVoxels();
+
+            for (Voxel voxel : voxels) {
+                blockPositions.add(voxel.origin);
+            }
+        }
+
+        return blockPositions;
+    }
 
     public void addEntity(Entity entity) {
         List<Entity> entitiesList = entitiesMap.get(entity.getModel());
@@ -221,9 +248,10 @@ public class Terrain implements Runnable {
     public void run() {
         try {
             generateTerrain();
-            while (running) {
-                generateTerrain();
-            }
+
+            //while (running) {
+            //    generateTerrain();
+            //}
         } catch (Exception e) {
             e.printStackTrace();
         }
