@@ -2,8 +2,10 @@ package test;
 
 import Kuboid.manager.*;
 import Kuboid.manager.generation.Terrain;
+import Kuboid.manager.utils.RayCast;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector3i;
 
 import java.text.NumberFormat;
 import java.util.List;
@@ -122,22 +124,34 @@ public class TestGame implements ILogic {
             camera.movePosition(cameraInc.x * CAMERA_MOVE_SPEED, cameraInc.y * CAMERA_MOVE_SPEED, cameraInc.z * CAMERA_MOVE_SPEED);
         }
 
-        if(mouseInput.isLefButtonPress()) {
+        if (mouseInput.isLefButtonPress()) {
             Vector2f rotVec = mouseInput.getDisplayVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
 
-            System.out.println(camera.getCenterPos(window).toString(NumberFormat.getNumberInstance()));
-            Vector3f cameraPos = camera.getPosition();
-            Vector3f cameraCenterPos = camera.getCenterPos(window);
+        }
 
+        if (mouseInput.isRightButtonPress()) {
+            //System.out.println(camera.getCenterPos(window).toString(NumberFormat.getNumberInstance()));
+            mouseInput.getCursorPosition(window);
+            Vector3f cameraPos = camera.getPosition();  //Starting position for the RayCast
+
+            /*
+             *
+             * """Instead of getting the center of the screen I should get the position of the mouse cursor, because
+             *    later on the mouse will be locked in the center of the screen which means it would represent the center
+             *    translating it's position would get us a more accurate behaviour"""
+             *
+             * */
+            Vector3f cameraCenterPos = camera.getCenterPos(window); //Second position for the RayCast
+
+            Vector3f director = cameraCenterPos.sub(cameraPos); //Director vector for the RayCast
             List<Vector3f> blocksPositions = terrain.getActiveBlockPositions();
 
-            System.out.println(blocksPositions.size());
+            RayCast rayCast = new RayCast(cameraPos, director, 100, blocksPositions);
+            Vector3i hit = rayCast.cast();
 
-            /*for (Vector3f pos : blocksPositions) {
-
-            }*/
-
+            if (hit != null)
+                System.out.println(hit.toString(NumberFormat.getNumberInstance()));
         }
 
         terrain.update(camera.getPosition());

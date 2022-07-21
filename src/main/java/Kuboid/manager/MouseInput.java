@@ -69,4 +69,12 @@ public class MouseInput {
     public boolean isRightButtonPress() {
         return rightButtonPress;
     }
+
+    public Vector2f getCursorPosition(WindowManager windowManager) {
+        double[] xpos = new double[1], ypos = new double[1];
+
+        glfwGetCursorPos(windowManager.getWindowId(), xpos, ypos);
+
+        return new Vector2f((float) xpos[0], (float) ypos[0]);
+    }
 }
