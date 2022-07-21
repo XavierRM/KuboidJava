@@ -1,9 +1,15 @@
 package test;
 
 import Kuboid.manager.*;
+import Kuboid.manager.entity.Entity;
 import Kuboid.manager.generation.Terrain;
+import Kuboid.manager.model.Model;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Map;
 
 import static Kuboid.manager.utils.Constants.*;
 import static org.lwjgl.glfw.GLFW.*;
@@ -42,7 +48,7 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
-        terrain = new Terrain(10, 48, true, isWireframe, camera.getPosition());
+        terrain = new Terrain(2, 48, true, isWireframe, camera.getPosition());
 
         if (thread != null && thread.isAlive()) {
             thread.interrupt();
@@ -122,8 +128,26 @@ public class TestGame implements ILogic {
         if(mouseInput.isLefButtonPress()) {
             Vector2f rotVec = mouseInput.getDisplayVec();
             camera.moveRotation(rotVec.x * MOUSE_SENSITIVITY, rotVec.y * MOUSE_SENSITIVITY, 0);
+
+            System.out.println(camera.getCenterPos(window).toString(NumberFormat.getNumberInstance()));
+            Vector3f cameraPos = camera.getPosition();
+            Vector3f cameraCenterPos = camera.getCenterPos(window);
+
+            Map<Model, List<Entity>> terrainData = terrain.getTerrain();
+
+            for (Model model : terrainData.keySet()) {
+                List<Entity> positions = terrainData.get(model);
+
+                for (Entity entity : positions) {
+                    /*Check for the possible positions of voxels along the direction of the
+                    ray starting at the camera position 'n' times, being 'n' the length of the ray
+                    or the number of possible positions we'll check if we find a position that matches
+                    the terrain data then we would eliminate it from the data and finish the cycling*/
+                }
+            }
+
         }
-        //System.out.println(camera.getPosition());
+
         terrain.update(camera.getPosition());
     }
 

@@ -89,38 +89,6 @@ public class RenderManager {
         }
     }
 
-    /*public void render(Entity entity) {
-        Model model = entity.getModel();
-
-        shader.bind();
-
-        if (!isWireframe)
-            shader.setUniform("textureSampler", 0);
-
-        shader.setUniform("projectionMatrix", window.getProjectionMatrix());
-        shader.setUniform("viewMatrix", Transformation.getViewMatrix(this.camera));
-        shader.setUniform("transformationMatrix", Transformation.createTransformationMatrix(entity));
-
-        glBindVertexArray(model.getId());
-        glEnableVertexAttribArray(0);
-
-        if (!isWireframe) {
-            glEnableVertexAttribArray(1);
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, model.getTexture().getId());
-        }
-
-        glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
-
-        glDisableVertexAttribArray(0);
-        if (!isWireframe)
-            glDisableVertexAttribArray(1);
-
-        glBindVertexArray(0);
-
-        shader.unbind();
-    }*/
-
     public void setWireframe(boolean wireframe) {
         isWireframe = wireframe;
     }

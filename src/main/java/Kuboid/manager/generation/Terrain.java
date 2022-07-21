@@ -131,7 +131,7 @@ public class Terrain implements Runnable {
                             //To enhance the flat areas or create news ones the redistribution function can be changed
                             k = Math.pow((float) k, 1.5);
 
-                            //Altitude ranges from 1 to 64
+                            //Altitude ranges from 1 to levels^(-1)
                             k = Math.floor(k / levels);
 
                             if (k < 0)

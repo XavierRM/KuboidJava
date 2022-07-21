@@ -1,6 +1,10 @@
 package Kuboid.manager;
 
+import Kuboid.manager.utils.Transformation;
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 public class Camera {
 
@@ -57,5 +61,26 @@ public class Camera {
 
     public Vector3f getRotation() {
         return rotation;
+    }
+
+    public Vector3f getCenterPos(WindowManager window) {
+        //Point to convert from screen coordinates to world coordinates
+        Vector2f screenPos = new Vector2f(window.getWidth() / 2, window.getHeight() / 2);
+
+        Matrix4f viewMatrix = Transformation.getViewMatrix(this);
+        Matrix4f projectionMatrix = window.getProjectionMatrix();
+
+        Matrix4f vpMatrixInverted = viewMatrix.mul(projectionMatrix).invert();
+
+        Vector4f inWorldPos = new Vector4f(
+                (2.0f * ((float) (screenPos.x) / window.getWidth())) - 1.0f,
+                1.0f - (2.0f * ((float) (screenPos.y) / window.getHeight())),
+                1.0f,
+                1.0f
+        );
+
+        Vector4f newPos = inWorldPos.mul(vpMatrixInverted);
+
+        return new Vector3f(newPos.x / newPos.w, newPos.y / newPos.w, newPos.z / newPos.w);
     }
 }
