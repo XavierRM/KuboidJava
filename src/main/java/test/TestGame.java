@@ -3,6 +3,7 @@ package test;
 import Kuboid.manager.*;
 import Kuboid.manager.generation.Terrain;
 import Kuboid.manager.utils.RayCast;
+import Kuboid.manager.utils.Utils;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
@@ -142,9 +143,13 @@ public class TestGame implements ILogic {
              *    translating it's position would get us a more accurate behaviour"""
              *
              * */
-            Vector3f cameraCenterPos = camera.getCenterPos(window); //Second position for the RayCast
 
-            Vector3f director = cameraCenterPos.sub(cameraPos); //Director vector for the RayCast
+            //Vector3f cameraCenterPos = camera.getCenterPos(window); //Second position for the RayCast
+            Vector3f mousePos = Utils.convert2DPositionTo3D(mouseInput.getCursorPosition(window), camera, window).add(cameraPos); //Second position for the RayCast
+
+            Vector3f director = camera.getRotation(); //Director vector for the RayCast
+            director.z = 1;
+            System.out.println(director.toString(NumberFormat.getNumberInstance()));
             List<Vector3f> blocksPositions = terrain.getActiveBlockPositions();
 
             RayCast rayCast = new RayCast(cameraPos, director, 100, blocksPositions);

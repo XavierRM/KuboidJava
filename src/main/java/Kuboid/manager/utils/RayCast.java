@@ -3,6 +3,7 @@ package Kuboid.manager.utils;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 public class RayCast {
@@ -25,16 +26,20 @@ public class RayCast {
 
     public Vector3i cast() {
         int i = 0;
-        System.out.println("Inside the cast" + (i++));
+        //System.out.println("Inside the cast" + (i++));
         Vector3i voxelCandidate;
         Vector3f pointCandidate;
 
         //Ray = u + t*v, being 'u' the original point and 'v' the direction, we increment 't' in intervals of 0,1f until we find a
         //voxel that is in our grid of active voxels.
-        for (float t = 0; t < length; t += 0.1f) {
+        for (float t = 0; t < length; t += 0.001f) {
+            System.out.println("Inside the cast" + (i++));
+
             //Next point in the line to check
             pointCandidate = origin.add(direction.mul(t));
             voxelCandidate = new Vector3i(((int) Math.floor(pointCandidate.x)), ((int) Math.floor(pointCandidate.y)), ((int) Math.floor(pointCandidate.z)));
+
+            System.out.println("Candidate: " + voxelCandidate.toString(NumberFormat.getInstance()));
 
             if (worldPositions.contains(new Vector3f(voxelCandidate)))
                 return voxelCandidate;
