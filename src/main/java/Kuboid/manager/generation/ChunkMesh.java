@@ -3,6 +3,7 @@ package Kuboid.manager.generation;
 import Kuboid.manager.model.VoxelModel;
 import Kuboid.manager.voxel.Vertex;
 import Kuboid.manager.voxel.Voxel;
+import Kuboid.manager.voxel.VoxelType;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -148,5 +149,34 @@ public class ChunkMesh {
         uvsList.clear();
         normalsList.clear();
 
+    }
+
+    public void updateMesh() {
+        buildMesh();
+    }
+
+    public void addVoxel(Vector3f position) {
+        List<Voxel> voxels = this.chunk.getVoxels();
+        voxels.add(new Voxel(position, VoxelType.DIRT));
+
+        this.chunk.setVoxels(voxels);
+    }
+
+    public void deleteVoxel(Vector3f position) {
+        List<Voxel> voxels = this.chunk.getVoxels();
+        int index = -1;
+        int i = 0;
+
+        while (index == -1 && i < (voxels.size() - 1)) {
+
+            if (voxels.get(i).origin.equals(position.x, position.y, position.z))
+                index = i;
+
+            i++;
+        }
+
+        voxels.remove(i);
+
+        chunk.setVoxels(voxels);
     }
 }

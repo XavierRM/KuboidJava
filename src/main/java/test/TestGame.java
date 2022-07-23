@@ -48,7 +48,7 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
-        terrain = new Terrain(2, 48, true, isWireframe, camera.getPosition());
+        terrain = new Terrain(3, 48, true, isWireframe, camera.getPosition());
 
         if (thread != null && thread.isAlive()) {
             thread.interrupt();
@@ -112,6 +112,10 @@ public class TestGame implements ILogic {
             init();
         }
 
+        if (window.isKeyPressed(GLFW_KEY_V)) {
+            System.out.println("Camera position: " + camera.getPosition().toString(NumberFormat.getNumberInstance()));
+        }
+
     }
 
     @Override
@@ -132,8 +136,7 @@ public class TestGame implements ILogic {
         }
 
         if (mouseInput.isRightButtonPress()) {
-            //System.out.println(camera.getCenterPos(window).toString(NumberFormat.getNumberInstance()));
-            mouseInput.getCursorPosition(window);
+            //mouseInput.getCursorPosition(window);
             Vector3f cameraPos = camera.getPosition();  //Starting position for the RayCast
 
             /*
@@ -144,19 +147,38 @@ public class TestGame implements ILogic {
              *
              * */
 
-            //Vector3f cameraCenterPos = camera.getCenterPos(window); //Second position for the RayCast
-            Vector3f mousePos = Utils.convert2DPositionTo3D(mouseInput.getCursorPosition(window), camera, window).add(cameraPos); //Second position for the RayCast
+            Vector3f direction = Utils.convert2DPositionTo3D(new Vector2f(window.getWidth() / 2, window.getHeight() / 2), camera, window);
 
-            Vector3f director = camera.getRotation(); //Director vector for the RayCast
-            director.z = 1;
-            System.out.println(director.toString(NumberFormat.getNumberInstance()));
             List<Vector3f> blocksPositions = terrain.getActiveBlockPositions();
 
-            RayCast rayCast = new RayCast(cameraPos, director, 100, blocksPositions);
+            /*new Thread() {
+                public void run() {
+                    int i = 0;
+                    for (Vector3f blockPosition : blocksPositions) {
+                        terrain.removeVoxel(blockPosition);
+                        try {
+                            thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if(i++ == 100)
+                            thread.interrupt();
+                    }
+                }
+            }.start();*/
+
+            RayCast rayCast = new RayCast(cameraPos, direction, 100, blocksPositions);
             Vector3i hit = rayCast.cast();
 
-            if (hit != null)
+            if (hit != null) {
                 System.out.println(hit.toString(NumberFormat.getNumberInstance()));
+
+                //terrain.removeVoxel(new Vector3f(hit));
+            } else
+                System.out.println("Hit is null!");
+
+            //terrain.removeVoxel(new Vector3f(Math.round(cameraPos.x), Math.round(cameraPos.y), Math.round(cameraPos.z)+1));
+
         }
 
         terrain.update(camera.getPosition());

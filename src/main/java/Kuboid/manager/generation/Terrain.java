@@ -28,6 +28,7 @@ public class Terrain implements Runnable {
     private boolean isWireframe;
     private boolean running = true;
     private Vector3f camPos;
+    private boolean rebuildMeshes = false;
 
     private Map<Model, List<Entity>> entitiesMap = Collections.synchronizedMap(new HashMap<>());
     private List<ChunkMesh> chunkMeshes = Collections.synchronizedList(new ArrayList<>());
@@ -164,8 +165,29 @@ public class Terrain implements Runnable {
     public void update(Vector3f camPos) {
         this.camPos = camPos;
 
-        if (index < chunkMeshes.size()) {
-            for (long i = index; i < chunkMeshes.size(); i++) {
+        if (!rebuildMeshes) {
+            if (index < chunkMeshes.size()) {
+                for (long i = index; i < chunkMeshes.size(); i++) {
+                    ChunkMesh chunk = chunkMeshes.get((int) i);
+                    newModel = loader.loadModel(chunk.positions, chunk.uvs);
+
+                    try {
+                        newModel.setTexture(texture);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    entities.add(new Entity(newModel, chunk.chunk.getOrigin(), new Vector3f(0, 0, 0), 1));
+
+                }
+
+                index++;
+            }
+        } else {
+            rebuildMeshes = false;
+            entities = new ArrayList<>();
+
+            for (long i = 0; i < chunkMeshes.size(); i++) {
                 ChunkMesh chunk = chunkMeshes.get((int) i);
                 newModel = loader.loadModel(chunk.positions, chunk.uvs);
 
@@ -178,8 +200,6 @@ public class Terrain implements Runnable {
                 entities.add(new Entity(newModel, chunk.chunk.getOrigin(), new Vector3f(0, 0, 0), 1));
 
             }
-
-            index++;
         }
     }
 
@@ -238,6 +258,28 @@ public class Terrain implements Runnable {
             List<Entity> aux = new ArrayList<>();
             aux.add(entity);
             entitiesMap.put(entity.getModel(), aux);
+        }
+    }
+
+    public void removeVoxel(Vector3f position) {
+        Vector3f chunkPos = new Vector3f(Math.abs((int) Math.floor(position.x / chunkSize)), 0, Math.abs(((int) Math.floor(position.z / chunkSize))));
+        ChunkMesh chunk = null;
+        int index = -1;
+
+        for (int i = 0; i < chunkMeshes.size(); i++) {
+            ChunkMesh chunkMesh = chunkMeshes.get(i);
+
+            if (chunkMesh.chunk.getOrigin().equals(chunkPos.x, chunkPos.y, chunkPos.z)) {
+                chunk = chunkMesh;
+                index = i;
+            }
+        }
+
+        if (chunk != null && (index != -1)) {
+            chunk.deleteVoxel(position);
+            chunk.updateMesh();
+            chunkMeshes.add(index, chunk);
+            rebuildMeshes = true;
         }
     }
 
