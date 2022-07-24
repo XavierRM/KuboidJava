@@ -3,7 +3,6 @@ package Kuboid.manager.utils;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,14 +122,20 @@ public class RayCast {
                 tMaxZ += tDeltaZ;
             }
 
-            System.out.println("Direction: " + this.direction.toString(NumberFormat.getNumberInstance()));
-            System.out.println("tMax: " + new Vector3f(tMaxX, tMaxY, tMaxZ).toString(NumberFormat.getNumberInstance()));
-            System.out.println("VoxelCandidate: " + new Vector3f(x, y, z).toString(NumberFormat.getNumberInstance()));
-            System.out.println();
+            //System.out.println("Direction: " + this.direction.toString(NumberFormat.getNumberInstance()));
+            //System.out.println("tMax: " + new Vector3f(tMaxX, tMaxY, tMaxZ).toString(NumberFormat.getNumberInstance()));
+            //System.out.println("VoxelCandidate: " + new Vector3f(x, y, z).toString(NumberFormat.getNumberInstance()));
+            //System.out.println();
 
             lengthIncrementVector = (float) Math.sqrt(Math.pow(tMaxX, 2) + Math.pow(tMaxY, 2) + Math.pow(tMaxZ, 2));
 
-            //TODO Here it uses the equals of the Object class so it's not comparing the actual values
+            //System.out.println("Contains: " + !worldPositions.contains(new Vector3f(x, y, z)));
+
+            /*TODO: The position saved in worldPositions have a different way of enumerating the positions, the have different
+                    values compared to the camera position, the worldCoordinate system starts at 0 and increments until it gets
+                    to the further point and the camera uses the OpenGL standard where the camera is spawned at (0, 0, 0) and
+                    any movement to the -/+ direction in an axis results in a -/+ value for the position in that axis.
+            */
         } while (!worldPositions.contains(new Vector3f(x, y, z)) && lengthIncrementVector <= length);
 
         Vector3i result = (lengthIncrementVector <= length) ? new Vector3i((int) x, (int) y, (int) z) : null;
