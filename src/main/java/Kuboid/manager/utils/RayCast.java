@@ -67,10 +67,7 @@ public class RayCast {
             aux = (step > 0) ? (new Vector3f(axis).mul(nextVoxelAxis)).sub(new Vector3f(axis).mul(this.origin)) :
                     ((new Vector3f(axis).mul(nextVoxelAxis)).add(axis)).sub(new Vector3f(axis).mul(this.origin));
 
-            //TODO after fixing the contains in the while loop try without 'normalizing' the values
-            Vector3f directionValue = new Vector3f(axis).mul(direction);
-
-            return Math.abs(aux.x + aux.y + aux.z) / Math.abs(directionValue.x + directionValue.y + directionValue.z);
+            return Math.abs(aux.x + aux.y + aux.z);
         }
     }
 

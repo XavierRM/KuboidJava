@@ -10,7 +10,6 @@ import Kuboid.manager.voxel.Voxel;
 import Kuboid.manager.voxel.VoxelType;
 import org.joml.Vector3f;
 
-import java.text.NumberFormat;
 import java.util.*;
 import java.util.random.RandomGenerator;
 
@@ -182,6 +181,7 @@ public class Terrain implements Runnable {
                 index++;
             }
         } else {
+            System.out.println("After rebuild meshes");
             rebuildMeshes = false;
             entities = new ArrayList<>();
 
@@ -203,8 +203,10 @@ public class Terrain implements Runnable {
 
     public Map<Model, List<Entity>> getTerrain() {
         entitiesMap = new HashMap<>();
+        int totalVertexCount = 0;
 
         for (Entity entity : entities) {
+            totalVertexCount += entity.getModel().getVertexCount();
 
             Vector3f pos = entity.getPos();
 
@@ -215,6 +217,8 @@ public class Terrain implements Runnable {
                 addEntity(entity);
             }
         }
+
+        //System.out.println("totalVertexCount: " + totalVertexCount);
 
         return entitiesMap;
     }
@@ -263,7 +267,6 @@ public class Terrain implements Runnable {
         Vector3f chunkPos = new Vector3f((int) Math.floor(position.x / chunkSize),
                 0,
                 (int) Math.floor(position.z / chunkSize));
-        System.out.println("chunkPosId: " + chunkPos.toString(NumberFormat.getNumberInstance()));
         Vector3f chunkOriginPos = new Vector3f(chunkPos).mul(chunkSize);
         ChunkMesh chunk = null;
         int index = -1;
@@ -278,7 +281,12 @@ public class Terrain implements Runnable {
         }
 
         if (chunk != null && (index != -1)) {
+            //System.out.println("BeforeDeleting chunk.positions: " + chunk.positions.length);
+            //System.out.println("BeforeDeleting numberVoxels: " + chunk.chunk.getVoxels().size());
             chunk.deleteVoxel(new Vector3f(position).sub(chunkOriginPos));
+            //System.out.println("AfterDeleting: " + chunk.positions.length);
+            //System.out.println("AfterDeleting numberVoxels: " + chunk.chunk.getVoxels().size());
+
             chunk.updateMesh();
             chunkMeshes.remove(index);
             chunkMeshes.add(index, chunk);

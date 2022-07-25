@@ -6,7 +6,6 @@ import Kuboid.manager.voxel.Voxel;
 import Kuboid.manager.voxel.VoxelType;
 import org.joml.Vector3f;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,6 +112,8 @@ public class ChunkMesh {
     //Could be improved
     private void populateList() {
 
+        System.out.println("populateList -> vertices: " + vertices.size());
+
         for (int i = 0; i < vertices.size(); i++) {
             Vertex vertex = vertices.get(i);
 
@@ -162,6 +163,7 @@ public class ChunkMesh {
         usedPos = getUsedPositions(chunk.getVoxels());
 
         buildMesh();
+        populateList();
     }
 
     public void addVoxel(Vector3f position) {
@@ -176,8 +178,6 @@ public class ChunkMesh {
         int index = -1;
         int i = 0;
 
-        System.out.println("ChunkMesh -> deleteVoxel: " + position.toString(NumberFormat.getNumberInstance()));
-
         while (index == -1 && i < voxels.size()) {
 
             if (voxels.get(i).origin.equals(position.x, position.y, position.z))
@@ -185,8 +185,6 @@ public class ChunkMesh {
 
             i++;
         }
-
-        System.out.println("index:" + index);
 
         if (index != -1) {
             voxels.remove(index);
