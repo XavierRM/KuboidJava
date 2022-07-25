@@ -154,6 +154,8 @@ public class TestGame implements ILogic {
             //Get blocks to compare the ray hit with
             List<Vector3f> blocksPositions = terrain.getActiveBlockPositions();
 
+            System.out.println(blocksPositions.size());
+
             RayCast rayCast = new RayCast(cameraPos, direction, 0, blocksPositions);
             Vector3i hit = rayCast.cast();
 

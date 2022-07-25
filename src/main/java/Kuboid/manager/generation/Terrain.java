@@ -260,10 +260,10 @@ public class Terrain implements Runnable {
     }
 
     public void removeVoxel(Vector3f position) {
-        Vector3f chunkPos = new Vector3f((int) ((position.x < 0) ? Math.floor(position.x / chunkSize) : Math.ceil(position.x / chunkSize)),
+        Vector3f chunkPos = new Vector3f((int) Math.floor(position.x / chunkSize),
                 0,
-                ((int) ((position.z < 0) ? Math.floor(position.z / chunkSize) : Math.ceil(position.z / chunkSize))));
-        System.out.println(chunkPos.toString(NumberFormat.getNumberInstance()));
+                (int) Math.floor(position.z / chunkSize));
+        System.out.println("chunkPosId: " + chunkPos.toString(NumberFormat.getNumberInstance()));
         Vector3f chunkOriginPos = new Vector3f(chunkPos).mul(chunkSize);
         ChunkMesh chunk = null;
         int index = -1;
@@ -278,8 +278,9 @@ public class Terrain implements Runnable {
         }
 
         if (chunk != null && (index != -1)) {
-            chunk.deleteVoxel(new Vector3f(position).div(new Vector3f(chunkPos).absolute()));
+            chunk.deleteVoxel(new Vector3f(position).sub(chunkOriginPos));
             chunk.updateMesh();
+            chunkMeshes.remove(index);
             chunkMeshes.add(index, chunk);
             rebuildMeshes = true;
         }
