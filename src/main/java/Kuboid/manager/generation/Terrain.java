@@ -10,6 +10,7 @@ import Kuboid.manager.voxel.Voxel;
 import Kuboid.manager.voxel.VoxelType;
 import org.joml.Vector3f;
 
+import java.text.NumberFormat;
 import java.util.*;
 import java.util.random.RandomGenerator;
 
@@ -259,7 +260,10 @@ public class Terrain implements Runnable {
     }
 
     public void removeVoxel(Vector3f position) {
-        Vector3f chunkPos = new Vector3f(Math.abs((int) Math.floor(position.x / chunkSize)), 0, Math.abs(((int) Math.floor(position.z / chunkSize))));
+        Vector3f chunkPos = new Vector3f((int) ((position.x < 0) ? Math.floor(position.x / chunkSize) : Math.ceil(position.x / chunkSize)),
+                0,
+                ((int) ((position.z < 0) ? Math.floor(position.z / chunkSize) : Math.ceil(position.z / chunkSize))));
+        System.out.println(chunkPos.toString(NumberFormat.getNumberInstance()));
         Vector3f chunkOriginPos = new Vector3f(chunkPos).mul(chunkSize);
         ChunkMesh chunk = null;
         int index = -1;

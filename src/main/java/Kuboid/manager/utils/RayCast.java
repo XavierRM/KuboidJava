@@ -83,7 +83,7 @@ public class RayCast {
         int stepZ = calculateStep(this.direction.z);
 
         //Voxel that corresponds to the origin of the ray
-        originVoxel = new Vector3i((int) Math.ceil(this.origin.x), (int) Math.ceil(this.origin.y), (int) Math.ceil(this.origin.z));
+        originVoxel = new Vector3i((int) Math.floor(this.origin.x), (int) Math.floor(this.origin.y), (int) Math.floor(this.origin.z));
 
         //The next voxel the ray is going to hit
         Vector3i nextVoxel = new Vector3i(originVoxel).add(stepX, stepY, stepZ);
