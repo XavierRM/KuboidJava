@@ -131,20 +131,17 @@ public class Terrain implements Runnable {
                             noise /= 3.65;
                             double k = (1 + noise) / 2;
 
-                            //To enhance the flat areas or create news ones the redistribution function can be changed
+                            //To enhance the flat areas or create new ones the redistribution function can be changed
                             k = Math.pow((float) k, 1.5);
 
                             //Altitude ranges from 1 to levels^(-1)
                             k = Math.floor(k / levels);
 
-                            if (k < 0)
-                                System.out.println(true);
-
                             for (int v = (int) k; v > (k + chunkDepth); v--) {
                                 if (v > 10) {
-                                    if (v == k)
+                                    if (v == k) {
                                         blocks.add(new Voxel(new Vector3f(i, (float) v, j), VoxelType.GRASS));
-                                    else
+                                    } else
                                         blocks.add(new Voxel(new Vector3f(i, (float) v, j), VoxelType.DIRT));
                                 } else {
                                     blocks.add(new Voxel(new Vector3f(i, (float) v, j), VoxelType.DIRT));
@@ -240,7 +237,7 @@ public class Terrain implements Runnable {
             List<Voxel> voxels = chunk.getVoxels();
 
             for (Voxel voxel : voxels) {
-                blockPositions.add(voxel.origin);
+                blockPositions.add(new Vector3f(voxel.origin).add(chunk.getOrigin()));
             }
         }
 
@@ -263,20 +260,21 @@ public class Terrain implements Runnable {
 
     public void removeVoxel(Vector3f position) {
         Vector3f chunkPos = new Vector3f(Math.abs((int) Math.floor(position.x / chunkSize)), 0, Math.abs(((int) Math.floor(position.z / chunkSize))));
+        Vector3f chunkOriginPos = new Vector3f(chunkPos).mul(chunkSize);
         ChunkMesh chunk = null;
         int index = -1;
 
         for (int i = 0; i < chunkMeshes.size(); i++) {
             ChunkMesh chunkMesh = chunkMeshes.get(i);
 
-            if (chunkMesh.chunk.getOrigin().equals(chunkPos.x, chunkPos.y, chunkPos.z)) {
+            if (chunkMesh.chunk.getOrigin().equals(chunkOriginPos.x, chunkOriginPos.y, chunkOriginPos.z)) {
                 chunk = chunkMesh;
                 index = i;
             }
         }
 
         if (chunk != null && (index != -1)) {
-            chunk.deleteVoxel(position);
+            chunk.deleteVoxel(new Vector3f(position).div(new Vector3f(chunkPos).absolute()));
             chunk.updateMesh();
             chunkMeshes.add(index, chunk);
             rebuildMeshes = true;

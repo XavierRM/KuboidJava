@@ -83,7 +83,7 @@ public class RayCast {
         int stepZ = calculateStep(this.direction.z);
 
         //Voxel that corresponds to the origin of the ray
-        originVoxel = new Vector3i((int) Math.floor(this.origin.x), (int) Math.floor(this.origin.y), (int) Math.floor(this.origin.z));
+        originVoxel = new Vector3i((int) Math.ceil(this.origin.x), (int) Math.ceil(this.origin.y), (int) Math.ceil(this.origin.z));
 
         //The next voxel the ray is going to hit
         Vector3i nextVoxel = new Vector3i(originVoxel).add(stepX, stepY, stepZ);
@@ -131,11 +131,6 @@ public class RayCast {
 
             //System.out.println("Contains: " + !worldPositions.contains(new Vector3f(x, y, z)));
 
-            /*TODO: The position saved in worldPositions have a different way of enumerating the positions, the have different
-                    values compared to the camera position, the worldCoordinate system starts at 0 and increments until it gets
-                    to the further point and the camera uses the OpenGL standard where the camera is spawned at (0, 0, 0) and
-                    any movement to the -/+ direction in an axis results in a -/+ value for the position in that axis.
-            */
         } while (!worldPositions.contains(new Vector3f(x, y, z)) && lengthIncrementVector <= length);
 
         Vector3i result = (lengthIncrementVector <= length) ? new Vector3i((int) x, (int) y, (int) z) : null;

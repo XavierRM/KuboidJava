@@ -10,7 +10,6 @@ import org.joml.Vector4f;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.text.NumberFormat;
 import java.util.Scanner;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -48,8 +47,6 @@ public class Utils {
 
     private static Vector2f getNormalizedScreenPos(Vector2f pos, WindowManager windowManager) {
         Vector2f result = new Vector2f();
-
-        System.out.println("Window pos: " + pos.toString(NumberFormat.getNumberInstance()));
 
         result.x = (2 * pos.x) / windowManager.getWidth() - 1f;
         result.y = (2 * pos.y) / windowManager.getHeight() - 1f;
