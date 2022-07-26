@@ -50,9 +50,9 @@ public class Camera {
         this.rotation.y += y;
         this.rotation.z += z;
 
-        this.rotation.x %= 365;
-        this.rotation.y %= 365;
-        this.rotation.z %= 365;
+        this.rotation.x %= 360;
+        this.rotation.y %= 360;
+        this.rotation.z %= 360;
     }
 
     public Vector3f getPosition() {

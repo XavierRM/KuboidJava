@@ -58,6 +58,8 @@ public class Utils {
         Matrix4f invertedProjectionMatrix = projectionMatrix.invert();
         Vector4f eyeCoords = invertedProjectionMatrix.transform(clipCoords);
 
+        //System.out.println("eyeCoords: " + new Vector4f(eyeCoords.x, eyeCoords.y, -1f, 1f).toString(NumberFormat.getNumberInstance()));
+
         return new Vector4f(eyeCoords.x, eyeCoords.y, -1f, 1f);
     }
 
@@ -65,10 +67,12 @@ public class Utils {
         Matrix4f invertedViewMatrix = viewMatrix.invert();
         Vector4f rayWorld = invertedViewMatrix.transform(eyeCoords);
 
+        //System.out.println("worldCoords: " + new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z).toString(NumberFormat.getNumberInstance()));
+
         Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
 
         //Normalize the ray
-        mouseRay.normalize();
+        //mouseRay.normalize();
 
         return mouseRay;
     }
@@ -92,7 +96,7 @@ public class Utils {
         Vector2f normalizedPos2D = getNormalizedScreenPos(pos2D, window);
 
         //Calculated the clip coords
-        Vector4f clipCoords = new Vector4f(normalizedPos2D.x, normalizedPos2D.y, -1f, 0f);
+        Vector4f clipCoords = new Vector4f(normalizedPos2D.x, normalizedPos2D.y, -1f, 0);
 
         //Converted to the equivalent of the eye coords
         Vector4f eyeCoords = toEyeCoords(clipCoords, new Matrix4f(viewMatrix));
