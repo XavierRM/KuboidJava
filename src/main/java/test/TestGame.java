@@ -167,6 +167,8 @@ public class TestGame implements ILogic {
             //terrain.removeVoxel(new Vector3f(Math.round(cameraPos.x), Math.round(cameraPos.y), Math.round(cameraPos.z)+1));
 
         }
+        Vector3f direction = Utils.convert2DPositionTo3D(new Vector2f(window.getWidth() / 2, window.getHeight() / 2), camera, window);
+        System.out.println(direction.toString(NumberFormat.getNumberInstance()));
 
         terrain.update(camera.getPosition());
     }

@@ -75,6 +75,16 @@ public class Utils {
 
     public static Vector3f convert2DPositionTo3D(Vector2f pos2D, Camera camera, WindowManager window) {
 
+        /*
+         * TODO: When looking straight down the value of the 'y' axis should be around the -1 value
+         *       but it's -0,5 instead, when looking straight to the -x direction the value should be
+         *       -1 in the 'x' but it doesn't go above -0,75 and the value in the 'z' axis should be 0
+         *       but it stays around the (-0,6) - (-0,7) mark, there's probably other situations where
+         *       this is not calculated properly generating an offset in the direction that leads to a wrong
+         *       calculation of the RayCasting 'hit'.
+         *
+         */
+
         Matrix4f viewMatrix = Transformation.getViewMatrix(camera);
         Matrix4f projectionMatrix = window.getProjectionMatrix();
 

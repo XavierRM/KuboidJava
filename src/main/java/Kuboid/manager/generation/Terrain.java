@@ -281,12 +281,7 @@ public class Terrain implements Runnable {
         }
 
         if (chunk != null && (index != -1)) {
-            //System.out.println("BeforeDeleting chunk.positions: " + chunk.positions.length);
-            //System.out.println("BeforeDeleting numberVoxels: " + chunk.chunk.getVoxels().size());
             chunk.deleteVoxel(new Vector3f(position).sub(chunkOriginPos));
-            //System.out.println("AfterDeleting: " + chunk.positions.length);
-            //System.out.println("AfterDeleting numberVoxels: " + chunk.chunk.getVoxels().size());
-
             chunk.updateMesh();
             chunkMeshes.remove(index);
             chunkMeshes.add(index, chunk);

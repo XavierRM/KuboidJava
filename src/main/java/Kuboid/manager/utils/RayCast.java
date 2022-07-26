@@ -3,6 +3,7 @@ package Kuboid.manager.utils;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ public class RayCast {
 
     private int calculateStep(float axisDirection) {
 
-        if (axisDirection > 0)
+        if (axisDirection >= 0)
             return 1;
         else
             return (axisDirection < 0) ? -1 : 0;
@@ -73,7 +74,6 @@ public class RayCast {
 
     public Vector3i cast() {
         Vector3i originVoxel;
-        Vector3f pointCandidate = new Vector3f(origin);
 
         int stepX = calculateStep(this.direction.x);
         int stepY = calculateStep(this.direction.y);
@@ -92,6 +92,7 @@ public class RayCast {
 
         //Calculating tDelta for each axis, length of the voxel in an axis represented in units of 't'
         //If the size of the voxel != 1 then we would replace '1' with the 'voxelSize'
+        //Was previously absolute value of the result
         float tDeltaX = Math.abs(1 / this.direction.x);
         float tDeltaY = Math.abs(1 / this.direction.y);
         float tDeltaZ = Math.abs(1 / this.direction.z);
@@ -121,7 +122,7 @@ public class RayCast {
 
             //System.out.println("Direction: " + this.direction.toString(NumberFormat.getNumberInstance()));
             //System.out.println("tMax: " + new Vector3f(tMaxX, tMaxY, tMaxZ).toString(NumberFormat.getNumberInstance()));
-            //System.out.println("VoxelCandidate: " + new Vector3f(x, y, z).toString(NumberFormat.getNumberInstance()));
+            System.out.println("VoxelCandidate: " + new Vector3f(x, y, z).toString(NumberFormat.getNumberInstance()));
             //System.out.println();
 
             lengthIncrementVector = (float) Math.sqrt(Math.pow(tMaxX, 2) + Math.pow(tMaxY, 2) + Math.pow(tMaxZ, 2));
@@ -133,50 +134,5 @@ public class RayCast {
         Vector3i result = (lengthIncrementVector <= length) ? new Vector3i((int) x, (int) y, (int) z) : null;
 
         return result;
-    }
-
-    public Vector3i castDDA() {
-
-        //Calculate the differences
-        float dx = secondPoint.x - origin.x;
-        float dy = secondPoint.y - origin.y;
-        float dz = secondPoint.z - origin.z;
-
-        //Calculate the steps
-        float steps;
-
-        if (Math.abs(dx) > Math.abs(dy))
-            steps = (Math.abs(dx) > Math.abs(dz)) ? Math.abs(dx) : Math.abs(dz);
-        else
-            steps = (Math.abs(dy) > Math.abs(dz)) ? Math.abs(dy) : Math.abs(dz);
-
-        //Calculate the increment for each axis
-        float Xinc = dx / steps;
-        float Yinc = dy / steps;
-        float Zinc = dz / steps;
-
-        Vector3i voxelCandidate;
-        Vector3f pointCandidate = new Vector3f(origin);
-
-        //This should be the voxel size
-        Vector3f increment = new Vector3f(Xinc, Yinc, Zinc);
-        long i = 0;
-
-        do {
-            //Next point in the line to check
-            pointCandidate = new Vector3f(pointCandidate.add(increment));
-            voxelCandidate = new Vector3i(((int) Math.floor(pointCandidate.x)), ((int) Math.floor(pointCandidate.y)), ((int) Math.floor(pointCandidate.z)));
-
-            i++;
-
-            //While condition checks for a hit or if the length of the ray has already reached its max,
-            //if so we finish the execution and return the voxel that hit
-        } while (!worldPositions.contains(new Vector3f(voxelCandidate)) && i < length);
-
-        if (i >= length)
-            return null;
-
-        //In case we don't find any position that matches the previous requirements then we return null
-        return voxelCandidate;
     }
 }

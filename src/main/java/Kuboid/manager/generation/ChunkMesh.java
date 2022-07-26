@@ -187,7 +187,9 @@ public class ChunkMesh {
         }
 
         if (index != -1) {
-            voxels.remove(index);
+            Voxel voxel = voxels.remove(index);
+            voxel.type = VoxelType.STONE;
+            voxels.add(index, voxel);
 
             chunk.setVoxels(voxels);
         }

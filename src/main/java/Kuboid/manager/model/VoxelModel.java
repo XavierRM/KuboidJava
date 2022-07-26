@@ -102,12 +102,12 @@ public class VoxelModel {
             new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
 
             // TREEBARK
             new Vector2f(4.f / 16.f, 0.f),
@@ -146,12 +146,12 @@ public class VoxelModel {
             new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
 
             // TREEBARK
             new Vector2f(4.f / 16.f, 0.f),
@@ -190,12 +190,12 @@ public class VoxelModel {
             new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
 
             // TREEBARK
             new Vector2f(5.f / 16.f, 0.f),
@@ -234,12 +234,12 @@ public class VoxelModel {
             new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
 
             // TREEBARK
             new Vector2f(5.f / 16.f, 0.f),
@@ -278,12 +278,12 @@ public class VoxelModel {
             new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
 
             // TREEBARK
             new Vector2f(4.f / 16.f, 0.f),
@@ -322,12 +322,12 @@ public class VoxelModel {
             new Vector2f((2.f / 16.f) + ERROR, 0.f + ERROR),
 
             // STONE
-            new Vector2f(3.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 1.f / 16.f),
-            new Vector2f(4.f / 16.f, 0.f),
-            new Vector2f(3.f / 16.f, 0.f),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, (1.f / 16.f) - ERROR),
+            new Vector2f((2.f / 16.f) - ERROR, 0.f + ERROR),
+            new Vector2f((1.f / 16.f) + ERROR, 0.f + ERROR),
 
             // TREEBARK
             new Vector2f(4.f / 16.f, 0.f),
