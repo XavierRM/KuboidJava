@@ -72,6 +72,9 @@ public class Utils {
         Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
 
         //Normalize the ray
+        float lengthMouseRay = mouseRay.length();
+        mouseRay.y /= lengthMouseRay;
+        mouseRay.y *= 2;
         //mouseRay.normalize();
 
         return mouseRay;
@@ -80,12 +83,10 @@ public class Utils {
     public static Vector3f convert2DPositionTo3D(Vector2f pos2D, Camera camera, WindowManager window) {
 
         /*
-         * TODO: When looking straight down the value of the 'y' axis should be around the -1 value
-         *       but it's -0,5 instead, when looking straight to the -x direction the value should be
-         *       -1 in the 'x' but it doesn't go above -0,75 and the value in the 'z' axis should be 0
-         *       but it stays around the (-0,6) - (-0,7) mark, there's probably other situations where
-         *       this is not calculated properly generating an offset in the direction that leads to a wrong
-         *       calculation of the RayCasting 'hit'.
+         * TODO: Right now the value of 'z' is always -1 which theoretically makes sense for a camera that can move
+         *       freely but is always pointing to the '-z' direction, in my case I can be pointing in any 'z' value
+         *       so it should vary when I rotate the camera, the 'x' and 'y' axis are fine, but for the 'z' I should
+         *       consider the camera rotation in the 'y' axis to calculate the value.
          *
          */
 
@@ -96,13 +97,15 @@ public class Utils {
         Vector2f normalizedPos2D = getNormalizedScreenPos(pos2D, window);
 
         //Calculated the clip coords
-        Vector4f clipCoords = new Vector4f(normalizedPos2D.x, normalizedPos2D.y, -1f, 0);
+        Vector4f clipCoords = new Vector4f(normalizedPos2D.x, normalizedPos2D.y, -1f, 0f);
 
         //Converted to the equivalent of the eye coords
         Vector4f eyeCoords = toEyeCoords(clipCoords, new Matrix4f(viewMatrix));
 
         //Calculate the world ray, as a unit vector (normalized)
         Vector3f worldRay = toWorldCoords(eyeCoords, new Matrix4f(projectionMatrix));
+
+        worldRay.z = (float) -Math.cos(Math.toRadians(Math.abs(camera.getRotation().y)));
 
         return worldRay;
     }
