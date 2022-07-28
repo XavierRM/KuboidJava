@@ -136,25 +136,15 @@ public class TestGame implements ILogic {
         }
 
         if (mouseInput.isRightButtonPress()) {
-            //mouseInput.getCursorPosition(window);
-
             Vector3f cameraPos = camera.getPosition();  //Starting position for the RayCast
 
-            /*
-             *
-             * """Instead of getting the center of the screen I should get the position of the mouse cursor, because
-             *    later on the mouse will be locked in the center of the screen which means it would represent the center
-             *    translating it's position would get us a more accurate behaviour"""
-             *
-             * */
-
-            Vector3f direction = Utils.convert2DPositionTo3D(new Vector2f(window.getWidth() / 2, window.getHeight() / 2), camera, window);
-            //Vector3f direction = Utils.convert2DPositionTo3D(new Vector2f(mouseInput.getCursorPosition(window).x, mouseInput.getCursorPosition(window).y), camera, window);
+            //Vector3f direction = Utils.convert2DPositionTo3D(new Vector2f(window.getWidth() / 2, window.getHeight() / 2), camera, window);
+            Vector3f direction = Utils.calculateDirection(camera);  //Direction for the RayCast
 
             //Get blocks to compare the ray hit with
             List<Vector3f> blocksPositions = terrain.getActiveBlockPositions();
 
-            RayCast rayCast = new RayCast(cameraPos, direction, 0, blocksPositions);
+            RayCast rayCast = new RayCast(cameraPos, direction, 15, blocksPositions);
             Vector3i hit = rayCast.cast();
 
             if (hit != null) {
@@ -164,12 +154,7 @@ public class TestGame implements ILogic {
             } else
                 System.out.println("Hit is null!");
 
-            //terrain.removeVoxel(new Vector3f(Math.round(cameraPos.x), Math.round(cameraPos.y), Math.round(cameraPos.z)+1));
-
         }
-        Vector3f direction = Utils.convert2DPositionTo3D(new Vector2f(window.getWidth() / 2, window.getHeight() / 2), camera, window);
-
-        System.out.println(direction.toString(NumberFormat.getNumberInstance()));
 
         terrain.update(camera.getPosition());
     }

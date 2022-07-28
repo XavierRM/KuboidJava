@@ -112,8 +112,6 @@ public class ChunkMesh {
     //Could be improved
     private void populateList() {
 
-        System.out.println("populateList -> vertices: " + vertices.size());
-
         for (int i = 0; i < vertices.size(); i++) {
             Vertex vertex = vertices.get(i);
 

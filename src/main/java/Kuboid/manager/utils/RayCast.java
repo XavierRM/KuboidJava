@@ -3,7 +3,6 @@ package Kuboid.manager.utils;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +30,15 @@ public class RayCast {
         this.secondPoint = new Vector3f(origin).add(scaledDirection);
         this.direction = new Vector3f(direction);
 
+        //Just in case the value is tiny, it should be considered like 0, otherwise we end up with errors over time
+        this.direction.x = (this.direction.x < 0.1 && this.direction.x > 0) ? 0 : this.direction.x;
+        this.direction.y = (this.direction.y < 0.1 && this.direction.y > 0) ? 0 : this.direction.y;
+        this.direction.z = (this.direction.z < 0.1 && this.direction.z > 0) ? 0 : this.direction.z;
+
+        this.direction.x = (this.direction.x > -0.1 && this.direction.x < 0) ? 0 : this.direction.x;
+        this.direction.y = (this.direction.y > -0.1 && this.direction.y < 0) ? 0 : this.direction.y;
+        this.direction.z = (this.direction.z > -0.1 && this.direction.z < 0) ? 0 : this.direction.z;
+
         if (length == 0)
             //If the length == 0 then we set the length of the ray to be 'infinite'
             this.length = (long) Constants.Z_FAR;
@@ -41,10 +49,10 @@ public class RayCast {
 
     private int calculateStep(float axisDirection) {
 
-        if (axisDirection >= 0)
-            return 1;
+        if (Math.abs(axisDirection) == 0)
+            return 0;
         else
-            return (axisDirection < 0) ? -1 : 0;
+            return (axisDirection < 0) ? -1 : 1;
     }
 
     private float calculateTMax(int nextVoxelAxis, int step, Vector3f axis) {
@@ -93,15 +101,12 @@ public class RayCast {
         //Calculating tDelta for each axis, length of the voxel in an axis represented in units of 't'
         //If the size of the voxel != 1 then we would replace '1' with the 'voxelSize'
         //Was previously absolute value of the result
-        float tDeltaX = Math.abs(1 / this.direction.x);
-        float tDeltaY = Math.abs(1 / this.direction.y);
-        float tDeltaZ = Math.abs(1 / this.direction.z);
-
-        //Ray = u + t*v, being 'u' the original point and 'v' the direction, we increment 't' in intervals to get
-        //different points of the ray, that is the basic principle
+        float tDeltaX = (this.direction.x != 0) ? Math.abs(1 / this.direction.x) : 1;
+        float tDeltaY = (this.direction.y != 0) ? Math.abs(1 / this.direction.y) : 1;
+        float tDeltaZ = (this.direction.z != 0) ? Math.abs(1 / this.direction.z) : 1;
 
         //Initialize to the origin of the ray
-        long x = originVoxel.x, y = originVoxel.y, z = originVoxel.z;
+        float x = originVoxel.x, y = originVoxel.y, z = originVoxel.z;
         float lengthIncrementVector = 0;
 
         do {
@@ -120,14 +125,9 @@ public class RayCast {
                 tMaxZ += tDeltaZ;
             }
 
-            //System.out.println("Direction: " + this.direction.toString(NumberFormat.getNumberInstance()));
-            //System.out.println("tMax: " + new Vector3f(tMaxX, tMaxY, tMaxZ).toString(NumberFormat.getNumberInstance()));
-            System.out.println("VoxelCandidate: " + new Vector3f(x, y, z).toString(NumberFormat.getNumberInstance()));
-            //System.out.println();
-
             lengthIncrementVector = (float) Math.sqrt(Math.pow(tMaxX, 2) + Math.pow(tMaxY, 2) + Math.pow(tMaxZ, 2));
 
-            //System.out.println("Contains: " + !worldPositions.contains(new Vector3f(x, y, z)));
+            System.out.println(lengthIncrementVector);
 
         } while (!worldPositions.contains(new Vector3f(x, y, z)) && lengthIncrementVector <= length);
 

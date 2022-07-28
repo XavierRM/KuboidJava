@@ -181,7 +181,6 @@ public class Terrain implements Runnable {
                 index++;
             }
         } else {
-            System.out.println("After rebuild meshes");
             rebuildMeshes = false;
             entities = new ArrayList<>();
 
@@ -217,8 +216,6 @@ public class Terrain implements Runnable {
                 addEntity(entity);
             }
         }
-
-        //System.out.println("totalVertexCount: " + totalVertexCount);
 
         return entitiesMap;
     }

@@ -58,8 +58,6 @@ public class Utils {
         Matrix4f invertedProjectionMatrix = projectionMatrix.invert();
         Vector4f eyeCoords = invertedProjectionMatrix.transform(clipCoords);
 
-        //System.out.println("eyeCoords: " + new Vector4f(eyeCoords.x, eyeCoords.y, -1f, 1f).toString(NumberFormat.getNumberInstance()));
-
         return new Vector4f(eyeCoords.x, eyeCoords.y, -1f, 1f);
     }
 
@@ -67,28 +65,17 @@ public class Utils {
         Matrix4f invertedViewMatrix = viewMatrix.invert();
         Vector4f rayWorld = invertedViewMatrix.transform(eyeCoords);
 
-        //System.out.println("worldCoords: " + new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z).toString(NumberFormat.getNumberInstance()));
-
         Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
 
         //Normalize the ray
         float lengthMouseRay = mouseRay.length();
         mouseRay.y /= lengthMouseRay;
         mouseRay.y *= 2;
-        //mouseRay.normalize();
 
         return mouseRay;
     }
 
     public static Vector3f convert2DPositionTo3D(Vector2f pos2D, Camera camera, WindowManager window) {
-
-        /*
-         * TODO: Right now the value of 'z' is always -1 which theoretically makes sense for a camera that can move
-         *       freely but is always pointing to the '-z' direction, in my case I can be pointing in any 'z' value
-         *       so it should vary when I rotate the camera, the 'x' and 'y' axis are fine, but for the 'z' I should
-         *       consider the camera rotation in the 'y' axis to calculate the value.
-         *
-         */
 
         Matrix4f viewMatrix = Transformation.getViewMatrix(camera);
         Matrix4f projectionMatrix = window.getProjectionMatrix();
@@ -107,8 +94,18 @@ public class Utils {
 
         worldRay.z = (float) -Math.cos(Math.toRadians(Math.abs(camera.getRotation().y))) * (float) Math.cos(Math.toRadians(Math.abs(camera.getRotation().x)));
 
-        //worldRay.normalize();
-
         return worldRay;
+    }
+
+    public static Vector3f calculateDirection(Camera camera) {
+        Vector3f direction = new Vector3f();
+
+        direction.x = (float) Math.sin(Math.toRadians(camera.getRotation().y)) * (float) Math.cos(Math.toRadians(camera.getRotation().x));
+
+        direction.y = (float) -Math.sin(Math.toRadians(camera.getRotation().x));
+
+        direction.z = (float) -Math.cos(Math.toRadians(Math.abs(camera.getRotation().y))) * (float) Math.cos(Math.toRadians(Math.abs(camera.getRotation().x)));
+
+        return new Vector3f(direction);
     }
 }
