@@ -135,4 +135,49 @@ public class RayCast {
 
         return result;
     }
+
+    public Vector3i castDDA() {
+
+        //Calculate the differences
+        float dx = this.direction.x;
+        float dy = this.direction.y;
+        float dz = this.direction.z;
+
+        //Calculate the steps
+        float steps;
+
+        if (Math.abs(dx) > Math.abs(dy))
+            steps = (Math.abs(dx) > Math.abs(dz)) ? Math.abs(dx) : Math.abs(dz);
+        else
+            steps = (Math.abs(dy) > Math.abs(dz)) ? Math.abs(dy) : Math.abs(dz);
+
+        //Calculate the increment for each axis
+        float Xinc = dx / steps;
+        float Yinc = dy / steps;
+        float Zinc = dz / steps;
+
+        Vector3i voxelCandidate;
+        Vector3f pointCandidate = new Vector3f(origin);
+
+        //This should be the voxel size
+        Vector3f increment = new Vector3f(Xinc, Yinc, Zinc);
+        long i = 0;
+
+        do {
+            //Next point in the line to check
+            pointCandidate = new Vector3f(pointCandidate.add(increment));
+            voxelCandidate = new Vector3i(((int) Math.floor(pointCandidate.x)), ((int) Math.floor(pointCandidate.y)), ((int) Math.floor(pointCandidate.z)));
+
+            i++;
+
+            //While condition checks for a hit or if the length of the ray has already reached its max,
+            //if so we finish the execution and return the voxel that hit
+        } while (!worldPositions.contains(new Vector3f(voxelCandidate)) && i < length);
+
+        if (i >= length)
+            return null;
+
+        //In case we don't find any position that matches the previous requirements then we return null
+        return voxelCandidate;
+    }
 }

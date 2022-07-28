@@ -145,7 +145,8 @@ public class TestGame implements ILogic {
             List<Vector3f> blocksPositions = terrain.getActiveBlockPositions();
 
             RayCast rayCast = new RayCast(cameraPos, direction, 15, blocksPositions);
-            Vector3i hit = rayCast.cast();
+            //Vector3i hit = rayCast.cast();
+            Vector3i hit = rayCast.castDDA();
 
             if (hit != null) {
                 System.out.println(hit.toString(NumberFormat.getNumberInstance()));
