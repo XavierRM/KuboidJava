@@ -105,7 +105,9 @@ public class Utils {
         //Calculate the world ray, as a unit vector (normalized)
         Vector3f worldRay = toWorldCoords(eyeCoords, new Matrix4f(projectionMatrix));
 
-        worldRay.z = (float) -Math.cos(Math.toRadians(Math.abs(camera.getRotation().y)));
+        worldRay.z = (float) -Math.cos(Math.toRadians(Math.abs(camera.getRotation().y))) * (float) Math.cos(Math.toRadians(Math.abs(camera.getRotation().x)));
+
+        //worldRay.normalize();
 
         return worldRay;
     }
