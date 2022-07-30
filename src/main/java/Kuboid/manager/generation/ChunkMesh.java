@@ -166,7 +166,7 @@ public class ChunkMesh {
 
     public void addVoxel(Vector3f position) {
         List<Voxel> voxels = this.chunk.getVoxels();
-        voxels.add(new Voxel(position, VoxelType.DIRT));
+        voxels.add(new Voxel(position, VoxelType.STONE));
 
         this.chunk.setVoxels(voxels);
     }

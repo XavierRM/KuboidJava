@@ -4,6 +4,7 @@ import Kuboid.manager.ObjectLoader;
 import Kuboid.manager.entity.Entity;
 import Kuboid.manager.model.Model;
 import Kuboid.manager.model.Texture;
+import Kuboid.manager.utils.Pair;
 import Kuboid.manager.utils.PerlinNoise;
 import Kuboid.manager.utils.SimplexNoise;
 import Kuboid.manager.voxel.Voxel;
@@ -260,11 +261,7 @@ public class Terrain implements Runnable {
         }
     }
 
-    public void removeVoxel(Vector3f position) {
-        Vector3f chunkPos = new Vector3f((int) Math.floor(position.x / chunkSize),
-                0,
-                (int) Math.floor(position.z / chunkSize));
-        Vector3f chunkOriginPos = new Vector3f(chunkPos).mul(chunkSize);
+    private Pair<ChunkMesh, Integer> getChunk(Vector3f chunkOriginPos) {
         ChunkMesh chunk = null;
         int index = -1;
 
@@ -277,8 +274,44 @@ public class Terrain implements Runnable {
             }
         }
 
+        return new Pair<>(chunk, index);
+    }
+
+    public void removeVoxel(Vector3f position) {
+        Vector3f chunkPos = new Vector3f((int) Math.floor(position.x / chunkSize),
+                0,
+                (int) Math.floor(position.z / chunkSize));
+        Vector3f chunkOriginPos = new Vector3f(chunkPos).mul(chunkSize);
+
+        Pair<ChunkMesh, Integer> resultGetChunk = getChunk(chunkOriginPos);
+
+        ChunkMesh chunk = resultGetChunk.p1;
+        int index = resultGetChunk.p2;
+
+
         if (chunk != null && (index != -1)) {
             chunk.deleteVoxel(new Vector3f(position).sub(chunkOriginPos));
+            chunk.updateMesh();
+            chunkMeshes.remove(index);
+            chunkMeshes.add(index, chunk);
+            rebuildMeshes = true;
+        }
+    }
+
+    public void addVoxel(Vector3f position) {
+        Vector3f chunkPos = new Vector3f((int) Math.floor(position.x / chunkSize),
+                0,
+                (int) Math.floor(position.z / chunkSize));
+        Vector3f chunkOriginPos = new Vector3f(chunkPos).mul(chunkSize);
+
+        Pair<ChunkMesh, Integer> resultGetChunk = getChunk(chunkOriginPos);
+
+        ChunkMesh chunk = resultGetChunk.p1;
+        int index = resultGetChunk.p2;
+
+
+        if (chunk != null && (index != -1)) {
+            chunk.addVoxel(new Vector3f(position).sub(chunkOriginPos));
             chunk.updateMesh();
             chunkMeshes.remove(index);
             chunkMeshes.add(index, chunk);

@@ -3,6 +3,7 @@ package Kuboid.manager.utils;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +19,8 @@ import java.util.List;
 public class RayCast {
 
     private Vector3f origin;
-    private Vector3f secondPoint;
     private Vector3f direction;
+    private Vector3i hit;
     private long length;
     private List<Vector3f> worldPositions;
 
@@ -27,7 +28,6 @@ public class RayCast {
         this.origin = new Vector3f(origin);
 
         Vector3f scaledDirection = new Vector3f(direction).mul(length);
-        this.secondPoint = new Vector3f(origin).add(scaledDirection);
         this.direction = new Vector3f(direction);
 
         //Just in case the value is tiny, it should be considered like 0, otherwise we end up with errors over time
@@ -132,6 +132,7 @@ public class RayCast {
         } while (!worldPositions.contains(new Vector3f(x, y, z)) && lengthIncrementVector <= length);
 
         Vector3i result = (lengthIncrementVector <= length) ? new Vector3i((int) x, (int) y, (int) z) : null;
+        this.hit = new Vector3i(result);
 
         return result;
     }
@@ -156,7 +157,7 @@ public class RayCast {
         float Yinc = dy / steps;
         float Zinc = dz / steps;
 
-        Vector3i voxelCandidate;
+        Vector3i voxelCandidate = null;
         Vector3f pointCandidate = new Vector3f(origin);
 
         //This should be the voxel size
@@ -170,14 +171,44 @@ public class RayCast {
 
             i++;
 
-            //While condition checks for a hit or if the length of the ray has already reached its max,
+            //While condition, checks for a hit or if the length of the ray has already reached its max,
             //if so we finish the execution and return the voxel that hit
         } while (!worldPositions.contains(new Vector3f(voxelCandidate)) && i < length);
 
         if (i >= length)
             return null;
 
+        this.hit = new Vector3i(voxelCandidate);
+
         //In case we don't find any position that matches the previous requirements then we return null
         return voxelCandidate;
+    }
+
+    public Vector3i getPreviousToHit() {
+        float dirValue = 0;
+        Vector3i voxelOrigin = new Vector3i(((int) Math.floor(this.origin.x)), ((int) Math.floor(this.origin.y)), ((int) Math.floor(this.origin.z)));
+        Vector3f direction = new Vector3f(hit).sub(new Vector3f(voxelOrigin));
+        Vector3i vec;
+
+        //Get the highest value for axis in direction
+        if (Math.abs(direction.x) >= Math.abs(direction.y)) {
+            dirValue = (Math.abs(direction.x) > Math.abs(direction.z)) ? direction.x : direction.z;
+            vec = (Math.abs(direction.x) > Math.abs(direction.z)) ? new Vector3i(1, 0, 0) : new Vector3i(0, 0, 1);
+        } else {
+            dirValue = (Math.abs(direction.y) > Math.abs(direction.z)) ? direction.y : direction.z;
+            vec = (Math.abs(direction.y) > Math.abs(direction.z)) ? new Vector3i(0, 1, 0) : new Vector3i(0, 0, 1);
+        }
+
+        if (dirValue > 0)
+            vec = new Vector3i(vec).mul(-1);
+
+        Vector3i result = new Vector3i(this.hit).add(vec);
+
+        System.out.println("Vec: " + vec.toString(NumberFormat.getNumberInstance()));
+
+        System.out.println("Hit: " + this.hit.toString(NumberFormat.getNumberInstance()));
+        System.out.println("PreviousToHit: " + result.toString(NumberFormat.getNumberInstance()));
+
+        return result;
     }
 }

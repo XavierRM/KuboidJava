@@ -103,6 +103,7 @@ public class TestGame implements ILogic {
             cameraInc.y = 1;
         }
 
+        //Change to wireframe view
         if (window.isKeyPressed(GLFW_KEY_P)) {
             previousKey = GLFW_KEY_P;
             isWireframe = !isWireframe;
@@ -145,15 +146,25 @@ public class TestGame implements ILogic {
             List<Vector3f> blocksPositions = terrain.getActiveBlockPositions();
 
             RayCast rayCast = new RayCast(cameraPos, direction, 15, blocksPositions);
-            //Vector3i hit = rayCast.cast();
             Vector3i hit = rayCast.castDDA();
 
-            if (hit != null) {
-                System.out.println(hit.toString(NumberFormat.getNumberInstance()));
+            if (window.isKeyPressed(GLFW_KEY_LEFT_ALT)) {
 
-                terrain.removeVoxel(new Vector3f(hit));
-            } else
-                System.out.println("Hit is null!");
+                if (hit != null) {
+                    System.out.println(rayCast.getPreviousToHit().toString(NumberFormat.getNumberInstance()));
+
+                    terrain.addVoxel(new Vector3f(rayCast.getPreviousToHit()));
+                } else
+                    System.out.println("Hit is null! - Add");
+
+            } else {
+                if (hit != null) {
+                    System.out.println(hit.toString(NumberFormat.getNumberInstance()));
+
+                    terrain.removeVoxel(new Vector3f(hit));
+                } else
+                    System.out.println("Hit is null! - Remove");
+            }
 
         }
 
