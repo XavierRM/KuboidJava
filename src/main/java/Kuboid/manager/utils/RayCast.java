@@ -39,6 +39,15 @@ public class RayCast {
         this.direction.y = (this.direction.y > -0.1 && this.direction.y < 0) ? 0 : this.direction.y;
         this.direction.z = (this.direction.z > -0.1 && this.direction.z < 0) ? 0 : this.direction.z;
 
+        //Just in case the value is big, it should be considered like 1 or -1, otherwise we end up with errors over time
+        this.direction.x = (this.direction.x < 0.9 && this.direction.x > 1) ? 1 : this.direction.x;
+        this.direction.y = (this.direction.y < 0.9 && this.direction.y > 1) ? 1 : this.direction.y;
+        this.direction.z = (this.direction.z < 0.9 && this.direction.z > 1) ? 1 : this.direction.z;
+
+        this.direction.x = (this.direction.x < -0.9 && this.direction.x > -1) ? -1 : this.direction.x;
+        this.direction.y = (this.direction.y < -0.9 && this.direction.y > -1) ? -1 : this.direction.y;
+        this.direction.z = (this.direction.z < -0.9 && this.direction.z > -1) ? -1 : this.direction.z;
+
         if (length == 0)
             //If the length == 0 then we set the length of the ray to be 'infinite'
             this.length = (long) Constants.Z_FAR;
@@ -132,7 +141,9 @@ public class RayCast {
         } while (!worldPositions.contains(new Vector3f(x, y, z)) && lengthIncrementVector <= length);
 
         Vector3i result = (lengthIncrementVector <= length) ? new Vector3i((int) x, (int) y, (int) z) : null;
-        this.hit = new Vector3i(result);
+
+        if (result != null)
+            this.hit = new Vector3i(result);
 
         return result;
     }
