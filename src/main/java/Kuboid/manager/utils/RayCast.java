@@ -1,5 +1,6 @@
 package Kuboid.manager.utils;
 
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
@@ -19,17 +20,17 @@ import java.util.List;
 public class RayCast {
 
     private Vector3f origin;
-    private Vector3f direction;
+    private Vector3d direction;
     private Vector3i hit;
     private long length;
     private List<Vector3f> worldPositions;
 
-    public RayCast(Vector3f origin, Vector3f direction, long length, List<Vector3f> worldPositions) {
+    public RayCast(Vector3f origin, Vector3d direction, long length, List<Vector3f> worldPositions) {
         this.origin = new Vector3f(origin);
 
-        Vector3f scaledDirection = new Vector3f(direction).mul(length);
-        this.direction = new Vector3f(direction);
+        this.direction = new Vector3d(direction);
 
+        /*
         //Just in case the value is tiny, it should be considered like 0, otherwise we end up with errors over time
         this.direction.x = (this.direction.x < 0.1 && this.direction.x > 0) ? 0 : this.direction.x;
         this.direction.y = (this.direction.y < 0.1 && this.direction.y > 0) ? 0 : this.direction.y;
@@ -47,6 +48,7 @@ public class RayCast {
         this.direction.x = (this.direction.x < -0.9 && this.direction.x > -1) ? -1 : this.direction.x;
         this.direction.y = (this.direction.y < -0.9 && this.direction.y > -1) ? -1 : this.direction.y;
         this.direction.z = (this.direction.z < -0.9 && this.direction.z > -1) ? -1 : this.direction.z;
+        */
 
         if (length == 0)
             //If the length == 0 then we set the length of the ray to be 'infinite'
@@ -56,7 +58,7 @@ public class RayCast {
         this.worldPositions = new ArrayList<>(worldPositions);
     }
 
-    private int calculateStep(float axisDirection) {
+    private int calculateStep(double axisDirection) {
 
         if (Math.abs(axisDirection) == 0)
             return 0;
@@ -110,13 +112,13 @@ public class RayCast {
         //Calculating tDelta for each axis, length of the voxel in an axis represented in units of 't'
         //If the size of the voxel != 1 then we would replace '1' with the 'voxelSize'
         //Was previously absolute value of the result
-        float tDeltaX = (this.direction.x != 0) ? Math.abs(1 / this.direction.x) : 1;
-        float tDeltaY = (this.direction.y != 0) ? Math.abs(1 / this.direction.y) : 1;
-        float tDeltaZ = (this.direction.z != 0) ? Math.abs(1 / this.direction.z) : 1;
+        double tDeltaX = (this.direction.x != 0) ? Math.abs(1 / this.direction.x) : 1;
+        double tDeltaY = (this.direction.y != 0) ? Math.abs(1 / this.direction.y) : 1;
+        double tDeltaZ = (this.direction.z != 0) ? Math.abs(1 / this.direction.z) : 1;
 
         //Initialize to the origin of the ray
-        float x = originVoxel.x, y = originVoxel.y, z = originVoxel.z;
-        float lengthIncrementVector = 0;
+        double x = originVoxel.x, y = originVoxel.y, z = originVoxel.z;
+        double lengthIncrementVector = 0;
 
         do {
 
@@ -138,7 +140,7 @@ public class RayCast {
 
             System.out.println(lengthIncrementVector);
 
-        } while (!worldPositions.contains(new Vector3f(x, y, z)) && lengthIncrementVector <= length);
+        } while (!worldPositions.contains(new Vector3d(x, y, z)) && lengthIncrementVector <= length);
 
         Vector3i result = (lengthIncrementVector <= length) ? new Vector3i((int) x, (int) y, (int) z) : null;
 
@@ -151,12 +153,12 @@ public class RayCast {
     public Vector3i castDDA() {
 
         //Calculate the differences
-        float dx = this.direction.x;
-        float dy = this.direction.y;
-        float dz = this.direction.z;
+        double dx = this.direction.x;
+        double dy = this.direction.y;
+        double dz = this.direction.z;
 
         //Calculate the steps
-        float steps;
+        double steps;
 
         if (Math.abs(dx) > Math.abs(dy))
             steps = (Math.abs(dx) > Math.abs(dz)) ? Math.abs(dx) : Math.abs(dz);
@@ -164,20 +166,20 @@ public class RayCast {
             steps = (Math.abs(dy) > Math.abs(dz)) ? Math.abs(dy) : Math.abs(dz);
 
         //Calculate the increment for each axis
-        float Xinc = dx / steps;
-        float Yinc = dy / steps;
-        float Zinc = dz / steps;
+        double Xinc = dx / steps;
+        double Yinc = dy / steps;
+        double Zinc = dz / steps;
 
         Vector3i voxelCandidate = null;
-        Vector3f pointCandidate = new Vector3f(origin);
+        Vector3d pointCandidate = new Vector3d(origin);
 
         //This should be the voxel size
-        Vector3f increment = new Vector3f(Xinc, Yinc, Zinc);
+        Vector3d increment = new Vector3d(Xinc, Yinc, Zinc);
         long i = 0;
 
         do {
             //Next point in the line to check
-            pointCandidate = new Vector3f(pointCandidate.add(increment));
+            pointCandidate = new Vector3d(pointCandidate.add(increment));
             voxelCandidate = new Vector3i(((int) Math.floor(pointCandidate.x)), ((int) Math.floor(pointCandidate.y)), ((int) Math.floor(pointCandidate.z)));
 
             i++;

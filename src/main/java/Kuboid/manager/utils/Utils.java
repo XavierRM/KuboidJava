@@ -2,12 +2,10 @@ package Kuboid.manager.utils;
 
 import Kuboid.manager.Camera;
 import Kuboid.manager.WindowManager;
-import org.joml.Matrix4f;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
+import org.joml.*;
 
 import java.io.InputStream;
+import java.lang.Math;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Scanner;
@@ -97,15 +95,15 @@ public class Utils {
         return worldRay;
     }
 
-    public static Vector3f calculateDirection(Camera camera) {
-        Vector3f direction = new Vector3f();
+    public static Vector3d calculateDirection(Camera camera) {
+        Vector3d direction = new Vector3d();
 
-        direction.x = (float) Math.sin(Math.toRadians(camera.getRotation().y)) * (float) Math.cos(Math.toRadians(camera.getRotation().x));
+        direction.x = Math.sin(Math.toRadians(camera.getRotation().y)) * Math.cos(Math.toRadians(camera.getRotation().x));
 
-        direction.y = (float) -Math.sin(Math.toRadians(camera.getRotation().x));
+        direction.y = -Math.sin(Math.toRadians(camera.getRotation().x));
 
-        direction.z = (float) -Math.cos(Math.toRadians(Math.abs(camera.getRotation().y))) * (float) Math.cos(Math.toRadians(Math.abs(camera.getRotation().x)));
+        direction.z = -Math.cos(Math.toRadians(Math.abs(camera.getRotation().y))) * Math.cos(Math.toRadians(Math.abs(camera.getRotation().x)));
 
-        return new Vector3f(direction);
+        return new Vector3d(direction);
     }
 }

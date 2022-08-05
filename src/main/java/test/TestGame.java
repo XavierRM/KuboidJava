@@ -5,6 +5,7 @@ import Kuboid.manager.generation.Terrain;
 import Kuboid.manager.utils.RayCast;
 import Kuboid.manager.utils.Utils;
 import org.joml.Vector2f;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
@@ -140,12 +141,12 @@ public class TestGame implements ILogic {
             Vector3f cameraPos = camera.getPosition();  //Starting position for the RayCast
 
             //Vector3f direction = Utils.convert2DPositionTo3D(new Vector2f(window.getWidth() / 2, window.getHeight() / 2), camera, window);
-            Vector3f direction = Utils.calculateDirection(camera);  //Direction for the RayCast
+            Vector3d direction = Utils.calculateDirection(camera);  //Direction for the RayCast
 
             //Get blocks to compare the ray hit with
             List<Vector3f> blocksPositions = terrain.getActiveBlockPositions();
 
-            RayCast rayCast = new RayCast(cameraPos, direction, 15, blocksPositions);
+            RayCast rayCast = new RayCast(cameraPos, direction, 0, blocksPositions);
             Vector3i hit = rayCast.castDDA();
 
             if (window.isKeyPressed(GLFW_KEY_LEFT_ALT)) {
