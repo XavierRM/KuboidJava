@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
-public class RenderManager {
+public class RenderModelManager {
 
     private final WindowManager window;
     private ShaderManager shader;
@@ -24,7 +24,7 @@ public class RenderManager {
 
     private boolean isWireframe;
 
-    public RenderManager(Camera camera, boolean isWireframe) {
+    public RenderModelManager(Camera camera, boolean isWireframe) {
         window = Launcher.getWindow();
         this.camera = camera;
         this.isWireframe = isWireframe;
@@ -32,6 +32,8 @@ public class RenderManager {
 
     public void init() throws Exception {
         shader = new ShaderManager();
+        //Create the shaders for the depth calculations based on the lights POV
+
         if (isWireframe) {
             shader.createVertexShader(Utils.loadResource("/shaders/vertexWireframe.vs"));
             shader.createFragmentShader(Utils.loadResource("/shaders/fragmentWireframe.fs"));

@@ -30,7 +30,6 @@ public class RayCast {
 
         this.direction = new Vector3d(direction);
 
-        /*
         //Just in case the value is tiny, it should be considered like 0, otherwise we end up with errors over time
         this.direction.x = (this.direction.x < 0.1 && this.direction.x > 0) ? 0 : this.direction.x;
         this.direction.y = (this.direction.y < 0.1 && this.direction.y > 0) ? 0 : this.direction.y;
@@ -48,7 +47,7 @@ public class RayCast {
         this.direction.x = (this.direction.x < -0.9 && this.direction.x > -1) ? -1 : this.direction.x;
         this.direction.y = (this.direction.y < -0.9 && this.direction.y > -1) ? -1 : this.direction.y;
         this.direction.z = (this.direction.z < -0.9 && this.direction.z > -1) ? -1 : this.direction.z;
-        */
+
 
         if (length == 0)
             //If the length == 0 then we set the length of the ray to be 'infinite'

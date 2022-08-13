@@ -20,7 +20,8 @@ public class TestGame implements ILogic {
 
     private int previousKey;
 
-    private final RenderManager renderer;
+    private final RenderModelManager renderer;
+    private UI ui;
     private final ObjectLoader loader;
     private final WindowManager window;
 
@@ -35,13 +36,14 @@ public class TestGame implements ILogic {
         window = Launcher.getWindow();
         loader = new ObjectLoader();
         camera = new Camera();
-        renderer = new RenderManager(camera, isWireframe);
+        renderer = new RenderModelManager(camera, isWireframe);
         cameraInc = new Vector3f(0, 0, 0);
     }
 
     @Override
     public void init() throws Exception {
         renderer.init();
+        ui = new UI(window);
         window.switchWireframe(isWireframe);
 
         //Here we would set the checks for the resizable window
@@ -176,6 +178,7 @@ public class TestGame implements ILogic {
     public void render() {
         renderer.clear();
         renderer.render(terrain.getTerrain());
+        ui.render();
     }
 
     @Override

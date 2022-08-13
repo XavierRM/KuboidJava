@@ -21,7 +21,6 @@ public class EngineManager {
     private MouseInput mouseInput;
     private GLFWErrorCallback errorCallback;
     private ILogic gameLogic;
-    private UI ui;
 
     private void init() throws Exception {
         GLFW.glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
@@ -30,7 +29,6 @@ public class EngineManager {
         gameLogic = Launcher.getGame();
         mouseInput = new MouseInput();
         window.init();
-        ui = new UI(window);
         mouseInput.init();
         gameLogic.init();
     }
@@ -100,7 +98,6 @@ public class EngineManager {
 
     private void render() {
         gameLogic.render();
-        ui.render();
         window.update();
     }
 
