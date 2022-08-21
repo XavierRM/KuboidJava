@@ -10,7 +10,7 @@ public class Launcher {
     private static WindowManager window;
     private static TestGame game;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         window = new WindowManager(TITLE, 1280, 720, false);
         game = new TestGame();
         EngineManager engine = new EngineManager();

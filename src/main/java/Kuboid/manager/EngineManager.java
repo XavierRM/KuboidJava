@@ -96,7 +96,7 @@ public class EngineManager {
         gameLogic.input();
     }
 
-    private void render() {
+    private void render() throws Exception {
         gameLogic.render();
         window.update();
     }

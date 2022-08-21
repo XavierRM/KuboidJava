@@ -1,38 +1,60 @@
 package Kuboid.manager.lighting;
 
 import Kuboid.manager.utils.Transformation;
+import Kuboid.manager.utils.Utils;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+
+import java.text.NumberFormat;
+
+import static Kuboid.manager.utils.Constants.Z_FAR;
+import static Kuboid.manager.utils.Constants.Z_NEAR;
 
 public class Light {
 
     private Vector3f position;
-    private Vector3f orientation;
+    private Vector3f direction;
+    private Vector3f angles;
     private Vector3f color;
     private float intensity;
 
-    private int intervals;
-    private int currentInterval;
+//    public Light(Vector3f direction, Vector3f color, float intensity) {
+//        Vector3f anglesVector;
+//        this.direction = direction;
+//        this.position = direction.mul(2);
+//
+//        float lightAngleX = (float) Math.toDegrees(Math.acos(direction.z));
+//        float lightAngleY = (float) Math.toDegrees(Math.asin(direction.x));
+//        float lightAngleZ = 0;
+//
+//        anglesVector = new Vector3f(lightAngleX, lightAngleY, lightAngleZ);
+//        this.angles = anglesVector;
+//        this.color = color;
+//
+//        //Check intensity is in bounds
+//        if (intensity > 1)
+//            this.intensity = 1;
+//        else {
+//            if (intensity < 0)
+//                this.intensity = 0;
+//            else
+//                this.intensity = intensity;
+//        }
+//    }
 
-    public Light(Vector3f position, Vector3f orientation, Vector3f color, float intensity) {
-        this.position = position;
-        this.orientation = orientation;
-        this.color = color;
+    public Light(Vector3f position) {
+//        this.direction = position;
+//        this.position = new Vector3f(position).mul(100);
+        this.direction = new Vector3f(position).negate().normalize();
+        this.position = new Vector3f(position);
 
-        //Check intensity is in bounds
-        if (intensity > 1)
-            this.intensity = 1;
-        else {
-            if (intensity < 0)
-                this.intensity = 0;
-            else
-                this.intensity = intensity;
-        }
-    }
+        System.out.println("Light position: " + this.position.toString(NumberFormat.getNumberInstance()));
+        System.out.println("Light direction: " + this.direction.toString(NumberFormat.getNumberInstance()));
 
-    public Light(Vector3f position, Vector3f orientation) {
-        this.position = position;
-        this.orientation = orientation;
+        this.angles = Utils.calculateAngles(direction);
+
+        System.out.println("Light angles: " + this.angles.toString(NumberFormat.getNumberInstance()));
+
         this.color = new Vector3f(201, 226, 255);
         this.intensity = 1f;
     }
@@ -42,15 +64,16 @@ public class Light {
     }
 
     public void setPosition(Vector3f position) {
-        this.position = position;
+        this.position = new Vector3f(position);
     }
 
-    public Vector3f getOrientation() {
-        return orientation;
+    public Vector3f getDirection() {
+        return direction;
     }
 
-    public void setOrientation(Vector3f orientation) {
-        this.orientation = orientation;
+    public void setDirection(Vector3f direction) {
+        //Recalculate anglesVector as well
+        this.direction = direction;
     }
 
     public Vector3f getColor() {
@@ -69,14 +92,25 @@ public class Light {
         this.intensity = intensity;
     }
 
-    public Matrix4f getMVPMatrix() {
-        // Compute MVP from the lights POV
-        Matrix4f depthProjectionMatrix = Transformation.createOrtho(-10, 10, -10, 10, -10, 20);
-        Matrix4f depthViewMatrix = Transformation.getViewMatrix(position, orientation);
-        Matrix4f depthModelMatrix = new Matrix4f(1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f);
+    public Matrix4f getVPMatrix() {
+        // Compute VP from the lights POV
+        Matrix4f depthProjectionMatrix = new Matrix4f();
+        depthProjectionMatrix.identity();
+        depthProjectionMatrix.ortho(-5, 5, -5, 5, Z_NEAR, Z_FAR);
+        Matrix4f depthViewMatrix = Transformation.getViewMatrix(position, angles);
 
-        Matrix4f depthMVP = (new Matrix4f(depthProjectionMatrix).mul(new Matrix4f(depthViewMatrix))).mul(new Matrix4f(depthModelMatrix));
+        Matrix4f depthVP = (new Matrix4f(depthProjectionMatrix).mul(new Matrix4f(depthViewMatrix)));
 
-        return depthMVP;
+        return depthVP;
+    }
+
+    private void calculateAngles() {
+        Vector3f anglesVector;
+        float lightAngleX = (float) Math.toDegrees(Math.acos(direction.z));
+        float lightAngleY = (float) Math.toDegrees(Math.asin(direction.x));
+        float lightAngleZ = 0;
+
+        anglesVector = new Vector3f(lightAngleX, lightAngleY, lightAngleZ);
+        this.angles = anglesVector;
     }
 }

@@ -106,4 +106,35 @@ public class Utils {
 
         return new Vector3d(direction);
     }
+
+    public static Vector3d calculateDirection(Vector3f rotation) {
+        Vector3d direction = new Vector3d();
+
+        direction.x = Math.sin(Math.toRadians(rotation.y)) * Math.cos(Math.toRadians(rotation.x));
+
+        direction.y = -Math.sin(Math.toRadians(rotation.x));
+
+        direction.z = -Math.cos(Math.toRadians(Math.abs(rotation.y))) * Math.cos(Math.toRadians(Math.abs(rotation.x)));
+
+        return new Vector3d(direction);
+    }
+
+    public static Vector3f calculateAngles(Vector3f direction) {
+        Vector3f angles = new Vector3f();
+
+//        angles.x = (float) Math.toDegrees(Math.acos(direction.z));
+//        angles.y = (float) Math.toDegrees(Math.asin(direction.x));
+//        angles.z = 0;
+
+        //Pitch
+        angles.x = (float) Math.toDegrees(Math.acos(new Vector2f(direction.x, direction.z).length()));
+        //Yaw
+        angles.y = (float) Math.toDegrees(Math.atan(direction.x / direction.z));
+        angles.y = direction.z > 0 ? angles.y - 180 : angles.y;
+        angles.y = -angles.y;
+
+        angles.z = 0;
+
+        return new Vector3f(angles);
+    }
 }

@@ -2,6 +2,7 @@ package test;
 
 import Kuboid.manager.*;
 import Kuboid.manager.generation.Terrain;
+import Kuboid.manager.lighting.Light;
 import Kuboid.manager.utils.RayCast;
 import Kuboid.manager.utils.Utils;
 import org.joml.Vector2f;
@@ -20,23 +21,24 @@ public class TestGame implements ILogic {
 
     private int previousKey;
 
-    private final RenderModelManager renderer;
+    private final RenderManager renderer;
     private UI ui;
     private final ObjectLoader loader;
     private final WindowManager window;
 
     private Terrain terrain;
+    private Light sunlight;
     private Camera camera;
     private boolean isWireframe = false;
 
     Thread thread;
     private Vector3f cameraInc;
 
-    public TestGame() {
+    public TestGame() throws Exception {
         window = Launcher.getWindow();
         loader = new ObjectLoader();
         camera = new Camera();
-        renderer = new RenderModelManager(camera, isWireframe);
+        renderer = new RenderManager(camera, isWireframe);
         cameraInc = new Vector3f(0, 0, 0);
     }
 
@@ -52,6 +54,11 @@ public class TestGame implements ILogic {
         window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
         terrain = new Terrain(4, 48, true, isWireframe, camera.getPosition());
+
+        sunlight = new Light(new Vector3f(100f, 70f, 0f));
+        Vector3f vector = new Vector3f(1f, 1f, 0f);
+//        System.out.println("Angles: " + new Vector3f(0, 90, 0).toString(NumberFormat.getNumberInstance()) + ", Expected direction: " + Utils.calculateDirection(new Vector3f(0, 90, 0)).toString(NumberFormat.getNumberInstance()));
+//        System.out.println("Direction: " + vector.toString(NumberFormat.getNumberInstance()) + ", Expected angles: " + Utils.calculateAngles(vector).toString(NumberFormat.getNumberInstance()));
 
         if (thread != null && thread.isAlive()) {
             thread.interrupt();
@@ -118,6 +125,8 @@ public class TestGame implements ILogic {
 
         if (window.isKeyPressed(GLFW_KEY_V)) {
             System.out.println("Camera position: " + camera.getPosition().toString(NumberFormat.getNumberInstance()));
+            System.out.println("Camera rotation: " + camera.getRotation().toString(NumberFormat.getNumberInstance()));
+
         }
 
     }
@@ -171,13 +180,16 @@ public class TestGame implements ILogic {
 
         }
 
+        //sunlight.setPosition(camera.getPosition());
         terrain.update(camera.getPosition());
+        //System.out.println(sunlight.getPosition().toString(NumberFormat.getNumberInstance()));
+        //System.out.println("Camera rotation: " + camera.getRotation().toString(NumberFormat.getNumberInstance()));
     }
 
     @Override
-    public void render() {
+    public void render() throws Exception {
         renderer.clear();
-        renderer.render(terrain.getTerrain());
+        renderer.render(terrain.getTerrain(), sunlight);
         ui.render();
     }
 

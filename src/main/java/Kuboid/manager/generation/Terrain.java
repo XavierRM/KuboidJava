@@ -80,7 +80,8 @@ public class Terrain implements Runnable {
 
         RandomGenerator random = RandomGenerator.of("Random");
 
-        SimplexNoise.setSeed(random.nextLong(Integer.MAX_VALUE));
+        //SimplexNoise.setSeed(random.nextLong(Integer.MAX_VALUE));
+        SimplexNoise.setSeed(0);
 
         if (isWireframe)
             model = loader.loadModel(verticesDirt, indicesDirt);
