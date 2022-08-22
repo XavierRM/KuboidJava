@@ -69,7 +69,7 @@ public class Terrain implements Runnable {
     public Terrain(long chunksPerAxis, long chunkSize, boolean plain, boolean isWireframe, Vector3f camPos) throws Exception {
         this.size = chunksPerAxis * chunkSize;
         this.chunkSize = chunkSize;
-        this.chunkDepth = -5;
+        this.chunkDepth = -4;
         this.plain = plain;
         this.isWireframe = isWireframe;
         this.camPos = camPos;

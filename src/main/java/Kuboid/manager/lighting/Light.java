@@ -96,7 +96,7 @@ public class Light {
         // Compute VP from the lights POV
         Matrix4f depthProjectionMatrix = new Matrix4f();
         depthProjectionMatrix.identity();
-        depthProjectionMatrix.ortho(-5, 5, -5, 5, Z_NEAR, Z_FAR);
+        depthProjectionMatrix.ortho(-200, 200, -200, 200, Z_NEAR, Z_FAR);
         Matrix4f depthViewMatrix = Transformation.getViewMatrix(position, angles);
 
         Matrix4f depthVP = (new Matrix4f(depthProjectionMatrix).mul(new Matrix4f(depthViewMatrix)));

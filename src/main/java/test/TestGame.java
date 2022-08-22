@@ -55,7 +55,7 @@ public class TestGame implements ILogic {
 
         terrain = new Terrain(4, 48, true, isWireframe, camera.getPosition());
 
-        sunlight = new Light(new Vector3f(100f, 70f, 0f));
+        sunlight = new Light(new Vector3f(100f, 50f, 0f));
         Vector3f vector = new Vector3f(1f, 1f, 0f);
 //        System.out.println("Angles: " + new Vector3f(0, 90, 0).toString(NumberFormat.getNumberInstance()) + ", Expected direction: " + Utils.calculateDirection(new Vector3f(0, 90, 0)).toString(NumberFormat.getNumberInstance()));
 //        System.out.println("Direction: " + vector.toString(NumberFormat.getNumberInstance()) + ", Expected angles: " + Utils.calculateAngles(vector).toString(NumberFormat.getNumberInstance()));

@@ -40,8 +40,8 @@ public class RenderManager {
         shader = new ShaderManager();
         shaderDepth = new ShaderManager();
 
-        shaderDepth.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
-        shaderDepth.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
+//        shaderDepth.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
+//        shaderDepth.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
 
         if (isWireframe) {
             //Wireframe view
@@ -49,32 +49,35 @@ public class RenderManager {
             shader.createFragmentShader(Utils.loadResource("/shaders/fragmentWireframe.fs"));
         } else {
             //Normal view
-            shader.createVertexShader(Utils.loadResource("/shaders/vertexTexture.vs"));
-            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentTexture.fs"));
+//            shader.createVertexShader(Utils.loadResource("/shaders/vertexTexture.vs"));
+//            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentTexture.fs"));
+
+            shader.createVertexShader(Utils.loadResource("/shaders/vertexNoShadowsTexture.vs"));
+            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentNoShadowsTexture.fs"));
         }
 
-        shaderDepth.link();
+//        shaderDepth.link();
         shader.link();
 
         if (!isWireframe) {
             shader.createUniform("textureSampler");
         }
-        shader.createUniform("shadowMap");
+//        shader.createUniform("shadowMap");
 
         shader.createUniform("transformationMatrix");
         shader.createUniform("projectionMatrix");
         shader.createUniform("viewMatrix");
 
-        shader.createUniform("viewProjectionLightMatrix");
+//        shader.createUniform("viewProjectionLightMatrix");
 
-        shaderDepth.createUniform("orthoProjectionViewMatrix");
-        shaderDepth.createUniform("modelLightMatrix");
+//        shaderDepth.createUniform("orthoProjectionViewMatrix");
+//        shaderDepth.createUniform("modelLightMatrix");
     }
 
     public void render(Map<Model, List<Entity>> entities, Light sunlight) throws Exception {
         //For now, it's just the sunlight, but it should be a list of lights
 
-        renderDepthMap(entities, sunlight);
+//        renderDepthMap(entities, sunlight);
 
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
@@ -89,8 +92,8 @@ public class RenderManager {
             shader.setUniform("projectionMatrix", window.getProjectionMatrix());
             shader.setUniform("viewMatrix", Transformation.getViewMatrix(this.camera));
 
-            shader.setUniform("viewProjectionLightMatrix", sunlight.getVPMatrix());
-            shader.setUniform("shadowMap", 1);
+//            shader.setUniform("viewProjectionLightMatrix", sunlight.getVPMatrix());
+//            shader.setUniform("shadowMap", 1);
 
             glBindVertexArray(model.getId());
             glEnableVertexAttribArray(0);
@@ -101,8 +104,8 @@ public class RenderManager {
                 glBindTexture(GL_TEXTURE_2D, model.getTexture().getId());
             }
 
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMap().getId());
+//            glActiveTexture(GL_TEXTURE1);
+//            glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMap().getId());
 
             List<Entity> batch = entities.get(model);
 
