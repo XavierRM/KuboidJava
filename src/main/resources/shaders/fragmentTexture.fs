@@ -11,7 +11,7 @@ uniform sampler2D shadowMap;
 float calcShadow(vec4 position) {
 
     float shadowFactor = 0.3;
-    float bias = 0.001;
+    float bias = 0.0005;
     vec3 projCoords = position.xyz;
 
     projCoords = projCoords * 0.5 + 0.5;
@@ -27,5 +27,4 @@ float calcShadow(vec4 position) {
 void main() {
     float shadow = calcShadow(mLightViewVertexPos);
     fragColour = shadow * texture(textureSampler, fragTextureCoord);
-    //fragColour = texture(shadowMap, (mLightViewVertexPos * 0.5 + 0.5).xy);
 }

@@ -1,7 +1,7 @@
 package Kuboid.manager;
 
 import Kuboid.manager.entity.Entity;
-import Kuboid.manager.lighting.Light;
+import Kuboid.manager.lighting.DirectionalLight;
 import Kuboid.manager.lighting.ShadowMap;
 import Kuboid.manager.model.Model;
 import Kuboid.manager.utils.Transformation;
@@ -36,12 +36,13 @@ public class RenderManager {
 
     public void init() throws Exception {
 
+        //ShadowMap where the FBO and texture info are stored and initialized
         this.shadowMap = new ShadowMap();
         shader = new ShaderManager();
         shaderDepth = new ShaderManager();
 
-//        shaderDepth.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
-//        shaderDepth.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
+        shaderDepth.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
+        shaderDepth.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
 
         if (isWireframe) {
             //Wireframe view
@@ -49,36 +50,44 @@ public class RenderManager {
             shader.createFragmentShader(Utils.loadResource("/shaders/fragmentWireframe.fs"));
         } else {
             //Normal view
-//            shader.createVertexShader(Utils.loadResource("/shaders/vertexTexture.vs"));
-//            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentTexture.fs"));
+            shader.createVertexShader(Utils.loadResource("/shaders/vertexTexture.vs"));
+            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentTexture.fs"));
 
-            shader.createVertexShader(Utils.loadResource("/shaders/vertexNoShadowsTexture.vs"));
-            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentNoShadowsTexture.fs"));
+//            shader.createVertexShader(Utils.loadResource("/shaders/vertexNoShadowsTexture.vs"));
+//            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentNoShadowsTexture.fs"));
         }
 
-//        shaderDepth.link();
+        //Shader for calculating the depth texture, runs before the main shader
+        shaderDepth.link();
+        //Main shader
         shader.link();
 
         if (!isWireframe) {
             shader.createUniform("textureSampler");
         }
-//        shader.createUniform("shadowMap");
+
+        //ShadowMap storing the depth texture
+        shader.createUniform("shadowMap");
 
         shader.createUniform("transformationMatrix");
         shader.createUniform("projectionMatrix");
         shader.createUniform("viewMatrix");
 
-//        shader.createUniform("viewProjectionLightMatrix");
+        //View + Projection matrix to convert a point in the 3D world space to the light perspective and check depth value
+        shader.createUniform("viewProjectionLightMatrix");
 
-//        shaderDepth.createUniform("orthoProjectionViewMatrix");
-//        shaderDepth.createUniform("modelLightMatrix");
+        //OrthoProjection matrix to calculate the depth texture and the model matrix for the light
+        shaderDepth.createUniform("orthoProjectionViewMatrix");
+        shaderDepth.createUniform("modelLightMatrix");
     }
 
-    public void render(Map<Model, List<Entity>> entities, Light sunlight) throws Exception {
+    public void render(Map<Model, List<Entity>> entities, DirectionalLight sunlight) throws Exception {
         //For now, it's just the sunlight, but it should be a list of lights
 
-//        renderDepthMap(entities, sunlight);
+        //First we render from the lights perspective to get the depth texture
+        renderDepthMap(entities, sunlight);
 
+        //Readjust the Viewport size
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
         //Render models in the game
@@ -92,8 +101,8 @@ public class RenderManager {
             shader.setUniform("projectionMatrix", window.getProjectionMatrix());
             shader.setUniform("viewMatrix", Transformation.getViewMatrix(this.camera));
 
-//            shader.setUniform("viewProjectionLightMatrix", sunlight.getVPMatrix());
-//            shader.setUniform("shadowMap", 1);
+            shader.setUniform("viewProjectionLightMatrix", sunlight.getVPMatrix());
+            shader.setUniform("shadowMap", 1);
 
             glBindVertexArray(model.getId());
             glEnableVertexAttribArray(0);
@@ -104,8 +113,9 @@ public class RenderManager {
                 glBindTexture(GL_TEXTURE_2D, model.getTexture().getId());
             }
 
-//            glActiveTexture(GL_TEXTURE1);
-//            glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMap().getId());
+            //Bind the texture to the shader
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMap().getId());
 
             List<Entity> batch = entities.get(model);
 
@@ -126,16 +136,20 @@ public class RenderManager {
         }
     }
 
-    private void renderDepthMap(Map<Model, List<Entity>> entities, Light light) {
+    private void renderDepthMap(Map<Model, List<Entity>> entities, DirectionalLight light) {
+        //Bind the buffer before writing to it
         glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.getDepthMapFBO());
+        //Adjust viewport to the FBO size
         glViewport(0, 0, ShadowMap.SHADOW_MAP_WIDTH, ShadowMap.SHADOW_MAP_HEIGHT);
 
+        //Make sure the depth buffer is clear
         glClear(GL_DEPTH_BUFFER_BIT);
 
         shaderDepth.bind();
 
         shaderDepth.setUniform("orthoProjectionViewMatrix", light.getVPMatrix());
 
+        //Same process as the main shader
         for (Model model : entities.keySet()) {
 
             glBindVertexArray(model.getId());
@@ -144,6 +158,7 @@ public class RenderManager {
             List<Entity> batch = entities.get(model);
 
             for (Entity entity : batch) {
+                //Create model matrix like in the main shader
                 shaderDepth.setUniform("modelLightMatrix", Transformation.createTransformationMatrix(entity));
 
                 glDrawArrays(GL_TRIANGLES, 0, model.getVertexCount());
@@ -151,6 +166,7 @@ public class RenderManager {
         }
 
         shaderDepth.unbind();
+        //Make sure the FBO is unbounded as well
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     }

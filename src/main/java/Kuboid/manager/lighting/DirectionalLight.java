@@ -5,12 +5,10 @@ import Kuboid.manager.utils.Utils;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
-import java.text.NumberFormat;
-
 import static Kuboid.manager.utils.Constants.Z_FAR;
 import static Kuboid.manager.utils.Constants.Z_NEAR;
 
-public class Light {
+public class DirectionalLight {
 
     private Vector3f position;
     private Vector3f direction;
@@ -42,18 +40,11 @@ public class Light {
 //        }
 //    }
 
-    public Light(Vector3f position) {
-//        this.direction = position;
-//        this.position = new Vector3f(position).mul(100);
+    public DirectionalLight(Vector3f position) {
         this.direction = new Vector3f(position).negate().normalize();
         this.position = new Vector3f(position);
 
-        System.out.println("Light position: " + this.position.toString(NumberFormat.getNumberInstance()));
-        System.out.println("Light direction: " + this.direction.toString(NumberFormat.getNumberInstance()));
-
         this.angles = Utils.calculateAngles(direction);
-
-        System.out.println("Light angles: " + this.angles.toString(NumberFormat.getNumberInstance()));
 
         this.color = new Vector3f(201, 226, 255);
         this.intensity = 1f;
@@ -102,15 +93,5 @@ public class Light {
         Matrix4f depthVP = (new Matrix4f(depthProjectionMatrix).mul(new Matrix4f(depthViewMatrix)));
 
         return depthVP;
-    }
-
-    private void calculateAngles() {
-        Vector3f anglesVector;
-        float lightAngleX = (float) Math.toDegrees(Math.acos(direction.z));
-        float lightAngleY = (float) Math.toDegrees(Math.asin(direction.x));
-        float lightAngleZ = 0;
-
-        anglesVector = new Vector3f(lightAngleX, lightAngleY, lightAngleZ);
-        this.angles = anglesVector;
     }
 }

@@ -6,7 +6,7 @@ import org.joml.Vector3f;
 public class VoxelModel {
     private static final float ERROR = 0.000f;
 
-    public static Vector3f[] PX_POS = {
+    public static Vector3f[] POS_PX = {
 
             new Vector3f(0.5f, 0.5f, -0.5f),
             new Vector3f(0.5f, -0.5f, -0.5f),
@@ -17,7 +17,7 @@ public class VoxelModel {
 
     };
 
-    public static Vector3f[] NX_POS = {
+    public static Vector3f[] POS_NX = {
 
             new Vector3f(-0.5f, 0.5f, -0.5f),
             new Vector3f(-0.5f, -0.5f, -0.5f),
@@ -28,7 +28,7 @@ public class VoxelModel {
 
     };
 
-    public static Vector3f[] PY_POS = {
+    public static Vector3f[] POS_PY = {
 
             new Vector3f(-0.5f, 0.5f, 0.5f),
             new Vector3f(-0.5f, 0.5f, -0.5f),
@@ -39,7 +39,7 @@ public class VoxelModel {
 
     };
 
-    public static Vector3f[] NY_POS = {
+    public static Vector3f[] POS_NY = {
 
             new Vector3f(-0.5f, -0.5f, 0.5f),
             new Vector3f(-0.5f, -0.5f, -0.5f),
@@ -50,7 +50,7 @@ public class VoxelModel {
 
     };
 
-    public static Vector3f[] PZ_POS = {
+    public static Vector3f[] POS_PZ = {
 
             new Vector3f(-0.5f, 0.5f, 0.5f),
             new Vector3f(-0.5f, -0.5f, 0.5f),
@@ -61,7 +61,7 @@ public class VoxelModel {
 
     };
 
-    public static Vector3f[] NZ_POS = {
+    public static Vector3f[] POS_NZ = {
 
             new Vector3f(-0.5f, 0.5f, -0.5f),
             new Vector3f(-0.5f, -0.5f, -0.5f),
@@ -357,6 +357,10 @@ public class VoxelModel {
             new Vector3f(0.f, 0.f, 0.f)
 
     };
+
+//    Here we should have the NORMALS divided in arrays based on direction like on the POSITIONS and the UV`s
+//    Remember that each face has a total of 6 vertices which form the two triangles for rendering like it is done
+//    in the positions and uv`s
 
     public static float[] vertices = {
 

@@ -10,6 +10,8 @@ public class DepthTexture {
     private int id, width, height;
 
     public DepthTexture(int width, int height, int pixelFormat) throws Exception {
+        //Create the texture for the depth map and set the parameters for depth checking as well as the functions
+        //to do the calculations
         this.id = glGenTextures();
         this.width = width;
         this.height = height;

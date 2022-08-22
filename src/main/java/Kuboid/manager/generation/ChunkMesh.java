@@ -55,7 +55,7 @@ public class ChunkMesh {
             //PX
             if (!usedPos.contains(new Vector3f(voxelI.origin.x + 1, voxelI.origin.y, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
-                    vertices.add(new Vertex(new Vector3f(VoxelModel.PX_POS[k].x + voxelI.origin.x, VoxelModel.PX_POS[k].y + voxelI.origin.y, VoxelModel.PX_POS[k].z + voxelI.origin.z),
+                    vertices.add(new Vertex(new Vector3f(VoxelModel.POS_PX[k].x + voxelI.origin.x, VoxelModel.POS_PX[k].y + voxelI.origin.y, VoxelModel.POS_PX[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
                             VoxelModel.UV_PX[(voxelI.type.ordinal() * 6) + k]));
                 }
@@ -64,7 +64,7 @@ public class ChunkMesh {
             //NX
             if (!usedPos.contains(new Vector3f(voxelI.origin.x - 1, voxelI.origin.y, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
-                    vertices.add(new Vertex(new Vector3f(VoxelModel.NX_POS[k].x + voxelI.origin.x, VoxelModel.NX_POS[k].y + voxelI.origin.y, VoxelModel.NX_POS[k].z + voxelI.origin.z),
+                    vertices.add(new Vertex(new Vector3f(VoxelModel.POS_NX[k].x + voxelI.origin.x, VoxelModel.POS_NX[k].y + voxelI.origin.y, VoxelModel.POS_NX[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
                             VoxelModel.UV_NX[(voxelI.type.ordinal() * 6) + k]));
                 }
@@ -73,7 +73,7 @@ public class ChunkMesh {
             //PY
             if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y + 1, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
-                    vertices.add(new Vertex(new Vector3f(VoxelModel.PY_POS[k].x + voxelI.origin.x, VoxelModel.PY_POS[k].y + voxelI.origin.y, VoxelModel.PY_POS[k].z + voxelI.origin.z),
+                    vertices.add(new Vertex(new Vector3f(VoxelModel.POS_PY[k].x + voxelI.origin.x, VoxelModel.POS_PY[k].y + voxelI.origin.y, VoxelModel.POS_PY[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
                             VoxelModel.UV_PY[(voxelI.type.ordinal() * 6) + k]));
                 }
@@ -82,7 +82,7 @@ public class ChunkMesh {
             //NY
             if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y - 1, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
-                    vertices.add(new Vertex(new Vector3f(VoxelModel.NY_POS[k].x + voxelI.origin.x, VoxelModel.NY_POS[k].y + voxelI.origin.y, VoxelModel.NY_POS[k].z + voxelI.origin.z),
+                    vertices.add(new Vertex(new Vector3f(VoxelModel.POS_NY[k].x + voxelI.origin.x, VoxelModel.POS_NY[k].y + voxelI.origin.y, VoxelModel.POS_NY[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
                             VoxelModel.UV_NY[(voxelI.type.ordinal() * 6) + k]));
                 }
@@ -91,7 +91,7 @@ public class ChunkMesh {
             //PZ
             if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z + 1))) {
                 for (int k = 0; k < 6; k++) {
-                    vertices.add(new Vertex(new Vector3f(VoxelModel.PZ_POS[k].x + voxelI.origin.x, VoxelModel.PZ_POS[k].y + voxelI.origin.y, VoxelModel.PZ_POS[k].z + voxelI.origin.z),
+                    vertices.add(new Vertex(new Vector3f(VoxelModel.POS_PZ[k].x + voxelI.origin.x, VoxelModel.POS_PZ[k].y + voxelI.origin.y, VoxelModel.POS_PZ[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
                             VoxelModel.UV_PZ[(voxelI.type.ordinal() * 6) + k]));
                 }
@@ -100,7 +100,7 @@ public class ChunkMesh {
             //NZ
             if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z - 1))) {
                 for (int k = 0; k < 6; k++) {
-                    vertices.add(new Vertex(new Vector3f(VoxelModel.NZ_POS[k].x + voxelI.origin.x, VoxelModel.NZ_POS[k].y + voxelI.origin.y, VoxelModel.NZ_POS[k].z + voxelI.origin.z),
+                    vertices.add(new Vertex(new Vector3f(VoxelModel.POS_NZ[k].x + voxelI.origin.x, VoxelModel.POS_NZ[k].y + voxelI.origin.y, VoxelModel.POS_NZ[k].z + voxelI.origin.z),
                             VoxelModel.NORMALS[k],
                             VoxelModel.UV_NZ[(voxelI.type.ordinal() * 6) + k]));
                 }

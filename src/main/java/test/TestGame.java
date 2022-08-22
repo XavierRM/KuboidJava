@@ -2,7 +2,7 @@ package test;
 
 import Kuboid.manager.*;
 import Kuboid.manager.generation.Terrain;
-import Kuboid.manager.lighting.Light;
+import Kuboid.manager.lighting.DirectionalLight;
 import Kuboid.manager.utils.RayCast;
 import Kuboid.manager.utils.Utils;
 import org.joml.Vector2f;
@@ -27,7 +27,7 @@ public class TestGame implements ILogic {
     private final WindowManager window;
 
     private Terrain terrain;
-    private Light sunlight;
+    private DirectionalLight sunlight;
     private Camera camera;
     private boolean isWireframe = false;
 
@@ -55,10 +55,7 @@ public class TestGame implements ILogic {
 
         terrain = new Terrain(4, 48, true, isWireframe, camera.getPosition());
 
-        sunlight = new Light(new Vector3f(100f, 50f, 0f));
-        Vector3f vector = new Vector3f(1f, 1f, 0f);
-//        System.out.println("Angles: " + new Vector3f(0, 90, 0).toString(NumberFormat.getNumberInstance()) + ", Expected direction: " + Utils.calculateDirection(new Vector3f(0, 90, 0)).toString(NumberFormat.getNumberInstance()));
-//        System.out.println("Direction: " + vector.toString(NumberFormat.getNumberInstance()) + ", Expected angles: " + Utils.calculateAngles(vector).toString(NumberFormat.getNumberInstance()));
+        sunlight = new DirectionalLight(new Vector3f(100f, 50f, 0f));
 
         if (thread != null && thread.isAlive()) {
             thread.interrupt();
@@ -180,10 +177,7 @@ public class TestGame implements ILogic {
 
         }
 
-        //sunlight.setPosition(camera.getPosition());
         terrain.update(camera.getPosition());
-        //System.out.println(sunlight.getPosition().toString(NumberFormat.getNumberInstance()));
-        //System.out.println("Camera rotation: " + camera.getRotation().toString(NumberFormat.getNumberInstance()));
     }
 
     @Override
