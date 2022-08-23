@@ -11,6 +11,7 @@ import test.Launcher;
 import java.util.List;
 import java.util.Map;
 
+import static Kuboid.manager.RenderOptions.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
@@ -26,66 +27,83 @@ public class RenderManager {
     private final Camera camera;
     private ShadowMap shadowMap;
 
-    private boolean isWireframe;
+    private RenderOptions renderOptions;
 
-    public RenderManager(Camera camera, boolean isWireframe) throws Exception {
+    public RenderManager(Camera camera, RenderOptions renderOptions) throws Exception {
         window = Launcher.getWindow();
         this.camera = camera;
-        this.isWireframe = isWireframe;
+        this.renderOptions = renderOptions;
     }
 
     public void init() throws Exception {
 
+        System.out.println("RenderOptions: " + renderOptions.toString());
+
         //ShadowMap where the FBO and texture info are stored and initialized
-        this.shadowMap = new ShadowMap();
         shader = new ShaderManager();
-        shaderDepth = new ShaderManager();
 
-        shaderDepth.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
-        shaderDepth.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
+        if (renderOptions != WIREFRAME) {
+            shaderDepth = new ShaderManager();
+            this.shadowMap = new ShadowMap();
 
-        if (isWireframe) {
+        }
+
+        if (renderOptions == WIREFRAME) {
             //Wireframe view
             shader.createVertexShader(Utils.loadResource("/shaders/vertexWireframe.vs"));
             shader.createFragmentShader(Utils.loadResource("/shaders/fragmentWireframe.fs"));
-        } else {
+        }
+
+        if (renderOptions == NORMAL) {
+            shaderDepth.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
+            shaderDepth.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
+
             //Normal view
             shader.createVertexShader(Utils.loadResource("/shaders/vertexTexture.vs"));
             shader.createFragmentShader(Utils.loadResource("/shaders/fragmentTexture.fs"));
 
-//            shader.createVertexShader(Utils.loadResource("/shaders/vertexNoShadowsTexture.vs"));
-//            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentNoShadowsTexture.fs"));
+            //Shader for calculating the depth texture, runs before the main shader
+            shaderDepth.link();
         }
 
-        //Shader for calculating the depth texture, runs before the main shader
-        shaderDepth.link();
+        if (renderOptions == NO_SHADOWS) {
+            //View with no shadows
+            shader.createVertexShader(Utils.loadResource("/shaders/vertexNoShadowsTexture.vs"));
+            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentNoShadowsTexture.fs"));
+        }
+
         //Main shader
         shader.link();
 
-        if (!isWireframe) {
+        if (renderOptions != WIREFRAME) {
             shader.createUniform("textureSampler");
         }
 
-        //ShadowMap storing the depth texture
-        shader.createUniform("shadowMap");
+        if (renderOptions == NORMAL) {
+            //ShadowMap storing the depth texture
+            shader.createUniform("shadowMap");
+
+            //View + Projection matrix to convert a point in the 3D world space to the light perspective and check depth value
+            shader.createUniform("viewProjectionLightMatrix");
+
+            //OrthoProjection matrix to calculate the depth texture and the model matrix for the light
+            shaderDepth.createUniform("orthoProjectionViewMatrix");
+            shaderDepth.createUniform("modelLightMatrix");
+        }
 
         shader.createUniform("transformationMatrix");
         shader.createUniform("projectionMatrix");
         shader.createUniform("viewMatrix");
 
-        //View + Projection matrix to convert a point in the 3D world space to the light perspective and check depth value
-        shader.createUniform("viewProjectionLightMatrix");
-
-        //OrthoProjection matrix to calculate the depth texture and the model matrix for the light
-        shaderDepth.createUniform("orthoProjectionViewMatrix");
-        shaderDepth.createUniform("modelLightMatrix");
     }
 
     public void render(Map<Model, List<Entity>> entities, DirectionalLight sunlight) throws Exception {
         //For now, it's just the sunlight, but it should be a list of lights
 
-        //First we render from the lights perspective to get the depth texture
-        renderDepthMap(entities, sunlight);
+        if (renderOptions == NORMAL) {
+            //First we render from the lights perspective to get the depth texture
+            renderDepthMap(entities, sunlight);
+        }
 
         //Readjust the Viewport size
         glViewport(0, 0, window.getWidth(), window.getHeight());
@@ -94,28 +112,32 @@ public class RenderManager {
         for (Model model : entities.keySet()) {
             shader.bind();
 
-            if (!isWireframe)
+            if (renderOptions != WIREFRAME)
                 shader.setUniform("textureSampler", 0);
 
             //Should precompute this
             shader.setUniform("projectionMatrix", window.getProjectionMatrix());
             shader.setUniform("viewMatrix", Transformation.getViewMatrix(this.camera));
 
-            shader.setUniform("viewProjectionLightMatrix", sunlight.getVPMatrix());
-            shader.setUniform("shadowMap", 1);
+            if (renderOptions == NORMAL) {
+                shader.setUniform("viewProjectionLightMatrix", sunlight.getVPMatrix());
+                shader.setUniform("shadowMap", 1);
+            }
 
             glBindVertexArray(model.getId());
             glEnableVertexAttribArray(0);
 
-            if (!isWireframe) {
+            if (renderOptions != WIREFRAME) {
                 glEnableVertexAttribArray(1);
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, model.getTexture().getId());
             }
 
-            //Bind the texture to the shader
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMap().getId());
+            if (renderOptions == NORMAL) {
+                //Bind the texture to the shader
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMap().getId());
+            }
 
             List<Entity> batch = entities.get(model);
 
@@ -126,7 +148,7 @@ public class RenderManager {
             }
 
             glDisableVertexAttribArray(0);
-            if (!isWireframe)
+            if (renderOptions != WIREFRAME)
                 glDisableVertexAttribArray(1);
 
             glBindVertexArray(0);
@@ -172,13 +194,13 @@ public class RenderManager {
     }
 
     public void setWireframe(boolean wireframe) {
-        isWireframe = wireframe;
+        if (wireframe)
+            renderOptions = WIREFRAME;
     }
 
     public void switchRenderer() throws Exception {
         clear();
         cleanup();
-        init();
     }
 
     public void clear() {

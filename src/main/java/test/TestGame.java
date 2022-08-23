@@ -13,6 +13,7 @@ import org.joml.Vector3i;
 import java.text.NumberFormat;
 import java.util.List;
 
+import static Kuboid.manager.RenderOptions.*;
 import static Kuboid.manager.utils.Constants.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glViewport;
@@ -29,7 +30,7 @@ public class TestGame implements ILogic {
     private Terrain terrain;
     private DirectionalLight sunlight;
     private Camera camera;
-    private boolean isWireframe = false;
+    private RenderOptions renderOptions = NORMAL;
 
     Thread thread;
     private Vector3f cameraInc;
@@ -38,7 +39,7 @@ public class TestGame implements ILogic {
         window = Launcher.getWindow();
         loader = new ObjectLoader();
         camera = new Camera();
-        renderer = new RenderManager(camera, isWireframe);
+        renderer = new RenderManager(camera, renderOptions);
         cameraInc = new Vector3f(0, 0, 0);
     }
 
@@ -46,20 +47,21 @@ public class TestGame implements ILogic {
     public void init() throws Exception {
         renderer.init();
         ui = new UI(window);
-        window.switchWireframe(isWireframe);
+        window.switchWireframe(((renderOptions == WIREFRAME) ? true : false));
 
         //Here we would set the checks for the resizable window
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
         window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
-        terrain = new Terrain(4, 48, true, isWireframe, camera.getPosition());
+        terrain = new Terrain(4, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
 
         sunlight = new DirectionalLight(new Vector3f(100f, 50f, 0f));
 
         if (thread != null && thread.isAlive()) {
             thread.interrupt();
-            terrain.setWireframe(isWireframe);
+
+            terrain.setWireframe(((renderOptions == WIREFRAME) ? true : false));
         }
 
         thread = new Thread(terrain);
@@ -113,8 +115,8 @@ public class TestGame implements ILogic {
         //Change to wireframe view
         if (window.isKeyPressed(GLFW_KEY_P)) {
             previousKey = GLFW_KEY_P;
-            isWireframe = !isWireframe;
-            renderer.setWireframe(isWireframe);
+            renderOptions = (renderOptions != NO_SHADOWS) ? NO_SHADOWS : NORMAL;
+            renderer.setWireframe(((renderOptions == WIREFRAME) ? true : false));
             renderer.switchRenderer();
             //Might stop for a couple milliseconds
             init();
