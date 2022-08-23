@@ -198,6 +198,10 @@ public class RenderManager {
             renderOptions = WIREFRAME;
     }
 
+    public void setRenderOptions(RenderOptions renderOptions) {
+        this.renderOptions = renderOptions;
+    }
+
     public void switchRenderer() throws Exception {
         clear();
         cleanup();

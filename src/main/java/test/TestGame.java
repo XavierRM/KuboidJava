@@ -45,6 +45,7 @@ public class TestGame implements ILogic {
 
     @Override
     public void init() throws Exception {
+        renderer.setRenderOptions(renderOptions);
         renderer.init();
         ui = new UI(window);
         window.switchWireframe(((renderOptions == WIREFRAME) ? true : false));
@@ -116,7 +117,8 @@ public class TestGame implements ILogic {
         if (window.isKeyPressed(GLFW_KEY_P)) {
             previousKey = GLFW_KEY_P;
             renderOptions = (renderOptions != NO_SHADOWS) ? NO_SHADOWS : NORMAL;
-            renderer.setWireframe(((renderOptions == WIREFRAME) ? true : false));
+//            renderer.setRenderOptions(renderOptions);
+            //renderer.setWireframe(((renderOptions == WIREFRAME) ? true : false));
             renderer.switchRenderer();
             //Might stop for a couple milliseconds
             init();
