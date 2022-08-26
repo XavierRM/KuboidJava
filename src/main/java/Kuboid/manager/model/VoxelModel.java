@@ -358,6 +358,13 @@ public class VoxelModel {
 
     };
 
+    public static Vector3f NORMALS_PX = new Vector3f(1.f, 0.f, 0.f);
+    public static Vector3f NORMALS_NX = new Vector3f(-1.f, 0.f, 0.f);
+    public static Vector3f NORMALS_PY = new Vector3f(0.f, 1.f, 0.f);
+    public static Vector3f NORMALS_NY = new Vector3f(0.f, -1.f, 0.f);
+    public static Vector3f NORMALS_PZ = new Vector3f(0.f, 0.f, 1.f);
+    public static Vector3f NORMALS_NZ = new Vector3f(0.f, 0.f, -1.f);
+
 //    Here we should have the NORMALS divided in arrays based on direction like on the POSITIONS and the UV`s
 //    Remember that each face has a total of 6 vertices which form the two triangles for rendering like it is done
 //    in the positions and uv`s

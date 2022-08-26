@@ -3,6 +3,7 @@ package test;
 import Kuboid.manager.*;
 import Kuboid.manager.generation.Terrain;
 import Kuboid.manager.lighting.DirectionalLight;
+import Kuboid.manager.lighting.Sun;
 import Kuboid.manager.utils.RayCast;
 import Kuboid.manager.utils.Utils;
 import org.joml.Vector2f;
@@ -28,7 +29,8 @@ public class TestGame implements ILogic {
     private final WindowManager window;
 
     private Terrain terrain;
-    private DirectionalLight sunlight;
+    private DirectionalLight dirlight = new DirectionalLight(new Vector3f(100f, 50f, 0f));
+    private Sun sunlight;
     private Camera camera;
     private RenderOptions renderOptions = NORMAL;
 
@@ -57,7 +59,7 @@ public class TestGame implements ILogic {
 
         terrain = new Terrain(4, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
 
-        sunlight = new DirectionalLight(new Vector3f(100f, 50f, 0f));
+        sunlight = new Sun(dirlight);
 
         if (thread != null && thread.isAlive()) {
             thread.interrupt();
@@ -127,6 +129,7 @@ public class TestGame implements ILogic {
         if (window.isKeyPressed(GLFW_KEY_V)) {
             System.out.println("Camera position: " + camera.getPosition().toString(NumberFormat.getNumberInstance()));
             System.out.println("Camera rotation: " + camera.getRotation().toString(NumberFormat.getNumberInstance()));
+            sunlight.printValues();
 
         }
 
@@ -182,12 +185,14 @@ public class TestGame implements ILogic {
         }
 
         terrain.update(camera.getPosition());
+        //Call to update the sun
     }
 
     @Override
     public void render() throws Exception {
         renderer.clear();
-        renderer.render(terrain.getTerrain(), sunlight);
+        renderer.normalsList = terrain.normalsList;
+        renderer.render(terrain.getTerrain(), sunlight.getDirectionalLight());
         ui.render();
     }
 

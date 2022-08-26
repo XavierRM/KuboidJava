@@ -35,6 +35,7 @@ public class Terrain implements Runnable {
     private List<ChunkMesh> chunkMeshes = Collections.synchronizedList(new ArrayList<>());
     private List<Chunk> activeChunks = Collections.synchronizedList(new ArrayList<>());
     private List<Vector3f> blockPositions = Collections.synchronizedList(new ArrayList<>());
+    public List<Vector3f> normalsList = Collections.synchronizedList(new ArrayList<>());
     private List<Entity> entities = Collections.synchronizedList(new ArrayList<>());
     private List<Vector3f> usedPos = Collections.synchronizedList(new ArrayList<>());
 
@@ -168,7 +169,19 @@ public class Terrain implements Runnable {
             if (index < chunkMeshes.size()) {
                 for (long i = index; i < chunkMeshes.size(); i++) {
                     ChunkMesh chunk = chunkMeshes.get((int) i);
-                    newModel = loader.loadModel(chunk.positions, chunk.uvs);
+                    newModel = loader.loadModel(chunk.positions, chunk.uvs, chunk.normals);
+
+//                    System.out.println("positions length: " + chunk.positions.length);
+//                    System.out.println("normals length: " + chunk.normals.length);
+
+                    for (int t = 0; t < chunk.normals.length; t += 3) {
+                        Vector3f aux = new Vector3f(chunk.normals[t], chunk.normals[t + 1], chunk.normals[t + 2]);
+//                        Vector3f aux2 = new Vector3f(chunk.positions[t], chunk.positions[t+1], chunk.positions[t+2]);
+                        normalsList.add(aux);
+
+//                        System.out.println(aux.toString(NumberFormat.getNumberInstance()));
+//                        System.out.println(aux2.toString(NumberFormat.getNumberInstance()));
+                    }
 
                     try {
                         newModel.setTexture(texture);
@@ -188,7 +201,7 @@ public class Terrain implements Runnable {
 
             for (long i = 0; i < chunkMeshes.size(); i++) {
                 ChunkMesh chunk = chunkMeshes.get((int) i);
-                newModel = loader.loadModel(chunk.positions, chunk.uvs);
+                newModel = loader.loadModel(chunk.positions, chunk.uvs, chunk.normals);
 
                 try {
                     newModel.setTexture(texture);

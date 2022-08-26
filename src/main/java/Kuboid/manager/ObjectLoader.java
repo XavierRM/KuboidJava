@@ -33,10 +33,11 @@ public class ObjectLoader {
         return new Model(id, indices.length);
     }
 
-    public Model loadModel(float[] vertices, float[] uvs) {
+    public Model loadModel(float[] vertices, float[] uvs, float[] normals) {
         int id = createVAO();
         storeDatainAttribList(0, 3, vertices);
         storeDatainAttribList(1, 2, uvs);
+        storeDatainAttribList(2, 3, normals);
         unbind();
         return new Model(id, vertices.length);
     }

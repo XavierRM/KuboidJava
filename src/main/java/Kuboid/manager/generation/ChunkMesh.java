@@ -56,7 +56,7 @@ public class ChunkMesh {
             if (!usedPos.contains(new Vector3f(voxelI.origin.x + 1, voxelI.origin.y, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.POS_PX[k].x + voxelI.origin.x, VoxelModel.POS_PX[k].y + voxelI.origin.y, VoxelModel.POS_PX[k].z + voxelI.origin.z),
-                            VoxelModel.NORMALS[k],
+                            VoxelModel.NORMALS_PX,
                             VoxelModel.UV_PX[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
@@ -65,7 +65,7 @@ public class ChunkMesh {
             if (!usedPos.contains(new Vector3f(voxelI.origin.x - 1, voxelI.origin.y, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.POS_NX[k].x + voxelI.origin.x, VoxelModel.POS_NX[k].y + voxelI.origin.y, VoxelModel.POS_NX[k].z + voxelI.origin.z),
-                            VoxelModel.NORMALS[k],
+                            VoxelModel.NORMALS_NX,
                             VoxelModel.UV_NX[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
@@ -74,7 +74,7 @@ public class ChunkMesh {
             if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y + 1, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.POS_PY[k].x + voxelI.origin.x, VoxelModel.POS_PY[k].y + voxelI.origin.y, VoxelModel.POS_PY[k].z + voxelI.origin.z),
-                            VoxelModel.NORMALS[k],
+                            VoxelModel.NORMALS_PY,
                             VoxelModel.UV_PY[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
@@ -83,7 +83,7 @@ public class ChunkMesh {
             if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y - 1, voxelI.origin.z))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.POS_NY[k].x + voxelI.origin.x, VoxelModel.POS_NY[k].y + voxelI.origin.y, VoxelModel.POS_NY[k].z + voxelI.origin.z),
-                            VoxelModel.NORMALS[k],
+                            VoxelModel.NORMALS_NY,
                             VoxelModel.UV_NY[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
@@ -92,7 +92,7 @@ public class ChunkMesh {
             if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z + 1))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.POS_PZ[k].x + voxelI.origin.x, VoxelModel.POS_PZ[k].y + voxelI.origin.y, VoxelModel.POS_PZ[k].z + voxelI.origin.z),
-                            VoxelModel.NORMALS[k],
+                            VoxelModel.NORMALS_PZ,
                             VoxelModel.UV_PZ[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
@@ -101,7 +101,7 @@ public class ChunkMesh {
             if (!usedPos.contains(new Vector3f(voxelI.origin.x, voxelI.origin.y, voxelI.origin.z - 1))) {
                 for (int k = 0; k < 6; k++) {
                     vertices.add(new Vertex(new Vector3f(VoxelModel.POS_NZ[k].x + voxelI.origin.x, VoxelModel.POS_NZ[k].y + voxelI.origin.y, VoxelModel.POS_NZ[k].z + voxelI.origin.z),
-                            VoxelModel.NORMALS[k],
+                            VoxelModel.NORMALS_NZ,
                             VoxelModel.UV_NZ[(voxelI.type.ordinal() * 6) + k]));
                 }
             }
@@ -122,9 +122,9 @@ public class ChunkMesh {
             uvsList.add(vertex.uvs.x);
             uvsList.add(vertex.uvs.y);
 
-            normalsList.add(vertex.normals.x);
-            normalsList.add(vertex.normals.y);
-            normalsList.add(vertex.normals.z);
+            normalsList.add(vertex.normals.x * 1000);
+            normalsList.add(vertex.normals.y * 1000);
+            normalsList.add(vertex.normals.z * 1000);
 
         }
         vertices.clear();
