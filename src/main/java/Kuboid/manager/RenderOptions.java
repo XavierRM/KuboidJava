@@ -1,5 +1,5 @@
 package Kuboid.manager;
 
 public enum RenderOptions {
-    NORMAL, NO_SHADOWS, WIREFRAME;
+    DEFAULT, NO_SHADOWS, WIREFRAME, NORMALS;
 }

@@ -51,7 +51,8 @@ public class DirectionalLight {
         Vector3f auxAngles = Utils.calculateAngles(new Vector3f(direction));
         setAngles(auxAngles);
 
-        this.color = new Vector3f(0.78515625f, 0.8828125f, 1f);
+        //this.color = new Vector3f(0.78515625f, 0.8828125f, 1f);
+        this.color = new Vector3f(1f, 1f, 1f);
         this.intensity = 1f;
     }
 

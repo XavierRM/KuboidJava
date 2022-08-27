@@ -7,7 +7,6 @@ import Kuboid.manager.model.Model;
 import Kuboid.manager.utils.Transformation;
 import Kuboid.manager.utils.Utils;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 import test.Launcher;
 
 import java.util.ArrayList;
@@ -42,12 +41,12 @@ public class RenderManager {
 
     public void init() throws Exception {
 
-//        System.out.println("RenderOptions: " + renderOptions.toString());
+        System.out.println("RenderOptions: " + renderOptions.toString());
 
         //ShadowMap where the FBO and texture info are stored and initialized
         shader = new ShaderManager();
 
-        if (renderOptions != WIREFRAME) {
+        if (renderOptions != WIREFRAME || renderOptions != NORMALS) {
             shaderDepth = new ShaderManager();
             this.shadowMap = new ShadowMap();
 
@@ -59,16 +58,16 @@ public class RenderManager {
             shader.createFragmentShader(Utils.loadResource("/shaders/fragmentWireframe.fs"));
         }
 
-        if (renderOptions == NORMAL) {
-//            shaderDepth.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
-//            shaderDepth.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
+        if (renderOptions == DEFAULT) {
+            shaderDepth.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
+            shaderDepth.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
 
             //Normal view
             shader.createVertexShader(Utils.loadResource("/shaders/vertexTexture.glsl"));
             shader.createFragmentShader(Utils.loadResource("/shaders/fragmentTexture.glsl"));
 
             //Shader for calculating the depth texture, runs before the main shader
-            //shaderDepth.link();
+            shaderDepth.link();
         }
 
         if (renderOptions == NO_SHADOWS) {
@@ -77,23 +76,29 @@ public class RenderManager {
             shader.createFragmentShader(Utils.loadResource("/shaders/fragmentNoShadowsTexture.fs"));
         }
 
+        if (renderOptions == NORMALS) {
+            //View with just normals
+            shader.createVertexShader(Utils.loadResource("/shaders/normalsVertex.glsl"));
+            shader.createFragmentShader(Utils.loadResource("/shaders/normalsFragment.glsl"));
+        }
+
         //Main shader
         shader.link();
 
-        if (renderOptions != WIREFRAME) {
-//            shader.createUniform("textureSampler");
+        if (renderOptions == DEFAULT || renderOptions == NO_SHADOWS) {
+            shader.createUniform("textureSampler");
         }
 
-        if (renderOptions == NORMAL) {
+        if (renderOptions == DEFAULT) {
             //ShadowMap storing the depth texture
-//            shader.createUniform("shadowMap");
+            shader.createUniform("shadowMap");
 
             //View + Projection matrix to convert a point in the 3D world space to the light perspective and check depth value
-//            shader.createUniform("viewProjectionLightMatrix");
+            shader.createUniform("viewProjectionLightMatrix");
 
             //OrthoProjection matrix to calculate the depth texture and the model matrix for the light
-//            shaderDepth.createUniform("orthoProjectionViewMatrix");
-//            shaderDepth.createUniform("modelLightMatrix");
+            shaderDepth.createUniform("orthoProjectionViewMatrix");
+            shaderDepth.createUniform("modelLightMatrix");
         }
 
         shader.createUniform("transformationMatrix");
@@ -103,9 +108,11 @@ public class RenderManager {
 //        shader.createUniform("cameraPosition");
 //        shader.createUniform("specularPower");
 
-        shader.createUniform("directionalLight.colour");
-        shader.createUniform("directionalLight.intensity");
-//        shader.createUniform("directionalLight.direction");
+        if (renderOptions == DEFAULT) {
+            shader.createUniform("directionalLight.colour");
+            shader.createUniform("directionalLight.intensity");
+            shader.createUniform("directionalLight.direction");
+        }
 
     }
 
@@ -113,38 +120,38 @@ public class RenderManager {
 //    public void render(Map<Model, List<Entity>> entities, Sun sunlight) throws Exception {
         //For now, it's just the sunlight, but it should be a list of lights
 
-        if (renderOptions == NORMAL) {
+        if (renderOptions == DEFAULT) {
             //First we render from the lights perspective to get the depth texture
-//            renderDepthMap(entities, sunlight);
+            renderDepthMap(entities, sunlight);
         }
 
         //Readjust the Viewport size
         glViewport(0, 0, window.getWidth(), window.getHeight());
 
         //Render models in the game
-        int i = 0;
         for (Model model : entities.keySet()) {
             shader.bind();
 
-            if (renderOptions != WIREFRAME)
-//                shader.setUniform("textureSampler", 0);
+            if (renderOptions == DEFAULT || renderOptions == NO_SHADOWS)
+                shader.setUniform("textureSampler", 0);
 
-                //Should precompute this
-                shader.setUniform("projectionMatrix", window.getProjectionMatrix());
+            //Should precompute this
+            shader.setUniform("projectionMatrix", window.getProjectionMatrix());
             shader.setUniform("viewMatrix", Transformation.getViewMatrix(this.camera));
 //            shader.setUniform("viewLightMatrix", sunlight.getVMatrix());
 //            shader.setUniform("cameraPosition", this.camera.getPosition());
 //            shader.setUniform("specularPower", 10f);
 
-            if (renderOptions == NORMAL) {
-//                shader.setUniform("viewProjectionLightMatrix", sunlight.getDirectionalLight().getVPMatrix());
-//                shader.setUniform("shadowMap", 1);
+            if (renderOptions == DEFAULT) {
+                shader.setUniform("viewProjectionLightMatrix", sunlight.getVPMatrix());
+                shader.setUniform("shadowMap", 1);
 
-                Vector4f dirLight = new Vector4f(sunlight.getDirection(), 0);
+                //Vector4f dirLight = new Vector4f(sunlight.getDirection(), 0);
 
-                dirLight.mul(sunlight.getVMatrix());
+                //dirLight.mul(sunlight.getVMatrix());
 
 //                shader.setUniform("directionalLight.direction", new Vector3f(dirLight.x, dirLight.y, dirLight.z));
+                shader.setUniform("directionalLight.direction", sunlight.getPosition());
                 shader.setUniform("directionalLight.colour", sunlight.getColor());
                 shader.setUniform("directionalLight.intensity", sunlight.getIntensity());
             }
@@ -160,11 +167,11 @@ public class RenderManager {
             glBindVertexArray(model.getId());
             glEnableVertexAttribArray(2);
 
-//            if (renderOptions == NORMAL) {
+            if (renderOptions == DEFAULT) {
 //                Bind the texture to the shader
-//                glActiveTexture(GL_TEXTURE1);
-//                glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMap().getId());
-//            }
+                glActiveTexture(GL_TEXTURE1);
+                glBindTexture(GL_TEXTURE_2D, shadowMap.getDepthMap().getId());
+            }
 
             List<Entity> batch = entities.get(model);
 

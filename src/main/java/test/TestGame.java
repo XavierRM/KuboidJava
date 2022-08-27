@@ -32,7 +32,7 @@ public class TestGame implements ILogic {
     private DirectionalLight dirlight = new DirectionalLight(new Vector3f(100f, 50f, 0f));
     private Sun sunlight;
     private Camera camera;
-    private RenderOptions renderOptions = NORMAL;
+    private RenderOptions renderOptions = DEFAULT;
 
     Thread thread;
     private Vector3f cameraInc;
@@ -118,11 +118,33 @@ public class TestGame implements ILogic {
         //Change to wireframe view
         if (window.isKeyPressed(GLFW_KEY_P)) {
             previousKey = GLFW_KEY_P;
-            renderOptions = (renderOptions != NO_SHADOWS) ? NO_SHADOWS : NORMAL;
-//            renderer.setRenderOptions(renderOptions);
-            //renderer.setWireframe(((renderOptions == WIREFRAME) ? true : false));
+            renderOptions = WIREFRAME;
             renderer.switchRenderer();
             //Might stop for a couple milliseconds
+            init();
+        }
+
+        //Change to NoShadows view
+        if (window.isKeyPressed(GLFW_KEY_O)) {
+            previousKey = GLFW_KEY_O;
+            renderOptions = NO_SHADOWS;
+            renderer.switchRenderer();
+            init();
+        }
+
+        //Change to Normals view
+        if (window.isKeyPressed(GLFW_KEY_L)) {
+            previousKey = GLFW_KEY_L;
+            renderOptions = NORMALS;
+            renderer.switchRenderer();
+            init();
+        }
+
+        //Change to default view
+        if (window.isKeyPressed(GLFW_KEY_K)) {
+            previousKey = GLFW_KEY_K;
+            renderOptions = DEFAULT;
+            renderer.switchRenderer();
             init();
         }
 
