@@ -111,7 +111,7 @@ public class RenderManager {
         if (renderOptions == DEFAULT) {
             shader.createUniform("directionalLight.colour");
             shader.createUniform("directionalLight.intensity");
-            shader.createUniform("directionalLight.direction");
+            shader.createUniform("directionalLight.position");
         }
 
     }
@@ -151,7 +151,7 @@ public class RenderManager {
                 //dirLight.mul(sunlight.getVMatrix());
 
 //                shader.setUniform("directionalLight.direction", new Vector3f(dirLight.x, dirLight.y, dirLight.z));
-                shader.setUniform("directionalLight.direction", sunlight.getPosition());
+                shader.setUniform("directionalLight.position", sunlight.getPosition());
                 shader.setUniform("directionalLight.colour", sunlight.getColor());
                 shader.setUniform("directionalLight.intensity", sunlight.getIntensity());
             }

@@ -13,7 +13,7 @@ out vec4 fragColour;
 
 struct DirectionalLight {
     vec3 colour;
-    vec3 direction;
+    vec3 position;
     float intensity;
 };
 
@@ -21,9 +21,10 @@ struct DirectionalLight {
 uniform sampler2D textureSampler;
 uniform sampler2D shadowMap;
 uniform DirectionalLight directionalLight;
+//uniform mat4 viewLightMatrix;
 //uniform vec3 cameraPosition;
 
-vec3 ambientLight = vec3(0.6, 0.6, 0.6);
+vec3 ambientLight = vec3(0.3, 0.3, 0.3);
 //vec3 lightPosition = directionalLight.direction * 1000;
 float reflectance = 0;
 float specularPower = 10;
@@ -43,16 +44,18 @@ vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, ve
 {
     vec4 diffuseColour = vec4(0, 0, 0, 0);
     vec4 specColour = vec4(0, 0, 0, 0);
-    vec3 fromLightDir = normalize(position - lightPos);
-
+    vec3 fromLightDir = normalize(-lightPos);
 
     // Diffuse Light
     float diffuseFactor = max(dot(-fromLightDir, normal), 0.0);
 
     //If the diffuseFactor surpases a certain threshold is enough to make it iluminated, but since the values might
     //be really low it's not enough to make a difference in the end
-    if (diffuseFactor > 0.3 && diffuseFactor < 0.7)
+    if (diffuseFactor >= 0.3 && diffuseFactor < 0.7)
     diffuseFactor = 0.71;
+
+    if (diffuseFactor > 0 && diffuseFactor < 0.3)
+    diffuseFactor += 0.1;
 
     diffuseColour = diffuseC * vec4(light_colour, 1.0) * light_intensity * diffuseFactor;
 
@@ -70,7 +73,7 @@ vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, ve
 vec4 calcDirectionalLight(DirectionalLight directionalLight, vec3 position, vec3 normal) {
 
     //    return calcLightColour(directionalLight.colour, directionalLight.intensity, position, directionalLight.direction, normal);
-    return calcLightColour(directionalLight.colour, directionalLight.intensity, position, directionalLight.direction, normal);
+    return calcLightColour(directionalLight.colour, directionalLight.intensity, position, directionalLight.position, normal);
 }
 
 float calcShadow(vec4 position) {
