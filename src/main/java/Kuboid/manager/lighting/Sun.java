@@ -18,7 +18,7 @@ public class Sun {
      */
 
     private DirectionalLight directionalLight;
-    private float increment = 1.1f;
+    private float increment = .005f;
     private float posMultiplier = 100f;
     private float lightAngle = 90f;
 
@@ -48,6 +48,8 @@ public class Sun {
 
     public void update() {
         //Update directional light direction, intensity and colour
+
+        /*Still have to update the position based on the angles calculated*/
 
         lightAngle -= increment;
 

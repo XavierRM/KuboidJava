@@ -81,8 +81,8 @@ public class Terrain implements Runnable {
 
         RandomGenerator random = RandomGenerator.of("Random");
 
-        //SimplexNoise.setSeed(random.nextLong(Integer.MAX_VALUE));
-        SimplexNoise.setSeed(0);
+        SimplexNoise.setSeed(random.nextLong(Integer.MAX_VALUE));
+//        SimplexNoise.setSeed(0);
 
         if (isWireframe)
             model = loader.loadModel(verticesDirt, indicesDirt);
@@ -170,18 +170,6 @@ public class Terrain implements Runnable {
                 for (long i = index; i < chunkMeshes.size(); i++) {
                     ChunkMesh chunk = chunkMeshes.get((int) i);
                     newModel = loader.loadModel(chunk.positions, chunk.uvs, chunk.normals);
-
-//                    System.out.println("positions length: " + chunk.positions.length);
-//                    System.out.println("normals length: " + chunk.normals.length);
-
-                    for (int t = 0; t < chunk.normals.length; t += 3) {
-                        Vector3f aux = new Vector3f(chunk.normals[t], chunk.normals[t + 1], chunk.normals[t + 2]);
-//                        Vector3f aux2 = new Vector3f(chunk.positions[t], chunk.positions[t+1], chunk.positions[t+2]);
-                        normalsList.add(aux);
-
-//                        System.out.println(aux.toString(NumberFormat.getNumberInstance()));
-//                        System.out.println(aux2.toString(NumberFormat.getNumberInstance()));
-                    }
 
                     try {
                         newModel.setTexture(texture);

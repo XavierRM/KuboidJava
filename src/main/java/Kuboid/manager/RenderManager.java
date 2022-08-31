@@ -72,8 +72,8 @@ public class RenderManager {
 
         if (renderOptions == NO_SHADOWS) {
             //View with no shadows
-            shader.createVertexShader(Utils.loadResource("/shaders/vertexNoShadowsTexture.vs"));
-            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentNoShadowsTexture.fs"));
+            shader.createVertexShader(Utils.loadResource("/shaders/vertexNoShadowsTexture.glsl"));
+            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentNoShadowsTexture.glsl"));
         }
 
         if (renderOptions == NORMALS) {
@@ -108,7 +108,7 @@ public class RenderManager {
 //        shader.createUniform("cameraPosition");
 //        shader.createUniform("specularPower");
 
-        if (renderOptions == DEFAULT) {
+        if (renderOptions == DEFAULT || renderOptions == NO_SHADOWS) {
             shader.createUniform("directionalLight.colour");
             shader.createUniform("directionalLight.intensity");
             shader.createUniform("directionalLight.position");
@@ -145,7 +145,9 @@ public class RenderManager {
             if (renderOptions == DEFAULT) {
                 shader.setUniform("viewProjectionLightMatrix", sunlight.getVPMatrix());
                 shader.setUniform("shadowMap", 1);
+            }
 
+            if (renderOptions == DEFAULT || renderOptions == NO_SHADOWS) {
                 //Vector4f dirLight = new Vector4f(sunlight.getDirection(), 0);
 
                 //dirLight.mul(sunlight.getVMatrix());

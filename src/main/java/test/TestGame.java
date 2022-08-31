@@ -57,7 +57,7 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
-        terrain = new Terrain(4, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
+        terrain = new Terrain(8, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
 
         sunlight = new Sun(dirlight);
 
@@ -208,6 +208,7 @@ public class TestGame implements ILogic {
 
         terrain.update(camera.getPosition());
         //Call to update the sun
+//        sunlight.update();
     }
 
     @Override
