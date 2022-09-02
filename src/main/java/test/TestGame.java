@@ -1,6 +1,7 @@
 package test;
 
 import Kuboid.manager.*;
+import Kuboid.manager.UI.Crosshair;
 import Kuboid.manager.generation.Terrain;
 import Kuboid.manager.lighting.DirectionalLight;
 import Kuboid.manager.lighting.Sun;
@@ -24,7 +25,7 @@ public class TestGame implements ILogic {
     private int previousKey;
 
     private final RenderManager renderer;
-    private UI ui;
+    private Crosshair crosshair;
     private final ObjectLoader loader;
     private final WindowManager window;
 
@@ -49,7 +50,7 @@ public class TestGame implements ILogic {
     public void init() throws Exception {
         renderer.setRenderOptions(renderOptions);
         renderer.init();
-        ui = new UI(window);
+        crosshair = new Crosshair(window);
         window.switchWireframe(((renderOptions == WIREFRAME) ? true : false));
 
         //Here we would set the checks for the resizable window
@@ -216,7 +217,7 @@ public class TestGame implements ILogic {
         renderer.clear();
         renderer.normalsList = terrain.normalsList;
         renderer.render(terrain.getTerrain(), sunlight.getDirectionalLight());
-        ui.render();
+        crosshair.render();
     }
 
     @Override

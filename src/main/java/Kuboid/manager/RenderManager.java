@@ -54,13 +54,13 @@ public class RenderManager {
 
         if (renderOptions == WIREFRAME) {
             //Wireframe view
-            shader.createVertexShader(Utils.loadResource("/shaders/vertexWireframe.vs"));
-            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentWireframe.fs"));
+            shader.createVertexShader(Utils.loadResource("/shaders/vertexWireframe.glsl"));
+            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentWireframe.glsl"));
         }
 
         if (renderOptions == DEFAULT) {
-            shaderDepth.createVertexShader(Utils.loadResource("/shaders/depth_vertex.vs"));
-            shaderDepth.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.fs"));
+            shaderDepth.createVertexShader(Utils.loadResource("/shaders/depth_vertex.glsl"));
+            shaderDepth.createFragmentShader(Utils.loadResource("/shaders/depth_fragment.glsl"));
 
             //Normal view
             shader.createVertexShader(Utils.loadResource("/shaders/vertexTexture.glsl"));

@@ -1,6 +1,12 @@
 package Kuboid.manager;
 
+import Kuboid.manager.UI.UILayer;
+import imgui.ImGui;
+import imgui.flag.ImGuiConfigFlags;
+import imgui.gl3.ImGuiImplGl3;
+import imgui.glfw.ImGuiImplGlfw;
 import org.joml.Matrix4f;
+import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -21,6 +27,13 @@ public class WindowManager {
 
     private final Matrix4f projectionMatrix;
 
+    private UILayer uiLayer;
+
+    private final ImGuiImplGlfw imGuiImplGlfw = new ImGuiImplGlfw();
+    private final ImGuiImplGl3 imGuiImplGl3 = new ImGuiImplGl3();
+
+    private String glslVersion = null;
+
     public WindowManager(String title, int width, int height, boolean vSync) {
         this.title = title;
         this.width = width;
@@ -38,6 +51,8 @@ public class WindowManager {
         if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW.");
         }
+
+        glslVersion = "#version 400";
 
         // Configure GLFW
         glfwDefaultWindowHints();
@@ -81,15 +96,47 @@ public class WindowManager {
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+        initImGui();
+        imGuiImplGlfw.init(window, true);
+        imGuiImplGl3.init(glslVersion);
+
+    }
+
+    private void initImGui() {
+        ImGui.createContext();
     }
 
     public void update() {
+        imGuiImplGlfw.newFrame();
+        ImGui.newFrame();
+
+        if (uiLayer != null)
+            uiLayer.ImGui();
+
+        ImGui.render();
+        imGuiImplGl3.renderDrawData(ImGui.getDrawData());
+
+        if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+            final long backupWindowPtr = org.lwjgl.glfw.GLFW.glfwGetCurrentContext();
+            ImGui.updatePlatformWindows();
+            ImGui.renderPlatformWindowsDefault();
+            org.lwjgl.glfw.GLFW.glfwMakeContextCurrent(backupWindowPtr);
+        }
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     public void cleanup() {
+        imGuiImplGl3.dispose();
+        imGuiImplGlfw.dispose();
+        ImGui.destroyContext();
+        Callbacks.glfwFreeCallbacks(window);
         glfwDestroyWindow(window);
+    }
+
+    public void setUiLayer(UILayer layer) {
+        this.uiLayer = layer;
     }
 
     public boolean isKeyPressed(int keycode) {

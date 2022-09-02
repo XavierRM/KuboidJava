@@ -1,13 +1,15 @@
-package Kuboid.manager;
+package Kuboid.manager.UI;
+
+import Kuboid.manager.WindowManager;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class UI {
+public class Crosshair {
 
     private int id;
     private WindowManager window;
 
-    public UI(WindowManager window) {
+    public Crosshair(WindowManager window) {
         this.id = 0;
         this.window = window;
     }
