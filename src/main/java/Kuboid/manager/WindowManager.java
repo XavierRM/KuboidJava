@@ -2,6 +2,7 @@ package Kuboid.manager;
 
 import Kuboid.manager.UI.UILayer;
 import imgui.ImGui;
+import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
@@ -104,6 +105,8 @@ public class WindowManager {
 
     private void initImGui() {
         ImGui.createContext();
+        ImGuiIO io = ImGui.getIO();
+        io.addConfigFlags(ImGuiConfigFlags.ViewportsEnable);
     }
 
     public void update() {
