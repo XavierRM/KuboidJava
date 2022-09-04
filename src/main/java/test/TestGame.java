@@ -6,14 +6,23 @@ import Kuboid.manager.UI.UILayer;
 import Kuboid.manager.generation.Terrain;
 import Kuboid.manager.lighting.DirectionalLight;
 import Kuboid.manager.lighting.Sun;
+import Kuboid.manager.persistency.Add;
+import Kuboid.manager.persistency.Change;
+import Kuboid.manager.persistency.Remove;
+import Kuboid.manager.persistency.World;
 import Kuboid.manager.utils.RayCast;
 import Kuboid.manager.utils.Utils;
+import Kuboid.manager.voxel.VoxelType;
+import com.google.gson.Gson;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import static Kuboid.manager.RenderOptions.*;
@@ -24,12 +33,16 @@ import static org.lwjgl.opengl.GL11.glViewport;
 public class TestGame implements ILogic {
 
     private int previousKey;
+    private String saveFilename = "World.json";
+    private String content = "";
 
     private final RenderManager renderer;
     private Crosshair crosshair;
     private final ObjectLoader loader;
     private final WindowManager window;
 
+    private World worldObject;
+    private List<Change> changes = new ArrayList<>();
     private Terrain terrain;
     private DirectionalLight dirlight = new DirectionalLight(new Vector3f(100f, 50f, 0f));
     private Sun sunlight;
@@ -45,6 +58,7 @@ public class TestGame implements ILogic {
         loader = new ObjectLoader();
         camera = new Camera();
         renderer = new RenderManager(camera, renderOptions);
+        worldObject = new World();
         cameraInc = new Vector3f(0, 0, 0);
     }
 
@@ -60,7 +74,10 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
-        terrain = new Terrain(8, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
+//        terrain = new Terrain(8, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
+        terrain = new Terrain(4, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
+
+        worldObject.seed = terrain.getSeed();
 
         sunlight = new Sun(dirlight);
 
@@ -192,9 +209,10 @@ public class TestGame implements ILogic {
             if (window.isKeyPressed(GLFW_KEY_LEFT_ALT)) {
 
                 if (hit != null) {
-                    System.out.println(rayCast.getPreviousToHit().toString(NumberFormat.getNumberInstance()));
+                    Vector3f previousHit = new Vector3f(rayCast.getPreviousToHit());
 
-                    terrain.addVoxel(new Vector3f(rayCast.getPreviousToHit()));
+                    worldObject.changes.add(new Add(new Vector3f(previousHit), VoxelType.STONE));
+                    terrain.addVoxel(new Vector3f(previousHit));
                 } else
                     System.out.println("Hit is null! - Add");
 
@@ -202,6 +220,7 @@ public class TestGame implements ILogic {
                 if (hit != null) {
                     System.out.println(hit.toString(NumberFormat.getNumberInstance()));
 
+                    worldObject.changes.add(new Remove(new Vector3f(hit)));
                     terrain.removeVoxel(new Vector3f(hit));
                 } else
                     System.out.println("Hit is null! - Remove");
@@ -211,6 +230,7 @@ public class TestGame implements ILogic {
 
         //Update the GUI
         window.setFOV(window.getUiLayer().getFOV_degrees());
+
         Vector3f backgroundColour = window.getUiLayer().getBackgroundColour();
         window.setClearColour(backgroundColour.x, backgroundColour.y, backgroundColour.z, 0.0f);
 
@@ -229,6 +249,28 @@ public class TestGame implements ILogic {
 
     @Override
     public void cleanup() {
+
+        if (window.getUiLayer().save()) {
+            //Save the changes in a JSON file
+            try {
+                File file = new File("C:\\Users\\Usuario\\IdeaProjects\\Kuboid\\" + saveFilename);
+
+                file.createNewFile();
+
+                //Get the changes and build the JSON, then convert to string
+                worldObject.changes = changes;
+                content = (new Gson()).toJson(worldObject);
+
+                byte[] b = content.getBytes();
+                FileOutputStream fos = new FileOutputStream(file);
+                fos.write(b);
+                fos.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         terrain.stopLoop();
         thread.interrupt();
         renderer.cleanup();

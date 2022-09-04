@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 public class UILayer {
 
     private boolean save = false;
+    private String filename;
     private float[] fovArray;
     private float[] redArray;
     private float[] greenArray;
@@ -21,7 +22,8 @@ public class UILayer {
 
     public void ImGui() {
         ImGui.begin("Debugging");
-        ImGui.setWindowSize(200, 200);
+
+        ImGui.setWindowSize(200, 210);
 
         ImGui.sliderFloat(" FOV", fovArray, 30, 120);
 
@@ -34,8 +36,13 @@ public class UILayer {
         ImGui.newLine();
 
         if (ImGui.button("Save world & changes")) {
-            save = true;
+            save = !save;
         }
+
+        if (save)
+            ImGui.checkbox("Saving world?", true);
+        else
+            ImGui.checkbox("Saving world?", false);
 
         ImGui.end();
     }
@@ -46,5 +53,13 @@ public class UILayer {
 
     public int getFOV_degrees() {
         return (int) fovArray[0];
+    }
+
+    public boolean save() {
+        return save;
+    }
+
+    public String getFilename() {
+        return filename;
     }
 }

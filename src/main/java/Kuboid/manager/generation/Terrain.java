@@ -23,6 +23,7 @@ public class Terrain implements Runnable {
     private SimplexNoise simplexNoise;
 
     private long size;
+    private long seed = RandomGenerator.of("Random").nextLong(Integer.MAX_VALUE);
     private long index = 0;
     private long chunkSize, chunkDepth;
     private boolean plain;
@@ -79,9 +80,7 @@ public class Terrain implements Runnable {
         this.simplexNoise = new SimplexNoise();
         this.texture = new Texture(loader.loadTexture("textures/default_texture.png"));
 
-        RandomGenerator random = RandomGenerator.of("Random");
-
-        SimplexNoise.setSeed(random.nextLong(Integer.MAX_VALUE));
+        SimplexNoise.setSeed(seed);
 //        SimplexNoise.setSeed(0);
 
         if (isWireframe)
@@ -335,5 +334,13 @@ public class Terrain implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public long getSeed() {
+        return seed;
+    }
+
+    public void setSeed(long seed) {
+        this.seed = seed;
     }
 }
