@@ -1,6 +1,5 @@
 package Kuboid.manager;
 
-import Kuboid.manager.UI.UILayer;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import test.Launcher;
@@ -27,7 +26,6 @@ public class EngineManager {
         GLFW.glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
 
         window = Launcher.getWindow();
-        window.setUiLayer(new UILayer());
         gameLogic = Launcher.getGame();
         mouseInput = new MouseInput();
         window.init();

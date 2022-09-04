@@ -1,6 +1,7 @@
 package Kuboid.manager;
 
 import Kuboid.manager.UI.UILayer;
+import Kuboid.manager.utils.Constants;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.flag.ImGuiConfigFlags;
@@ -12,7 +13,8 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
-import static Kuboid.manager.utils.Constants.*;
+import static Kuboid.manager.utils.Constants.Z_FAR;
+import static Kuboid.manager.utils.Constants.Z_NEAR;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -22,6 +24,7 @@ public class WindowManager {
     private String title;
 
     private int width, height;
+    private float FOV;
     private long window;
 
     private boolean resize, vSync;
@@ -40,6 +43,7 @@ public class WindowManager {
         this.width = width;
         this.height = height;
         this.vSync = vSync;
+        this.FOV = Constants.FOV;
         projectionMatrix = new Matrix4f();
         projectionMatrix.identity();
     }
@@ -142,6 +146,10 @@ public class WindowManager {
         this.uiLayer = layer;
     }
 
+    public UILayer getUiLayer() {
+        return uiLayer;
+    }
+
     public boolean isKeyPressed(int keycode) {
         return glfwGetKey(window, keycode) == GLFW_PRESS;
     }
@@ -188,14 +196,22 @@ public class WindowManager {
 
     public Matrix4f updateProjectionMatrix() {
         float aspectRatio = (float) width / (float) height;
-        return projectionMatrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
+        return projectionMatrix.setPerspective(this.FOV, aspectRatio, Z_NEAR, Z_FAR);
 
     }
 
     public Matrix4f updateProjectionMatrix(Matrix4f matrix, int width, int height) {
         float aspectRatio = (float) width / (float) height;
-        return matrix.setPerspective(FOV, aspectRatio, Z_NEAR, Z_FAR);
+        return matrix.setPerspective(this.FOV, aspectRatio, Z_NEAR, Z_FAR);
 
+    }
+
+    public void setFOV(int FOV_degrees) {
+        this.FOV = (float) Math.toRadians(FOV_degrees);
+    }
+
+    public float getFOV() {
+        return this.FOV;
     }
 
     public boolean isvSync() {

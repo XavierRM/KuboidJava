@@ -2,6 +2,7 @@ package test;
 
 import Kuboid.manager.*;
 import Kuboid.manager.UI.Crosshair;
+import Kuboid.manager.UI.UILayer;
 import Kuboid.manager.generation.Terrain;
 import Kuboid.manager.lighting.DirectionalLight;
 import Kuboid.manager.lighting.Sun;
@@ -40,6 +41,7 @@ public class TestGame implements ILogic {
 
     public TestGame() throws Exception {
         window = Launcher.getWindow();
+        window.setUiLayer(new UILayer(window.getFOV(), new Vector3f(0.529f, 0.807f, 0.921f)));
         loader = new ObjectLoader();
         camera = new Camera();
         renderer = new RenderManager(camera, renderOptions);
@@ -206,6 +208,11 @@ public class TestGame implements ILogic {
             }
 
         }
+
+        //Update the GUI
+        window.setFOV(window.getUiLayer().getFOV_degrees());
+        Vector3f backgroundColour = window.getUiLayer().getBackgroundColour();
+        window.setClearColour(backgroundColour.x, backgroundColour.y, backgroundColour.z, 0.0f);
 
         terrain.update(camera.getPosition());
         //Call to update the sun
