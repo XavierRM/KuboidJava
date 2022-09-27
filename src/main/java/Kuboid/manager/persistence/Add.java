@@ -1,4 +1,4 @@
-package Kuboid.manager.persistency;
+package Kuboid.manager.persistence;
 
 import Kuboid.manager.voxel.VoxelType;
 import org.joml.Vector3f;

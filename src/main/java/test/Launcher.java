@@ -11,7 +11,8 @@ public class Launcher {
     private static TestGame game;
 
     public static void main(String[] args) throws Exception {
-        window = new WindowManager(TITLE, 1280, 720, false);
+//        window = new WindowManager(TITLE, 1280, 720, false);
+        window = new WindowManager(TITLE, 1850, 1041, false);
         game = new TestGame();
         EngineManager engine = new EngineManager();
 

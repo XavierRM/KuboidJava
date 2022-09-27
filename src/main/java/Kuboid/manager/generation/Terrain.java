@@ -81,7 +81,9 @@ public class Terrain implements Runnable {
         this.texture = new Texture(loader.loadTexture("textures/default_texture.png"));
 
         SimplexNoise.setSeed(seed);
-//        SimplexNoise.setSeed(0);
+
+        System.out.println(seed);
+//        SimplexNoise.setSeed(1000);
 
         if (isWireframe)
             model = loader.loadModel(verticesDirt, indicesDirt);
@@ -326,11 +328,11 @@ public class Terrain implements Runnable {
 
     public void run() {
         try {
-            generateTerrain();
+//            generateTerrain();
 
-            //while (running) {
-            //    generateTerrain();
-            //}
+            while (running) {
+                generateTerrain();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

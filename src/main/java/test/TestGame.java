@@ -2,14 +2,14 @@ package test;
 
 import Kuboid.manager.*;
 import Kuboid.manager.UI.Crosshair;
-import Kuboid.manager.UI.UILayer;
+import Kuboid.manager.UI.DebuggingLayer;
 import Kuboid.manager.generation.Terrain;
 import Kuboid.manager.lighting.DirectionalLight;
 import Kuboid.manager.lighting.Sun;
-import Kuboid.manager.persistency.Add;
-import Kuboid.manager.persistency.Change;
-import Kuboid.manager.persistency.Remove;
-import Kuboid.manager.persistency.World;
+import Kuboid.manager.persistence.Add;
+import Kuboid.manager.persistence.Change;
+import Kuboid.manager.persistence.Remove;
+import Kuboid.manager.persistence.World;
 import Kuboid.manager.utils.RayCast;
 import Kuboid.manager.utils.Utils;
 import Kuboid.manager.voxel.VoxelType;
@@ -54,7 +54,7 @@ public class TestGame implements ILogic {
 
     public TestGame() throws Exception {
         window = Launcher.getWindow();
-        window.setUiLayer(new UILayer(window.getFOV(), new Vector3f(0.529f, 0.807f, 0.921f)));
+        window.setUiLayer(new DebuggingLayer(window.getFOV(), new Vector3f(0.529f, 0.807f, 0.921f)));
         loader = new ObjectLoader();
         camera = new Camera();
         renderer = new RenderManager(camera, renderOptions);
@@ -74,8 +74,8 @@ public class TestGame implements ILogic {
 
         window.setClearColour(0.529f, 0.807f, 0.921f, 0.0f);
 
-//        terrain = new Terrain(8, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
-        terrain = new Terrain(4, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
+        terrain = new Terrain(9, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
+//        terrain = new Terrain(4, 48, true, ((renderOptions == WIREFRAME) ? true : false), camera.getPosition());
 
         worldObject.seed = terrain.getSeed();
 
@@ -168,6 +168,21 @@ public class TestGame implements ILogic {
             init();
         }
 
+        //Change to NoLighting view
+        if (window.isKeyPressed(GLFW_KEY_I)) {
+            previousKey = GLFW_KEY_I;
+            renderOptions = NO_LIGHTING;
+            renderer.switchRenderer();
+            init();
+        }
+
+        //Change to generation
+        if (window.isKeyPressed(GLFW_KEY_M)) {
+            previousKey = GLFW_KEY_M;
+            init();
+        }
+
+
         if (window.isKeyPressed(GLFW_KEY_V)) {
             System.out.println("Camera position: " + camera.getPosition().toString(NumberFormat.getNumberInstance()));
             System.out.println("Camera rotation: " + camera.getRotation().toString(NumberFormat.getNumberInstance()));
@@ -229,14 +244,14 @@ public class TestGame implements ILogic {
         }
 
         //Update the GUI
-        window.setFOV(window.getUiLayer().getFOV_degrees());
+        window.setFOV(((DebuggingLayer) window.getUiLayer()).getFOV_degrees());
 
-        Vector3f backgroundColour = window.getUiLayer().getBackgroundColour();
+        Vector3f backgroundColour = ((DebuggingLayer) window.getUiLayer()).getBackgroundColour();
         window.setClearColour(backgroundColour.x, backgroundColour.y, backgroundColour.z, 0.0f);
 
         terrain.update(camera.getPosition());
         //Call to update the sun
-//        sunlight.update();
+        sunlight.update(camera.getPosition());
     }
 
     @Override
@@ -250,7 +265,7 @@ public class TestGame implements ILogic {
     @Override
     public void cleanup() {
 
-        if (window.getUiLayer().save()) {
+        if (((DebuggingLayer) window.getUiLayer()).save()) {
             //Save the changes in a JSON file
             try {
                 File file = new File("C:\\Users\\Usuario\\IdeaProjects\\Kuboid\\" + saveFilename);

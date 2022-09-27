@@ -1,4 +1,4 @@
-package Kuboid.manager.persistency;
+package Kuboid.manager.persistence;
 
 import org.joml.Vector3f;
 

@@ -22,6 +22,8 @@ public class Sun {
     private float posMultiplier = 100f;
     private float lightAngle = 90f;
 
+    private Vector3f initialPos;
+
     public Sun(DirectionalLight light, float increment) {
         this.directionalLight = light;
         this.increment = increment;
@@ -29,6 +31,7 @@ public class Sun {
 
     public Sun(DirectionalLight light) {
         this.directionalLight = light;
+        initialPos = new Vector3f(light.getPosition());
 
     }
 
@@ -46,37 +49,40 @@ public class Sun {
         System.out.println("Light position inside Sun: " + this.directionalLight.getPosition().toString(NumberFormat.getNumberInstance()));
     }
 
-    public void update() {
+    public void update(Vector3f cameraPos) {
         //Update directional light direction, intensity and colour
+        Vector3f aux = new Vector3f(initialPos).add(cameraPos);
+        aux.y = initialPos.y;
+        directionalLight.setPosition(aux);
 
         /*Still have to update the position based on the angles calculated*/
 
-        lightAngle -= increment;
-
-        if (lightAngle < -90) {
-            directionalLight.setIntensity(0f);
-
-            if (lightAngle <= -360) {
-                lightAngle = 90f;
-            }
-        } else if (lightAngle <= -80 || lightAngle >= 80) {
-            float factor = 1 - (Math.abs(lightAngle) - 80) / 10f;
-
-            directionalLight.setIntensity(factor);
-            directionalLight.getColor().y = Math.max(factor, 0.9f);
-            directionalLight.getColor().z = Math.max(factor, 0.5f);
-        } else {
-            directionalLight.setIntensity(1f);
-            directionalLight.getColor().x = 1f;
-            directionalLight.getColor().y = 1f;
-            directionalLight.getColor().z = 1f;
-        }
-
-        float directionX = (float) Math.sin(lightAngle);
-        float directionY = (float) Math.cos(lightAngle);
-        float directionZ = directionalLight.getDirection().z;
-
-        directionalLight.setDirection(new Vector3f(directionX, directionY, directionZ));
+//        lightAngle -= increment;
+//
+//        if (lightAngle < -90) {
+//            directionalLight.setIntensity(0f);
+//
+//            if (lightAngle <= -360) {
+//                lightAngle = 90f;
+//            }
+//        } else if (lightAngle <= -80 || lightAngle >= 80) {
+//            float factor = 1 - (Math.abs(lightAngle) - 80) / 10f;
+//
+//            directionalLight.setIntensity(factor);
+//            directionalLight.getColor().y = Math.max(factor, 0.9f);
+//            directionalLight.getColor().z = Math.max(factor, 0.5f);
+//        } else {
+//            directionalLight.setIntensity(1f);
+//            directionalLight.getColor().x = 1f;
+//            directionalLight.getColor().y = 1f;
+//            directionalLight.getColor().z = 1f;
+//        }
+//
+//        float directionX = (float) Math.sin(lightAngle);
+//        float directionY = (float) Math.cos(lightAngle);
+//        float directionZ = directionalLight.getDirection().z;
+//
+//        directionalLight.setDirection(new Vector3f(directionX, directionY, directionZ));
     }
 
     public DirectionalLight getDirectionalLight() {

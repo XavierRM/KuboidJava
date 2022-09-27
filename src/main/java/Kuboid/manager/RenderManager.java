@@ -46,7 +46,7 @@ public class RenderManager {
         //ShadowMap where the FBO and texture info are stored and initialized
         shader = new ShaderManager();
 
-        if (renderOptions != WIREFRAME || renderOptions != NORMALS) {
+        if (renderOptions != WIREFRAME || renderOptions != NORMALS || renderOptions != NO_LIGHTING) {
             shaderDepth = new ShaderManager();
             this.shadowMap = new ShadowMap();
 
@@ -82,10 +82,16 @@ public class RenderManager {
             shader.createFragmentShader(Utils.loadResource("/shaders/normalsFragment.glsl"));
         }
 
+        if (renderOptions == NO_LIGHTING) {
+            //View with no shadows
+            shader.createVertexShader(Utils.loadResource("/shaders/vertexNoLighting.glsl"));
+            shader.createFragmentShader(Utils.loadResource("/shaders/fragmentNoLighting.glsl"));
+        }
+
         //Main shader
         shader.link();
 
-        if (renderOptions == DEFAULT || renderOptions == NO_SHADOWS) {
+        if (renderOptions == DEFAULT || renderOptions == NO_SHADOWS || renderOptions == NO_LIGHTING) {
             shader.createUniform("textureSampler");
         }
 
@@ -132,7 +138,7 @@ public class RenderManager {
         for (Model model : entities.keySet()) {
             shader.bind();
 
-            if (renderOptions == DEFAULT || renderOptions == NO_SHADOWS)
+            if (renderOptions == DEFAULT || renderOptions == NO_SHADOWS || renderOptions == NO_LIGHTING)
                 shader.setUniform("textureSampler", 0);
 
             //Should precompute this
